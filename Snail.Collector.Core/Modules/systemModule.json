@@ -1,0 +1,9 @@
+﻿[
+  {
+    "name": "host",
+    "assembly": "Snail.Collector.Core",
+    "type": "Snail.Collector.Core.Modules.HostModule",
+    "singleton": true,
+    "proxyScript": "Snail.Collector.Core.Modules.HostModuleProxy.js"
+  }  
+]
