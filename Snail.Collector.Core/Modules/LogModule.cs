@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 
 namespace Snail.Collector.Core.Modules
-{
-    
+{    
     public class LogModule
     {
         public static void info(string content)
@@ -23,6 +22,8 @@ namespace Snail.Collector.Core.Modules
             });
             var ss = callBack;
             // callBack?.Invoke();
+
+            
         }
     }
 }

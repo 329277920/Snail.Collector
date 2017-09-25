@@ -63,11 +63,10 @@ namespace Snail.Collector.Core
             var jsonDefine = ReadResource("Snail.Collector.Core.Modules.systemModule.json");
             var modules = Seriazliation.Serializer.JsonDeserialize<List<ModuleDefine>>(jsonDefine);
             if (modules?.Count > 0)
-            {
-                var assName = Assembly.GetCallingAssembly().FullName;
+            {                 
                 modules.ForEach(item =>
                 {
-                    item.Assembly = assName;
+                    item.Assembly = PathUnity.GetFullPath(item.Assembly);
                     if (item.ProxyScript?.Length > 0)
                     {
                         item.ProxyScript = ReadResource(item.ProxyScript);

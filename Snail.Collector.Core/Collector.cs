@@ -34,10 +34,7 @@ namespace Snail.Collector.Core
             Code = code;
             _lock = new Semaphore(0, 1);
             ScriptEngine = new V8ScriptEngine();
-            ScriptEngine.LoadSystemModules();
-
-            // 映射类型（测试）
-            ScriptEngine.AddHostType("Action", typeof(Action));
+            ScriptEngine.LoadSystemModules();             
         }
 
         /// <summary>
@@ -70,7 +67,7 @@ namespace Snail.Collector.Core
         internal void Complete()
         {
             // 唤醒主线程，并走完采集流程
-            _lock.Release();
+            _lock.Release();            
         }
 
         private Semaphore _lock;

@@ -61,7 +61,7 @@ namespace Snail.Collector.Core
         /// <param name="collector"></param>
         public static void InnerStart(Collector collector)
         {
-            var task = new System.Threading.Tasks.TaskFactory().StartNew((_c) =>
+            var task = new TaskFactory().StartNew((_c) =>
             {
                 try
                 {

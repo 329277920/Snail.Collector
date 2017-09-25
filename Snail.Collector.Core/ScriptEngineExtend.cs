@@ -44,8 +44,8 @@ namespace Snail.Collector.Core
         /// <param name="v8"></param>
         /// <param name="module"></param>
         internal static void LoadModule(this V8ScriptEngine v8, ModuleDefine module)
-        {             
-            var ass = FindAssembly(module.Assembly);
+        {
+            var ass = Assembly.LoadFile(module.Assembly);
             if (ass == null)
             {
                 throw new Exception("the path is not found,'" + module.Assembly + "'.");
@@ -83,24 +83,7 @@ namespace Snail.Collector.Core
             }
         }
 
-        #region 私有成员
-
-        /// <summary>
-        /// 按程序集名称查找程序集
-        /// </summary>
-        /// <param name="assName"></param>
-        /// <returns></returns>
-        private static Assembly FindAssembly(string assName)
-        {
-            var currAss = Assembly.GetExecutingAssembly();
-            if (currAss.FullName.Equals(assName))
-            {
-                return currAss;
-            }
-            return Assembly.LoadFile(assName);
-        }
-
-        #endregion
+        
     }
 }
 
