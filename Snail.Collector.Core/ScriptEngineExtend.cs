@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Snail.IO;
 using System.Reflection;
+using Microsoft.ClearScript;
 
 namespace Snail.Collector.Core
 {
@@ -20,6 +21,9 @@ namespace Snail.Collector.Core
         /// </summary>
         internal static void LoadSystemModules(this V8ScriptEngine v8)
         {
+            // 记载lib类型支持
+            v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
+
             ModuleMamanger.SystemModules.ForEach(item => v8.LoadModule(item));
         }
 

@@ -1,16 +1,9 @@
-﻿[
+﻿[  
   {
     "name": "host",
-    "assembly": "ClearScript.dll",
-    "type": "Microsoft.ClearScript.ExtendedHostFunctions",
-    "singleton": true,
-    "proxyScript": "Snail.Collector.Core.Modules.HostModuleProxy.js"    
-  },
-  {
-    "name": "host_Extend",
     "assembly": "Snail.Collector.Core.dll",
     "type": "Snail.Collector.Core.Modules.HostModuleExtend",
-    "singleton": false,
-    "proxyScript": ""
+    "singleton": true,
+    "proxyScript": "Snail.Collector.Core.Modules.HostModuleProxy.js"
   }
 ]

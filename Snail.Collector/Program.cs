@@ -26,8 +26,7 @@ namespace Snail.Collector
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
-
+            Application.Run(new FrmMain());           
             
         }
     }

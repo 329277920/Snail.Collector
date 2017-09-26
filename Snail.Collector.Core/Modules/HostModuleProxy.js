@@ -7,18 +7,14 @@ function using(module) {
 }
 
 function infoAsync(message, callBack) {
-    var action = host.type("System.Action");   
+    var action = lib.System.Action;
     host.InfoAsync(message, new action(callBack));
 }
 
 function infoAsync2(message, callBack) {
-    var func = host.type("System.Func");
-    
-
-    var stringType = host.type("System.String");
-    var booleanType = host.type("System.Boolean");
-
-    host.Test(func(booleanType, stringType));
+    var func = lib.System.Func(lib.System.Boolean,lib.System.String);
+         
+    host.InfoAsync2("谢谢的你爱", new func(function (s) { return "fdsf"; }));
 
     //var newCallBack = host.newObj(func(booleanType, stringType), function (success) { return "fds"; });
     //host.InfoAsync(message, newCallBack);
