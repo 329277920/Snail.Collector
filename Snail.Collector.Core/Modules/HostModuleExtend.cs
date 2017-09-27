@@ -55,9 +55,26 @@ namespace Snail.Collector.Core.Modules
 
         }
 
+        public void TestObj(dynamic user)
+        {
+            var str = user.name.ToString();
+
+            WriteLine(user.name);
+        }
+
         public void Test(dynamic obj)
         {
-            
+           
         }
+
+        private void WriteLine(string content)
+        {
+            System.Diagnostics.Debug.WriteLine(content);
+        }
+    }
+
+    public class UserInfo
+    {
+        public string name { get; set; }
     }
 }

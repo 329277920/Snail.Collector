@@ -25,6 +25,7 @@ namespace Snail.Collector.Core
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
 
             ModuleMamanger.SystemModules.ForEach(item => v8.LoadModule(item));
+            
         }
 
         /// <summary>
