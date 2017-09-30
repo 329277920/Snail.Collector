@@ -1,8 +1,0 @@
-﻿[  
-  {
-    "name": "host",
-    "assembly": "Snail.Collector.Core.dll",
-    "type": "Snail.Collector.Core.Modules.HostModuleExtend",     
-    "proxyScript": "Snail.Collector.Core.Modules.HostModuleProxy.js"
-  }
-]

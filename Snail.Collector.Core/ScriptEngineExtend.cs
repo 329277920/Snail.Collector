@@ -1,13 +1,11 @@
-﻿using Microsoft.ClearScript.V8;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.ClearScript;
+using Microsoft.ClearScript.V8;
+using Snail.Collector.Core.SystemModules;
 using Snail.IO;
+using System;
+using System.IO;
 using System.Reflection;
-using Microsoft.ClearScript;
+using System.Text;
 
 namespace Snail.Collector.Core
 {
@@ -15,7 +13,7 @@ namespace Snail.Collector.Core
     /// 业务扩展 V8ScriptEngine
     /// </summary>
     public static class ScriptEngineExtend
-    {        
+    {
         /// <summary>
         /// 加载系统扩展模块
         /// </summary>
@@ -24,8 +22,8 @@ namespace Snail.Collector.Core
             // 记载lib类型支持
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
 
-            ModuleMamanger.SystemModules.ForEach(item => v8.LoadModule(item));
-            
+            // 加载host，用于导入其他模块
+            v8.AddHostObject("host", new HostModuleExtend());
         }
 
         /// <summary>
@@ -33,14 +31,14 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="v8"></param>
         /// <param name="module"></param>
-        internal static void LoadModule(this V8ScriptEngine v8, string module)
+        internal static object LoadModule(this V8ScriptEngine v8, string module)
         {
             var m = ModuleMamanger.FindModule(module);
             if (m == null)
             {
                 throw new Exception("can not found a module the named '" + module + "'");
             }
-            LoadModule(v8, m);
+            return LoadModule(v8, m);
         }
 
         /// <summary>
@@ -48,7 +46,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="v8"></param>
         /// <param name="module"></param>
-        internal static void LoadModule(this V8ScriptEngine v8, ModuleDefine module)
+        internal static object LoadModule(this V8ScriptEngine v8, ModuleInfo module)
         {
             var ass = Assembly.LoadFile(module.Assembly);
             if (ass == null)
@@ -60,19 +58,23 @@ namespace Snail.Collector.Core
             {
                 throw new Exception("the type is not found,'" + module.Type + "'.");
             }
-            if (!module.Singleton)
-            {
-                v8.AddHostType(module.Name, type);
-            }
-            else
-            {
-                var instance = ass.CreateInstance(module.Type);
-                v8.AddHostObject(module.Name, instance);
-            }
+
+            var typeName = "register_host_" + module.Name;
+            var funcName = string.Format("initModule_{0}", module.Name);
+
+            v8.AddHostType(typeName, type);
+
+            var func = new StringBuilder(string.Format("function {0}(){{\r\n", funcName));
+            func.Append(string.Format("var {0} = new {1}();\r\n", module.Name, typeName));
             if (module.ProxyScript?.Length > 0)
             {
-                v8.Execute(module.ProxyScript);
+                func.Append(module.ProxyScript);
             }
+            func.Append(string.Format("\r\nreturn {0};}}", module.Name));
+
+            v8.Execute(func.ToString());
+
+            return v8.Invoke(funcName);
         }
 
         /// <summary>

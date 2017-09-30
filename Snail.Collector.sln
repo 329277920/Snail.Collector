@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector", "Snail.Collector\Snail.Collector.csproj", "{ACC7C2B4-F6F9-4151-8E15-519D21D497F3}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Net", "Snail.Collector.Modules.Net\Snail.Collector.Modules.Net.csproj", "{4510C7D8-4BD9-4ABC-A914-17782B230F5D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Log", "Snail.Collector.Modules.Log\Snail.Collector.Modules.Log.csproj", "{7FF253BB-A571-42E2-9566-3A3DA93843AD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Net.Http", "Snail.Collector.Modules.Net.Http\Snail.Collector.Modules.Net.Http.csproj", "{F43D7793-A68C-4D0E-AC06-37660EFC4143}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{7FF253BB-A571-42E2-9566-3A3DA93843AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FF253BB-A571-42E2-9566-3A3DA93843AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FF253BB-A571-42E2-9566-3A3DA93843AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F43D7793-A68C-4D0E-AC06-37660EFC4143}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F43D7793-A68C-4D0E-AC06-37660EFC4143}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F43D7793-A68C-4D0E-AC06-37660EFC4143}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F43D7793-A68C-4D0E-AC06-37660EFC4143}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,5 +48,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4510C7D8-4BD9-4ABC-A914-17782B230F5D} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{7FF253BB-A571-42E2-9566-3A3DA93843AD} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
+		{F43D7793-A68C-4D0E-AC06-37660EFC4143} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {50C82453-38EC-47CE-A853-6281FE8C11ED}
 	EndGlobalSection
 EndGlobal

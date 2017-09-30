@@ -1,0 +1,6 @@
+﻿{
+  "name": "http",
+  "assembly": "Snail.Collector.Modules.Net.Http.dll",
+  "type": "Snail.Collector.Modules.Net.Http.HttpModule",
+  "proxyScript": "module.js"
+}
