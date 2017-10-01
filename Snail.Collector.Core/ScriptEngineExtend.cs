@@ -7,6 +7,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Snail.IO;
 using System.Reflection;
+using Microsoft.ClearScript;
+using Snail.Collector.Core.SystemModules;
 
 namespace Snail.Collector.Core
 {
@@ -20,7 +22,9 @@ namespace Snail.Collector.Core
         /// </summary>
         internal static void LoadSystemModules(this V8ScriptEngine v8)
         {
-            ModuleMamanger.SystemModules.ForEach(item => v8.LoadModule(item));
+            v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
+
+            v8.AddHostObject("host", new HostModuleExtend());
         }
 
         /// <summary>
@@ -28,14 +32,14 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="v8"></param>
         /// <param name="module"></param>
-        internal static void LoadModule(this V8ScriptEngine v8, string module)
+        internal static object LoadModule(this V8ScriptEngine v8, string module)
         {
             var m = ModuleMamanger.FindModule(module);
             if (m == null)
             {
                 throw new Exception("can not found a module the named '" + module + "'");
             }
-            LoadModule(v8, m);
+            return LoadModule(v8, m);
         }
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="v8"></param>
         /// <param name="module"></param>
-        internal static void LoadModule(this V8ScriptEngine v8, ModuleDefine module)
+        internal static object LoadModule(this V8ScriptEngine v8, ModuleInfo module)
         {
             var ass = Assembly.LoadFile(module.Assembly);
             if (ass == null)
@@ -55,19 +59,20 @@ namespace Snail.Collector.Core
             {
                 throw new Exception("the type is not found,'" + module.Type + "'.");
             }
-            if (!module.Singleton)
-            {
-                v8.AddHostType(module.Name, type);
-            }
-            else
-            {
-                var instance = ass.CreateInstance(module.Type);
-                v8.AddHostObject(module.Name, instance);
-            }
+            var refType = string.Format("_ref_module_type_{0}", type.Name);
+            v8.AddHostType(refType, type);
+            var funcName = string.Format("_init_module_func_{0}", module.Name);
+            var script = new StringBuilder("function ");
+            script.Append(funcName + "() {\r\n");
+            script.AppendFormat("var {0} = new {1}();\r\n", module.Name, refType);
             if (module.ProxyScript?.Length > 0)
             {
-                v8.Execute(module.ProxyScript);
+                script.Append(module.ProxyScript);
             }
+            script.AppendFormat("\r\nreturn {0};", module.Name);
+            script.Append("\r\n}");
+            v8.Execute(script.ToString());
+            return v8.Invoke(funcName);
         }
 
         /// <summary>
@@ -81,9 +86,7 @@ namespace Snail.Collector.Core
             {
                 v8.Execute(fs.ReadToEndAsync(coding).Result);
             }
-        }
-
-        
+        }        
     }
 }
 

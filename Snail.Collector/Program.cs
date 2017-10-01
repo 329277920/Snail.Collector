@@ -16,9 +16,11 @@ namespace Snail.Collector
         [STAThread]
         static void Main()
         {
-            var code = new System.IO.FileInfo(@"Tasks\first.js").ReadStringAsync(System.Text.Encoding.UTF8).Result;
+            var code = new System.IO.FileInfo(@"Tasks\testHttpModule.js").ReadStringAsync(System.Text.Encoding.UTF8).Result;
 
             CollectorFactory.StartNew("cnf", code);
+
+            
 
             // var engine = Core.ScriptEngineManager.NewScriptEngine();
 

@@ -49,11 +49,9 @@
   <ItemGroup>
     <Compile Include="Collector.cs" />
     <Compile Include="CollectorFactory.cs" />
-    <Compile Include="IModuleInit.cs" />
-    <Compile Include="ModuleDefine.cs" />
+    <Compile Include="ModuleInfo.cs" />
     <Compile Include="ModuleMamanger.cs" />
-    <Compile Include="Modules\HostModuleExtend.cs" />
-    <Compile Include="Modules\LogModule.cs" />
+    <Compile Include="SystemModules\HostModuleExtend.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScriptEngineExtend.cs" />
     <Compile Include="TaskManager.cs" />
@@ -64,14 +62,7 @@
     <None Include="Licenses\v8.strongtalk.license" />
     <None Include="Licenses\v8.v8.license" />
     <None Include="Licenses\v8.valgrind.license" />
-    <EmbeddedResource Include="Modules\systemModule.json" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Modules\LogModuleProxy.js" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Modules\HostModuleProxy.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

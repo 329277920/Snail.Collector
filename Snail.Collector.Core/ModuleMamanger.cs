@@ -5,6 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Snail.IO;
+using System.IO;
+using Snail.Seriazliation;
 
 namespace Snail.Collector.Core
 {
@@ -18,7 +20,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="module"></param>
         /// <returns></returns>
-        public static ModuleDefine FindModule(string module)
+        public static ModuleInfo FindModule(string module)
         {
             lock (ExtendModules)
             {
@@ -27,24 +29,18 @@ namespace Snail.Collector.Core
         }
 
         #region 私有成员
-
-        /// <summary>
-        /// 存储系统内置模块
-        /// </summary>
-        internal static List<ModuleDefine> SystemModules;
-
+       
         /// <summary>
         /// 存储扩展模块列表
         /// </summary>
-        private static List<ModuleDefine> ExtendModules;
+        private static List<ModuleInfo> ExtendModules;
 
         /// <summary>
         /// 静态初始化，加载所有系统模块
         /// </summary>
         static ModuleMamanger()
-        {            
-            InitSystemModules();
-
+        {
+            InitExtendModules();
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) => 
             {
                 return null;
@@ -57,31 +53,58 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 初始化系统内置模块
         /// </summary>
-        private static void InitSystemModules()
-        {            
-            SystemModules = new List<ModuleDefine>();
-            var jsonDefine = ReadResource("Snail.Collector.Core.Modules.systemModule.json");
-            var modules = Seriazliation.Serializer.JsonDeserialize<List<ModuleDefine>>(jsonDefine);
-            if (modules?.Count > 0)
-            {                 
-                modules.ForEach(item =>
-                {
-                    item.Assembly = PathUnity.GetFullPath(item.Assembly);
-                    if (item.ProxyScript?.Length > 0)
-                    {
-                        item.ProxyScript = ReadResource(item.ProxyScript);
-                    }                    
-                });
-                SystemModules.AddRange(modules.ToArray());
-            }
-        }
+        //private static void InitSystemModules()
+        //{            
+        //    SystemModules = new List<ModuleInfo>();
+        //    var jsonDefine = ReadResource("Snail.Collector.Core.Modules.systemModule.json");
+        //    var modules = Seriazliation.Serializer.JsonDeserialize<List<ModuleInfo>>(jsonDefine);
+        //    if (modules?.Count > 0)
+        //    {                 
+        //        modules.ForEach(item =>
+        //        {
+        //            item.Assembly = PathUnity.GetFullPath(item.Assembly);
+        //            if (item.ProxyScript?.Length > 0)
+        //            {
+        //                item.ProxyScript = ReadResource(item.ProxyScript);
+        //            }                    
+        //        });
+        //        SystemModules.AddRange(modules.ToArray());
+        //    }
+        //}
 
         /// <summary>
         /// 初始化扩展模块
         /// </summary>
         private static void InitExtendModules()
         {
-
+            ExtendModules = new List<ModuleInfo>();
+            var modulePath = PathUnity.GetFullPath("modules");
+            if (modulePath?.Length > 0)
+            {
+                foreach (var dir in Directory.GetDirectories(modulePath))
+                {
+                    var file = Directory.GetFiles(dir, "module.json").SingleOrDefault();
+                    if (file?.Length <= 0)
+                    {
+                        continue;
+                    }
+                    var content = new FileInfo(file).ReadStringAsync(Encoding.UTF8).Result;
+                    if (content?.Length <= 0)
+                    {
+                        continue;
+                    }
+                    var config = Serializer.JsonDeserialize<ModuleInfo>(content);
+                    config.Assembly = Path.Combine(dir, config.Assembly);
+                    if (config.ProxyScript?.Length > 0)
+                    {
+                        if (File.Exists(Path.Combine(dir, config.ProxyScript)))
+                        {
+                            config.ProxyScript = new FileInfo(Path.Combine(dir, config.ProxyScript)).ReadStringAsync(Encoding.UTF8).Result;
+                        }
+                    }
+                    ExtendModules.Add(config);
+                }
+            }
         }
 
         /// <summary>
@@ -95,7 +118,7 @@ namespace Snail.Collector.Core
                 Assembly.GetExecutingAssembly().
                 GetManifestResourceStream(resourceName).ReadToEndAsync(Encoding.UTF8).Result;
         }
-                  
+
         #endregion
     }
 }
