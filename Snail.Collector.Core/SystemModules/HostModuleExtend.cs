@@ -23,6 +23,6 @@ namespace Snail.Collector.Core.SystemModules
         public void debug(object value)
         {
             System.Diagnostics.Debug.WriteLine(value);
-        }
+        }        
     }
 }

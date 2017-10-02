@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Net
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Net.Http", "Snail.Collector.Modules.Net.Http\Snail.Collector.Modules.Net.Http.csproj", "{9BD40FF9-CA15-45FE-9BD1-34056A29E682}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Html", "Snail.Collector.Modules.Html\Snail.Collector.Modules.Html.csproj", "{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682}.Release|Any CPU.Build.0 = Release|Any CPU
+		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,5 +48,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{4510C7D8-4BD9-4ABC-A914-17782B230F5D} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
+		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 	EndGlobalSection
 EndGlobal
