@@ -21,14 +21,15 @@ namespace Snail.Collector.Modules.Html
             }
         }
 
-        public int length {
+        public int length
+        {
             get { return Count; }
         }
 
         public ElementCollection getElementsByTagName(string name, bool isFindAll = false)
         {
             var eles = new ElementCollection();
-            ForEach(item => 
+            ForEach(item =>
             {
                 var children = item.getElementsByTagName(name, isFindAll);
                 eles.AddRange(children);
@@ -45,6 +46,74 @@ namespace Snail.Collector.Modules.Html
                 eles.AddRange(children);
             });
             return eles;
+        }
+
+        public ElementCollection css(string selector)
+        {
+            var eles = new ElementCollection();
+            ForEach(item =>
+            {
+                var children = item.css(selector);
+                eles.AddRange(children);
+            });
+            return eles;
+        }
+
+        public string attr(string attrName, string value = null)
+        {
+            if (this.Count <= 0)
+            {
+                return string.Empty;
+            }
+            return this[0].attr(attrName, value);
+        }
+
+        public string innerHTML
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].innerHTML;
+            }
+        }
+
+        public string OuterHTML
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].OuterHTML;
+            }
+        }
+
+        public string innerText
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].innerText;
+            }
+        }
+
+        public string OuterHtml
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].OuterHtml;
+            }
         }
     }
 }

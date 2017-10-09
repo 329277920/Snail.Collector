@@ -8,11 +8,11 @@ namespace Snail.Collector.Modules.Html
 {
     public class HtmlModule
     {
-        public Document load(string html)
+        public Element load(string html)
         {
-            var doc = new Document();
-            doc.loadHtml(html);
-            return doc;
+            var doc = new HtmlAgilityPack.HtmlDocument();
+            doc.LoadHtml(html);
+            return new Element(doc.DocumentNode);
         }
     }
 }

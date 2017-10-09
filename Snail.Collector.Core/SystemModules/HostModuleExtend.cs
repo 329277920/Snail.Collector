@@ -23,6 +23,11 @@ namespace Snail.Collector.Core.SystemModules
         public void debug(object value)
         {
             System.Diagnostics.Debug.WriteLine(value);
-        }        
+        }
+
+        public void sleep(int millisecondsTimeout)
+        {
+            System.Threading.Thread.Sleep(millisecondsTimeout);
+        }
     }
 }

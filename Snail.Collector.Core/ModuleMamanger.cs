@@ -40,7 +40,7 @@ namespace Snail.Collector.Core
         /// </summary>
         static ModuleMamanger()
         {
-            InitExtendModules();
+            InitExtendModules();           
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) => 
             {
                 return null;
@@ -84,12 +84,12 @@ namespace Snail.Collector.Core
                 foreach (var dir in Directory.GetDirectories(modulePath))
                 {
                     var file = Directory.GetFiles(dir, "module.json").SingleOrDefault();
-                    if (file?.Length <= 0)
+                    if (string.IsNullOrEmpty(file))
                     {
                         continue;
                     }
                     var content = new FileInfo(file).ReadStringAsync(Encoding.UTF8).Result;
-                    if (content?.Length <= 0)
+                    if (string.IsNullOrEmpty(content))
                     {
                         continue;
                     }
@@ -103,6 +103,16 @@ namespace Snail.Collector.Core
                         }
                     }
                     ExtendModules.Add(config);
+
+
+                    //AppDomain.CurrentDomain.SetData("PRIVATE_BINPATH", "Modules/html");
+                    //// AppDomain.CurrentDomain.SetData("BINPATH_PROBE_ONLY", @"C:\Projects\Git\Snail.Collector\Snail.Collector\bin\Debug\Modules\html");
+                    //var m = typeof(AppDomainSetup).GetMethod("UpdateContextProperty", BindingFlags.NonPublic | BindingFlags.Static);
+                    //var funsion = typeof(AppDomain).GetMethod("GetFusionContext", BindingFlags.NonPublic | BindingFlags.Instance);
+                    //m.Invoke(null, new object[] { funsion.Invoke(AppDomain.CurrentDomain, null), "PRIVATE_BINPATH", @"C:\Projects\Git\Snail.Collector\Snail.Collector\bin\Debug\Modules\html" });
+
+
+
                 }
             }
         }

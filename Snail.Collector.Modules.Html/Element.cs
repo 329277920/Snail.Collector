@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ScrapySharp.Extensions;
 
 namespace Snail.Collector.Modules.Html
 {
@@ -22,19 +23,33 @@ namespace Snail.Collector.Modules.Html
             return Single(this._innerNode, (item) => item.Id == id);
         }
 
-        public ElementCollection getElementsByClassName(string className,bool isFindAll = false)
+        public ElementCollection getElementsByClassName(string className,bool isFindAll = true)
         {
             return Select(this._innerNode, (item) => item.GetAttributeValue("class", "").Split(' ').Contains(className), null, isFindAll);
         }
 
-        public ElementCollection getElementsByTagName(string name, bool isFindAll = false)
+        public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
         {
             return Select(this._innerNode, (item) => item.Name == name, null, isFindAll);
         }
 
-        public string getAttribute(string name)
+        public ElementCollection css(string selector)
+        {             
+            return new ElementCollection(from node in this._innerNode.CssSelect(selector)
+                                         select new Element(node));
+        }
+
+        public string attr(string attrName, string value = null)
         {
-            return _innerNode.GetAttributeValue(name, string.Empty);
+            if (value == null)
+            {
+                return _innerNode.GetAttributeValue(attrName);
+            }
+            else
+            {
+                _innerNode.SetAttributeValue(attrName, value);
+                return value;
+            }
         }
 
         public string innerHTML
@@ -42,9 +57,19 @@ namespace Snail.Collector.Modules.Html
             get { return _innerNode?.InnerHtml; }
         }
 
+        public string OuterHTML
+        {
+            get { return _innerNode?.OuterHtml; }
+        }
+
         public string innerText
         {
             get { return _innerNode?.InnerText; }
+        }
+
+        public string OuterHtml
+        {
+            get { return _innerNode?.OuterHtml; }
         }
 
         #region 私有成员
@@ -73,7 +98,7 @@ namespace Snail.Collector.Modules.Html
             return null;
         }
 
-        internal ElementCollection Select(HtmlNode parentNode, Func<HtmlNode, bool> filtter, List<Element> nodeContainer = null,bool isFindAll = false)
+        internal ElementCollection Select(HtmlNode parentNode, Func<HtmlNode, bool> filtter, List<Element> nodeContainer = null,bool isFindAll = true)
         {
             if (nodeContainer == null)
             {
@@ -89,7 +114,7 @@ namespace Snail.Collector.Modules.Html
                     }
                     if (isFindAll)
                     {
-                        Select(childNode, filtter, nodeContainer);
+                        Select(childNode, filtter, nodeContainer, isFindAll);
                     }                    
                 }
             }
