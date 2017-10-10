@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.Core
+namespace Snail.Collector.Modules.Storage
 {
     /// <summary>
-    /// 添加模块依赖接口
+    /// 数据库存储
     /// </summary>
-    public interface IModuleInit
+    public class DbStorage
     {
 
     }

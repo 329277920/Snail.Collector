@@ -29,7 +29,7 @@ namespace Snail.Collector.Core
         }
 
         #region 私有成员
-        
+       
         /// <summary>
         /// 存储扩展模块列表
         /// </summary>
@@ -39,9 +39,8 @@ namespace Snail.Collector.Core
         /// 静态初始化，加载所有系统模块
         /// </summary>
         static ModuleMamanger()
-        {                      
-            InitExtendModules();
-
+        {
+            InitExtendModules();           
             AppDomain.CurrentDomain.AssemblyResolve += (sender, e) => 
             {
                 return null;
@@ -49,7 +48,29 @@ namespace Snail.Collector.Core
                 //string strFielName = args.Name.Split(',')[0];
                 //return Assembly.LoadFile(string.Format(@"C:\test\{0}.dll", strFielName));
             };
-        }         
+        }
+
+        /// <summary>
+        /// 初始化系统内置模块
+        /// </summary>
+        //private static void InitSystemModules()
+        //{            
+        //    SystemModules = new List<ModuleInfo>();
+        //    var jsonDefine = ReadResource("Snail.Collector.Core.Modules.systemModule.json");
+        //    var modules = Seriazliation.Serializer.JsonDeserialize<List<ModuleInfo>>(jsonDefine);
+        //    if (modules?.Count > 0)
+        //    {                 
+        //        modules.ForEach(item =>
+        //        {
+        //            item.Assembly = PathUnity.GetFullPath(item.Assembly);
+        //            if (item.ProxyScript?.Length > 0)
+        //            {
+        //                item.ProxyScript = ReadResource(item.ProxyScript);
+        //            }                    
+        //        });
+        //        SystemModules.AddRange(modules.ToArray());
+        //    }
+        //}
 
         /// <summary>
         /// 初始化扩展模块
@@ -57,27 +78,43 @@ namespace Snail.Collector.Core
         private static void InitExtendModules()
         {
             ExtendModules = new List<ModuleInfo>();
-            var mDir = PathUnity.GetDirPath("Modules");
-            if (mDir?.Length > 0)
+            var modulePath = PathUnity.GetFullPath("modules");
+            if (modulePath?.Length > 0)
             {
-                foreach (var dir in Directory.GetDirectories((mDir)))
+                foreach (var dir in Directory.GetDirectories(modulePath))
                 {
-                    var mFile = Directory.GetFiles(dir, "module.json").SingleOrDefault();
-                    if (mFile?.Length <= 0)
+                    var file = Directory.GetFiles(dir, "module.json").SingleOrDefault();
+                    if (string.IsNullOrEmpty(file))
                     {
                         continue;
                     }
-                    var mStr = ReadFileContent(mFile);
-                    var mInfo = Serializer.JsonDeserialize<ModuleInfo>(mStr);
-                    mInfo.Assembly = Path.Combine(dir, mInfo.Assembly);
-                    if (mInfo.ProxyScript?.Length > 0)
+                    var content = new FileInfo(file).ReadStringAsync(Encoding.UTF8).Result;
+                    if (string.IsNullOrEmpty(content))
                     {
-                        var pFile = Path.Combine(dir, mInfo.ProxyScript);
-                        mInfo.ProxyScript = ReadFileContent(pFile);
+                        continue;
                     }
-                    ExtendModules.Add(mInfo);
+                    var config = Serializer.JsonDeserialize<ModuleInfo>(content);
+                    config.Assembly = Path.Combine(dir, config.Assembly);
+                    if (config.ProxyScript?.Length > 0)
+                    {
+                        if (File.Exists(Path.Combine(dir, config.ProxyScript)))
+                        {
+                            config.ProxyScript = new FileInfo(Path.Combine(dir, config.ProxyScript)).ReadStringAsync(Encoding.UTF8).Result;
+                        }
+                    }
+                    ExtendModules.Add(config);
+
+
+                    //AppDomain.CurrentDomain.SetData("PRIVATE_BINPATH", "Modules/html");
+                    //// AppDomain.CurrentDomain.SetData("BINPATH_PROBE_ONLY", @"C:\Projects\Git\Snail.Collector\Snail.Collector\bin\Debug\Modules\html");
+                    //var m = typeof(AppDomainSetup).GetMethod("UpdateContextProperty", BindingFlags.NonPublic | BindingFlags.Static);
+                    //var funsion = typeof(AppDomain).GetMethod("GetFusionContext", BindingFlags.NonPublic | BindingFlags.Instance);
+                    //m.Invoke(null, new object[] { funsion.Invoke(AppDomain.CurrentDomain, null), "PRIVATE_BINPATH", @"C:\Projects\Git\Snail.Collector\Snail.Collector\bin\Debug\Modules\html" });
+
+
+
                 }
-            }           
+            }
         }
 
         /// <summary>
@@ -90,19 +127,6 @@ namespace Snail.Collector.Core
             return
                 Assembly.GetExecutingAssembly().
                 GetManifestResourceStream(resourceName).ReadToEndAsync(Encoding.UTF8).Result;
-        }
-
-        /// <summary>
-        /// 读取配置文件
-        /// </summary>
-        /// <param name="filePath"></param>
-        /// <returns></returns>
-        private static string ReadFileContent(string filePath)
-        {
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return fs.ReadToEndAsync(Encoding.UTF8).Result;
-            }
         }
 
         #endregion

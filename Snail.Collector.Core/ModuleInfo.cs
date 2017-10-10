@@ -14,8 +14,8 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取或设置此模块在JS引擎中的访问名称
         /// </summary>
-        public string Name { get; set; }
-       
+        public string Name { get; set; }       
+
         /// <summary>
         /// 获取或设置模块类型
         /// </summary>

@@ -16,9 +16,11 @@ namespace Snail.Collector
         [STAThread]
         static void Main()
         {
-            var code = new System.IO.FileInfo(@"Tasks\testModule.js").ReadStringAsync(System.Text.Encoding.UTF8).Result;
+            var code = new System.IO.FileInfo(@"Tasks\testUfo.js").ReadStringAsync(System.Text.Encoding.UTF8).Result;
 
             CollectorFactory.StartNew("cnf", code);
+
+            
 
             // var engine = Core.ScriptEngineManager.NewScriptEngine();
 
@@ -26,7 +28,8 @@ namespace Snail.Collector
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());           
+            Application.Run(new FrmMain());
+
             
         }
     }

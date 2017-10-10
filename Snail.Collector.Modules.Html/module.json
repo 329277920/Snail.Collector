@@ -1,0 +1,6 @@
+﻿{
+    "name": "html",
+    "assembly": "Snail.Collector.Modules.Html.dll",
+    "type": "Snail.Collector.Modules.Html.HtmlModule",    
+    "proxyScript": ""    
+}

@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.Modules.Net
+namespace Snail.Collector.Core.SystemModules
 {
-    public class HttpModule
+    public class Awaiter
     {
+        public void add(Task task)
+        {
 
+        }
     }
 }

@@ -72,7 +72,7 @@ namespace Snail.Collector.Core
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine("任务异常:" + ex.ToString());                   
-                }               
+                }                      
             }, collector);            
         }
 

@@ -45,7 +45,7 @@ namespace Snail.Collector.Core
             ScriptEngine.Execute(Code);
 
             // 挂起当前线程
-            _lock.WaitOne();
+            // _lock.WaitOne();            
         }
 
         /// <summary>
@@ -54,6 +54,8 @@ namespace Snail.Collector.Core
         internal void Stop()
         {
             Complete();
+
+            // ScriptEngine.Dispose();
             try
             {
                 Thread.CurrentThread.Abort();

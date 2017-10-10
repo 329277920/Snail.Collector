@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("Snail.Collector.Modules.Net.Http")]
+[assembly: AssemblyTitle("Snail.Collector.Modules.Storage")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Snail.Collector.Modules.Net.Http")]
+[assembly: AssemblyProduct("Snail.Collector.Modules.Storage")]
 [assembly: AssemblyCopyright("Copyright ©  2017")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("9bd40ff9-ca15-45fe-9bd1-34056a29e682")]
+[assembly: Guid("af40f481-6bfd-4e3f-b2fa-dfffd317bffa")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
