@@ -39,7 +39,7 @@ namespace Snail.Collector.Core
             {
                 throw new Exception("can not found a module the named '" + module + "'");
             }
-            return LoadModule(v8, m);
+            return LoadModule(v8, m);                              
         }
 
         /// <summary>

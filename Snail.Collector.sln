@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector", "Snail.Collector\Snail.Collector.csproj", "{ACC7C2B4-F6F9-4151-8E15-519D21D497F3}"
 EndProject
@@ -16,6 +16,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Html", "Snail.Collector.Modules.Html\Snail.Collector.Modules.Html.csproj", "{539FC9BB-7E48-4283-A04D-E07BBF31FBC3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Storage", "Snail.Collector.Modules.Storage\Snail.Collector.Modules.Storage.csproj", "{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6A75C565-C616-40AD-966E-9273943D49B2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,5 +58,8 @@ Global
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E273B6E8-8774-4C69-AE44-6C421F33327B}
 	EndGlobalSection
 EndGlobal

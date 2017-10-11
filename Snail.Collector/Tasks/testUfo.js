@@ -1,5 +1,6 @@
 ﻿var http = host.require('http');
 var html = host.require('html');
+var storage = host.require('storage');
 
 function catchList(url) {
     http.getString(url, function (content) {
@@ -22,6 +23,12 @@ function catchContent(url) {
             var doc = html.load(content);
             var title = doc.css("#info").css("div.biaoti>h1").innerText;
             var info = doc.css("#content>table").innerText;
+
+            storage.provider("db").import(
+                { provider: "mysql", conString: "server=localhost;User Id=root;password=chennanfei;Database=1yyg", table: "news" },
+                { title: title, content: info }
+            );
+
             // host.debug(title + " " + info);
             host.debug("OK");
         }

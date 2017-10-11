@@ -20,8 +20,8 @@ namespace Snail.Collector
 
             CollectorFactory.StartNew("cnf", code);
 
-            
-
+            // Microsoft.ClearScript.V8.V8ScriptItem
+           
             // var engine = Core.ScriptEngineManager.NewScriptEngine();
 
             // engine.ExecuteFromFile("Tasks\\first.js", System.Text.Encoding.UTF8);

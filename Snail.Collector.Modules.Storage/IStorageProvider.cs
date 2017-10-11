@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Snail.Collector.Modules.Storage
 {
     /// <summary>
-    /// 数据库存储
+    /// 存储模块提供程序接口
     /// </summary>
-    public class DbStorage
+    public interface IStorageProvider
     {
-
+        Task import(dynamic config, params object[] items);
     }
 }

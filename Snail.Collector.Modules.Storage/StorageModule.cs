@@ -11,6 +11,14 @@ namespace Snail.Collector.Modules.Storage
     /// </summary>
     public class StorageModule
     {
-
+        public IStorageProvider provider(string name)
+        {
+            switch (name)
+            {
+                case "db":
+                    return new DbProvider();
+            }
+            return null;
+        }
     }
 }
