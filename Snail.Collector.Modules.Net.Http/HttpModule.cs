@@ -88,7 +88,18 @@ namespace Snail.Collector.Modules.Net.Http
 
         public Action<string, object> getJson;
 
-        public Func<string, string, object, Task> downFile;
+        public Func<string, string, object, Task> getFile;
+
+        /// <summary>
+        /// 获取绝对URI地址
+        /// </summary>
+        /// <param name="baseUri">当前访问的地址</param>
+        /// <param name="currUri">相对与当前访问地址的相对地址</param>
+        /// <returns>返回绝对地址</returns>
+        public string getUri(string baseUri, string currUri)
+        {
+            return new Uri(new Uri(baseUri), currUri).AbsolutePath;
+        }
 
         #endregion
 

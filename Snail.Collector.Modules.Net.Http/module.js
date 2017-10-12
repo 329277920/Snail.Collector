@@ -25,6 +25,6 @@ http.getString2 = new a_s_call(function (uri, callBack) {
 });
 
 
-http.downFile = new f_s_s_call(function (uri, savePath, callBack) {
+http.getFile = new f_s_s_call(function (uri, savePath, callBack) {
     return http._innerDownfile(uri, savePath, new a_o(callBack));
 });

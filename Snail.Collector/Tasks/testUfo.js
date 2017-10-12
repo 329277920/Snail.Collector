@@ -20,11 +20,10 @@ function catchList(url) {
 }
 
 function catchContent(url) {     
-    http.getString(url, function (content) {
-        try {
+    http.getString(url, function (content) {        try {
             var doc = html.load(content);
             var title = doc.css("#info").css("div.biaoti>h1").innerText;
-            var info = doc.css("#content>table").innerText;
+            var info = html.removeTags(doc.css("#content>table").innerHTML);
             //var array = new Array();
             //array.push({ title: title, content: info });
             //array.push({ title: title, content: info });
