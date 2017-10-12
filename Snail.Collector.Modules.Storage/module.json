@@ -2,5 +2,5 @@
   "name": "storage",
   "assembly": "Snail.Collector.Modules.Storage.dll",
   "type": "Snail.Collector.Modules.Storage.StorageModule",
-  "proxyScript": ""
+  "proxyScript": "module.js"
 }

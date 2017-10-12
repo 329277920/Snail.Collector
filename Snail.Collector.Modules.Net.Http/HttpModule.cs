@@ -17,7 +17,7 @@ namespace Snail.Collector.Modules.Net.Http
 
         }
 
-        #region 定义内部方法
+        #region 内部方法
 
         public async Task _innerGetString(string uri, Action<string> callBack)
         {
@@ -74,7 +74,7 @@ namespace Snail.Collector.Modules.Net.Http
         }
         #endregion
 
-        #region 定义导出方法（用于方便js调用）
+        #region 导出方法
 
         /// <summary>
         /// 在module.js代理脚本中实现，object为Action<String>

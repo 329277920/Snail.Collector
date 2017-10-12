@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using Snail.Collector.Modules.Core;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,36 +16,52 @@ namespace Snail.Collector.Modules.Storage
     /// </summary>
     public class DbProvider : IStorageProvider
     {
-        /// <summary>
-        /// 导入数据
-        /// </summary>
-        /// <param name="config">数据库配置{ provider:"",conString:"",table:"" }</param>
-        /// <param name="callBack">回调</param>
-        /// <param name="items">实体集合</param>
-        public async Task import(dynamic config, params object[] items)
-        {             
-            if (items == null || items.Length <= 0)
-            {
-                return;
-            }
-            var rest = 0;
-            try
-            {
-                string sql = getInsertString(config.table, (IDynamicMetaObjectProvider)items[0]);
+        #region 内部方法
 
-                using (IDbConnection db = getConnection(config.provider, config.conString))
-                {
-                    rest = await db.ExecuteAsync(sql, from item in items
-                                                      select new StorageEntity(item));
-                }
-            }
-            catch (Exception ex)
+        /// 将数据导出到外部存储
+        /// </summary>
+        /// <param name="config">配置信息</param>       
+        /// <param name="data">导出数据项</param>
+        /// <returns></returns>
+        public async Task<int> ExportSingle(dynamic config, object data)
+        {
+            if (data == null)
             {
-                System.Diagnostics.Debug.WriteLine(ex.Message);
-                // var item = ex.ToString();
+                return 0;
             }
-            // callBack?.Invoke(rest);
+            string sql = getInsertString(config.table, (IDynamicMetaObjectProvider)data);
+
+            using (IDbConnection db = getConnection(config.target, config.conString))
+            {
+                return await db.ExecuteAsync(sql, new StorageEntity(data));
+            }
         }
+
+        /// <summary>
+        /// 将数据集合导出到外部存储
+        /// </summary>
+        /// <param name="config">配置信息</param>      
+        /// <param name="dataArray">导出数据项列表</param>
+        /// <returns>返回导出数据数</returns>
+        public async Task<int> Export(dynamic config, JSArray dataArray)
+        {
+            if (dataArray == null || dataArray.Count <= 0)
+            {
+                return 0;
+            }
+            string sql = getInsertString(config.table, (IDynamicMetaObjectProvider)dataArray[0]);
+
+            using (IDbConnection db = getConnection(config.target, config.conString))
+            {
+                return await db.ExecuteAsync(sql, from item in dataArray
+                                                  select new StorageEntity(item));
+            }
+        }
+
+        #endregion
+
+
+        #region 私有方法
 
         private string getInsertString(string tableName, IDynamicMetaObjectProvider value)
         {
@@ -73,9 +90,11 @@ namespace Snail.Collector.Modules.Storage
             switch (provider)
             {
                 case "mysql":
-                    return new MySql.Data.MySqlClient.MySqlConnection(conStr);                   
+                    return new MySql.Data.MySqlClient.MySqlConnection(conStr);
             }
             return null;
         }
+
+        #endregion
     }
 }

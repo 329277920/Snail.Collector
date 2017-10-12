@@ -116,19 +116,7 @@ namespace Snail.Collector.Core
                 }
             }
         }
-
-        /// <summary>
-        /// 读取资源文件
-        /// </summary>
-        /// <param name="resourceName"></param>
-        /// <returns></returns>
-        private static string ReadResource(string resourceName)
-        {
-            return
-                Assembly.GetExecutingAssembly().
-                GetManifestResourceStream(resourceName).ReadToEndAsync(Encoding.UTF8).Result;
-        }
-
+        
         #endregion
     }
 }

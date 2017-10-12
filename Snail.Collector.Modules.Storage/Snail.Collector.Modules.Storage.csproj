@@ -64,6 +64,17 @@
     </None>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snail.Collector.Modules.Core\Snail.Collector.Modules.Core.csproj">
+      <Project>{109cb27e-9104-4138-a0a2-7a04a7cdcea5}</Project>
+      <Name>Snail.Collector.Modules.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="module.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)bin\debug" "$(SolutionDir)Snail.Collector\bin\Debug\Modules\storage" /Y

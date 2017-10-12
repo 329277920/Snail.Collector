@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Sto
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Include", "Include", "{6A75C565-C616-40AD-966E-9273943D49B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Modules.Core", "Snail.Collector.Modules.Core\Snail.Collector.Modules.Core.csproj", "{109CB27E-9104-4138-A0A2-7A04A7CDCEA5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,10 @@ Global
 		{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{109CB27E-9104-4138-A0A2-7A04A7CDCEA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{109CB27E-9104-4138-A0A2-7A04A7CDCEA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{109CB27E-9104-4138-A0A2-7A04A7CDCEA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{109CB27E-9104-4138-A0A2-7A04A7CDCEA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,6 +64,7 @@ Global
 		{9BD40FF9-CA15-45FE-9BD1-34056A29E682} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{539FC9BB-7E48-4283-A04D-E07BBF31FBC3} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 		{AF40F481-6BFD-4E3F-B2FA-DFFFD317BFFA} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
+		{109CB27E-9104-4138-A0A2-7A04A7CDCEA5} = {8C133E30-B5B3-4D55-9D4A-DB32E5713954}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E273B6E8-8774-4C69-AE44-6C421F33327B}

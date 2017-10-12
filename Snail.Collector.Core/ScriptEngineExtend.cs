@@ -16,7 +16,7 @@ namespace Snail.Collector.Core
     /// 业务扩展 V8ScriptEngine
     /// </summary>
     public static class ScriptEngineExtend
-    {        
+    {
         /// <summary>
         /// 加载系统扩展模块
         /// </summary>
@@ -25,6 +25,15 @@ namespace Snail.Collector.Core
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
 
             v8.AddHostObject("host", new HostModuleExtend());
+
+            v8.AddHostObject("core", new HostTypeCollection("Snail.Collector.Modules.Core"));
+            v8.AddHostType("Array", typeof(Snail.Collector.Modules.Core.JSArray));
+
+            var moduleProxy = Unity.ReadResource("Snail.Collector.Core.SystemModules.SystemModule.js");
+            if (!string.IsNullOrEmpty(moduleProxy))
+            {
+                v8.Execute(moduleProxy);
+            }
         }
 
         /// <summary>
@@ -74,19 +83,7 @@ namespace Snail.Collector.Core
             v8.Execute(script.ToString());
             return v8.Invoke(funcName);
         }
-
-        /// <summary>
-        /// 执行指定的脚本文件
-        /// </summary>
-        /// <param name="filePath">文件路径</param>
-        /// <param name="coding">文件编码方式</param>
-        public static void ExecuteFromFile(this V8ScriptEngine v8, string filePath, Encoding coding)
-        {
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                v8.Execute(fs.ReadToEndAsync(coding).Result);
-            }
-        }        
+        
     }
 }
 
