@@ -36,19 +36,19 @@ namespace Snail.Collector.Modules.Html
 
         public string removeTags(string html)
         {
-            return LazyRegTags.Value.Replace(html, string.Empty);
+            return LazyRegTags.Value.Replace(removeScript(html), string.Empty);
         }
 
         #region 存储正则表达式
 
         private static Lazy<Regex> LazyRegScript = new Lazy<Regex>(() =>
         {
-            return new Regex("<script[^>]*?>.*?</script>");
+            return new Regex("<script.*?>.*?</script>");
         }, true);
 
         private static Lazy<Regex> LazyRegTags = new Lazy<Regex>(() =>
         {
-            return new Regex("<(?!br).*?>");
+            return new Regex("<(?!img|br|p|/p|div|/div|table|/table).*?>");
         }, true);
 
         #endregion

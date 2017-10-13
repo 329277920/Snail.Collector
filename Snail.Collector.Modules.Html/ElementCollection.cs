@@ -80,7 +80,7 @@ namespace Snail.Collector.Modules.Html
             }
         }
 
-        public string OuterHTML
+        public string outerHTML
         {
             get
             {
@@ -88,7 +88,7 @@ namespace Snail.Collector.Modules.Html
                 {
                     return string.Empty;
                 }
-                return this[0].OuterHTML;
+                return this[0].outerHTML;
             }
         }
 

@@ -57,7 +57,7 @@ namespace Snail.Collector.Modules.Html
             get { return _innerNode?.InnerHtml; }
         }
 
-        public string OuterHTML
+        public string outerHTML
         {
             get { return _innerNode?.OuterHtml; }
         }

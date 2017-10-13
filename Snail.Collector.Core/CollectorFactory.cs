@@ -29,11 +29,11 @@ namespace Snail.Collector.Core
         /// </summary>         
         public static void StartNew(string name, string code)
         {
-            if (name?.Length <= 0)
+            if (string.IsNullOrEmpty(name))
             {
                 throw new ArgumentNullException("name");
             }
-            if (code?.Length <= 0)
+            if (string.IsNullOrEmpty(code))
             {
                 throw new ArgumentNullException("code");
             }
