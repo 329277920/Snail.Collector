@@ -20,25 +20,27 @@ function catchList(url) {
 }
 
 function catchContent(url) {
-    host.debug("OK");
-    http.getString(url, function (content) {        try {
-        var doc = html.load(content);
+    http.getString(url, function (content) {
+        try {
+            var doc = html.load(content);
 
-    
+            // doc.css("script").remove();
+            // doc.css("[class]").removeClass();
+            // host.debug(script.length);
 
-        doc.css("script").remove();
-        doc.css("[class]").removeClass();
-        // host.debug(script.length);
+            // return;
 
-        // return;
+            var title = doc.css("#info").css("div.biaoti>h1").innerText;
 
-      
+            host.debug(title);
 
-        var title = doc.css("#info").css("div.biaoti>h1").innerText;
-        doc.css("td.content").css("[class]").removeClass();
+            // doc.css("td.content").css("[class]").removeClass();
+            
+            var info = doc.css("td.content").outerHTML.removeClass();
 
-        return;
-            var info = doc.css("td.content").outerHTML;
+            // 去掉样式
+            // info = info.replace(/class=['"]?[a-zA-Z0-9]*['"]?/ig,"");
+
             //var array = new Array();
             //array.push({ title: title, content: info });
             //array.push({ title: title, content: info });
@@ -55,8 +57,8 @@ function catchContent(url) {
                     else {
                         host.debug("callback : " + args.data);
                     }
-                }                
-            );          
+                }
+            );
         }
         catch (ex) {
             host.debug(ex.message);

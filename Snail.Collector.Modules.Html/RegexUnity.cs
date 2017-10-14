@@ -12,9 +12,9 @@ namespace Snail.Collector.Modules.Html
     /// </summary>
     public sealed class RegexUnity
     {
-        public void fd()
+        public string removeClass(string html)
         {
-            var reg = new Regex(@"(^\[)(\]&)");                       
+            return LazyClass.Value.Replace(html, "");
         }
 
         /// <summary>
@@ -37,6 +37,11 @@ namespace Snail.Collector.Modules.Html
         private static Lazy<Regex> LazyAttr = new Lazy<Regex>(() => 
         {
             return new Regex(@"(^\[)([a-zA-Z0-9_]*)(\]|.$)");
+        }, true);
+
+        private static Lazy<Regex> LazyClass = new Lazy<Regex>(() =>
+        {
+            return new Regex("class=['|\"]1.?['|\"]1");
         }, true);
 
         #endregion

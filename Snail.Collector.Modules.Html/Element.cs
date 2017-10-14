@@ -22,23 +22,20 @@ namespace Snail.Collector.Modules.Html
 
         public string innerHTML
         {
-            get { return _innerNode?.InnerHtml; }
+            get => _innerNode.InnerHtml; 
+            set => _innerNode.InnerHtml = value;
         }
 
         public string outerHTML
         {
-            get { return _innerNode?.OuterHtml; }
+            get => _innerNode.OuterHtml;           
         }
 
         public string innerText
         {
             get { return _innerNode?.InnerText; }
         }
-
-        public string OuterHtml
-        {
-            get { return _innerNode?.OuterHtml; }
-        }       
+       
 
         #endregion
 
@@ -73,7 +70,7 @@ namespace Snail.Collector.Modules.Html
                 ElementCollection eles = new ElementCollection();
                 ElementIterator.Each(this, (item) => 
                 {
-                    if (string.IsNullOrEmpty(item.attr(css)))
+                    if (!string.IsNullOrEmpty(item.attr(css)))
                     {
                         eles.Add(item);
                     }
@@ -119,7 +116,12 @@ namespace Snail.Collector.Modules.Html
 
         public void removeClass()
         {
-            attr("class", "");
+            var html = this.outerHTML;
+            if (string.IsNullOrEmpty(html))
+            {
+                return;
+            }
+           
         }
 
         #endregion
