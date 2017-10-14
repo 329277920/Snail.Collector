@@ -19,16 +19,31 @@ function catchList(url) {
     });
 }
 
-function catchContent(url) {     
+function catchContent(url) {
+    host.debug("OK");
     http.getString(url, function (content) {        try {
-            var doc = html.load(content);
-            var title = doc.css("#info").css("div.biaoti>h1").innerText;
-            var info = doc.css("#content>table").outerHTML;
+        var doc = html.load(content);
+
+    
+
+        doc.css("script").remove();
+        doc.css("[class]").removeClass();
+        // host.debug(script.length);
+
+        // return;
+
+      
+
+        var title = doc.css("#info").css("div.biaoti>h1").innerText;
+        doc.css("td.content").css("[class]").removeClass();
+
+        return;
+            var info = doc.css("td.content").outerHTML;
             //var array = new Array();
             //array.push({ title: title, content: info });
             //array.push({ title: title, content: info });
 
-            info = info.replace(/<script.*?>.*?<\/script>/ig, "");
+            // info = info.replace(/<script.*?>.*?<\/script>/ig, "");
 
             storage.export(
                 config,

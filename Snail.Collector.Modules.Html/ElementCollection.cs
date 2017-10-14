@@ -21,9 +21,64 @@ namespace Snail.Collector.Modules.Html
             }
         }
 
+        #region 导出属性
+
         public int length
         {
             get { return Count; }
+        }
+
+        public string innerHTML
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].innerHTML;
+            }
+        }
+
+        public string outerHTML
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].outerHTML;
+            }
+        }
+
+        public string innerText
+        {
+            get
+            {
+                if (this.Count <= 0)
+                {
+                    return string.Empty;
+                }
+                return this[0].innerText;
+            }
+        }
+
+        #endregion
+
+        #region 导出方法
+
+        /// <summary>
+        /// 选择子元素
+        /// </summary>
+        /// <returns></returns>
+        public ElementCollection children()
+        {
+            if (this.Count <= 0)
+            {
+                return new Html.ElementCollection();
+            }
+            return this[0].children();          
         }
 
         public ElementCollection getElementsByTagName(string name, bool isFindAll = false)
@@ -68,52 +123,25 @@ namespace Snail.Collector.Modules.Html
             return this[0].attr(attrName, value);
         }
 
-        public string innerHTML
+        /// <summary>
+        /// 移除当前节点
+        /// </summary>
+        public void remove()
         {
-            get
+            ForEach(item =>
             {
-                if (this.Count <= 0)
-                {
-                    return string.Empty;
-                }
-                return this[0].innerHTML;
-            }
+                item.remove();
+            });
         }
 
-        public string outerHTML
+        public void removeClass()
         {
-            get
+            ForEach(item =>
             {
-                if (this.Count <= 0)
-                {
-                    return string.Empty;
-                }
-                return this[0].outerHTML;
-            }
+                item.removeClass();
+            });
         }
 
-        public string innerText
-        {
-            get
-            {
-                if (this.Count <= 0)
-                {
-                    return string.Empty;
-                }
-                return this[0].innerText;
-            }
-        }
-
-        public string OuterHtml
-        {
-            get
-            {
-                if (this.Count <= 0)
-                {
-                    return string.Empty;
-                }
-                return this[0].OuterHtml;
-            }
-        }
+        #endregion
     }
 }

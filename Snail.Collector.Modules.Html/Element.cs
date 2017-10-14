@@ -15,42 +15,10 @@ namespace Snail.Collector.Modules.Html
     {
         internal Element(HtmlNode node)
         {
-            _innerNode = node;
+            _innerNode = node;            
         }
 
-        public Element getElementById(string id)
-        {
-            return Single(this._innerNode, (item) => item.Id == id);
-        }
-
-        public ElementCollection getElementsByClassName(string className,bool isFindAll = true)
-        {
-            return Select(this._innerNode, (item) => item.GetAttributeValue("class", "").Split(' ').Contains(className), null, isFindAll);
-        }
-
-        public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
-        {
-            return Select(this._innerNode, (item) => item.Name == name, null, isFindAll);
-        }
-
-        public ElementCollection css(string selector)
-        {             
-            return new ElementCollection(from node in this._innerNode.CssSelect(selector)
-                                         select new Element(node));
-        }
-
-        public string attr(string attrName, string value = null)
-        {
-            if (value == null)
-            {
-                return _innerNode.GetAttributeValue(attrName);
-            }
-            else
-            {
-                _innerNode.SetAttributeValue(attrName, value);
-                return value;
-            }
-        }
+        #region 导出属性
 
         public string innerHTML
         {
@@ -70,7 +38,91 @@ namespace Snail.Collector.Modules.Html
         public string OuterHtml
         {
             get { return _innerNode?.OuterHtml; }
+        }       
+
+        #endregion
+
+        #region 导出方法
+
+        public Element getElementById(string id)
+        {
+            return Single(this, (item) => item.attr("id") == id);
         }
+
+        public ElementCollection getElementsByClassName(string className, bool isFindAll = true)
+        {
+            return Select(this, (item) => item.attr("class").Split(' ').Contains(className), null, isFindAll);
+        }
+
+        public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
+        {
+            return Select(this, (item) => item.attr("name") == name, null, isFindAll);
+        }
+
+        public ElementCollection css(string selector)
+        {
+            if (string.IsNullOrEmpty(selector))
+            {
+                return new ElementCollection();
+            }
+
+            // 选择某个属性
+            var css = RegexUnity.AttrSelector(selector);
+            if (!string.IsNullOrEmpty(css))
+            {
+                ElementCollection eles = new ElementCollection();
+                ElementIterator.Each(this, (item) => 
+                {
+                    if (string.IsNullOrEmpty(item.attr(css)))
+                    {
+                        eles.Add(item);
+                    }
+                    return true;
+                });
+                return eles;
+            }
+
+            return new ElementCollection(from node in this._innerNode.CssSelect(selector)
+                                         select new Element(node));
+        }
+
+        /// <summary>
+        /// 移除当前节点
+        /// </summary>
+        public void remove()
+        {
+            _innerNode.Remove();
+        }
+
+        public string attr(string attrName, string value = null)
+        {
+            if (value == null)
+            {
+                return _innerNode.GetAttributeValue(attrName);
+            }
+            else
+            {
+                _innerNode.SetAttributeValue(attrName, value);
+                return value;
+            }
+        }
+
+        /// <summary>
+        /// 选择子元素
+        /// </summary>
+        /// <returns></returns>
+        public ElementCollection children()
+        {
+            return new ElementCollection(from item in _innerNode.ChildNodes
+                                         select new Element(item));
+        }
+
+        public void removeClass()
+        {
+            attr("class", "");
+        }
+
+        #endregion
 
         #region 私有成员
 
@@ -78,39 +130,35 @@ namespace Snail.Collector.Modules.Html
 
         private Element() { }
 
-        internal static Element Single(HtmlNode parentNode, Func<HtmlNode, bool> filtter)
+        internal static Element Single(Element parentNode, Func<Element, bool> filtter)
         {
-            if (parentNode?.ChildNodes?.Count > 0)
+            Element target = null;
+            ElementIterator.Each(parentNode, (item) => 
             {
-                foreach (var childNode in parentNode.ChildNodes)
+                if (filtter(item))
                 {
-                    if (filtter(childNode))
-                    {
-                        return new Element(childNode);
-                    }
-                    var node = Single(childNode, filtter);
-                    if (node != null)
-                    {
-                        return node;
-                    }
+                    target = item;
+                    return true;
                 }
-            }
-            return null;
+                return false;
+            });
+            return target;       
         }
 
-        internal ElementCollection Select(HtmlNode parentNode, Func<HtmlNode, bool> filtter, List<Element> nodeContainer = null,bool isFindAll = true)
+        internal ElementCollection Select(Element parentNode, Func<Element, bool> filtter, List<Element> nodeContainer = null,bool isFindAll = true)
         {
             if (nodeContainer == null)
             {
                 nodeContainer = new List<Element>();
             }
-            if (parentNode?.ChildNodes?.Count > 0)
+            var children = parentNode.children();
+            if (children.Count > 0)
             {
-                foreach (var childNode in parentNode.ChildNodes)
+                foreach (var childNode in children)
                 {
                     if (filtter(childNode))
                     {
-                        nodeContainer.Add(new Element(childNode));
+                        nodeContainer.Add(childNode);
                     }
                     if (isFindAll)
                     {
