@@ -1,0 +1,18 @@
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Snail.Collector.Core.Configuration
+{
+    public class ConfigInfo
+    {
+        /// <summary>
+        /// 系统数据库路径
+        /// </summary>
+        [JsonProperty("db")]
+        public string DatabaseFilePath { get; set; }        
+    }
+}

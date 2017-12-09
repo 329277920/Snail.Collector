@@ -1,0 +1,116 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{30018600-F579-4327-89C5-2AF341E80238}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Snail.Collector.Core</RootNamespace>
+    <AssemblyName>Snail.Collector.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ClearScript, Version=5.5.0.0, Culture=neutral, PublicKeyToken=935d0c957da47c73, processorArchitecture=MSIL">
+      <HintPath>..\packages\ClearScript.V8.5.5.0\lib\net45\ClearScript.dll</HintPath>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.6.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlAgilityPack.1.6.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\ConfigInfo.cs" />
+    <Compile Include="Configuration\ConfigManager.cs" />
+    <Compile Include="ContextManager.cs" />
+    <Compile Include="FileUnity.cs" />
+    <Compile Include="ModuleInfo.cs" />
+    <Compile Include="ModuleMamanger.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScriptEngineExtend.cs" />
+    <Compile Include="SystemModules\HostModuleExtend.cs" />
+    <Compile Include="SystemModules\HttpModuleExtend.cs" />
+    <Compile Include="Task.cs" />
+    <Compile Include="TaskContext.cs" />
+    <Compile Include="TaskEventArgs.cs" />
+    <Compile Include="TaskFactory.cs" />
+    <Compile Include="TaskInvokeEventArgs.cs" />
+    <Compile Include="TaskInvoker.cs" />
+    <Compile Include="TaskInvokerContext.cs" />
+    <Compile Include="TaskInvokerExecResult.cs" />
+    <Compile Include="TaskInvokerStatus.cs" />
+    <Compile Include="TaskInvokerStorage.cs" />
+    <Compile Include="TaskInvokerStorageEntity.cs" />
+    <Compile Include="TaskItemSetting.cs" />
+    <Compile Include="TaskSetting.cs" />
+    <Compile Include="TaskStatus.cs" />
+    <Compile Include="Unity.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="SystemModules\SystemModule.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snail.Collector.Common\Snail.Collector.Common.csproj">
+      <Project>{87a30de7-804c-474f-b1e9-fc38b8bcfa08}</Project>
+      <Name>Snail.Collector.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Snail.Collector.Html\Snail.Collector.Html.csproj">
+      <Project>{5aa3c17e-03f5-4071-a7cf-fdf47bb00225}</Project>
+      <Name>Snail.Collector.Html</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Snail.Collector.Http\Snail.Collector.Http.csproj">
+      <Project>{b4f9e08b-3bf4-4934-a785-e7a9185499b0}</Project>
+      <Name>Snail.Collector.Http</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Snail.Collector.Storage\Snail.Collector.Storage.csproj">
+      <Project>{865dd8dc-1703-4082-8147-eea0de64e698}</Project>
+      <Name>Snail.Collector.Storage</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Snail\Snail\Snail.csproj">
+      <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
+      <Name>Snail</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="Licenses\ClearScript.main.license" />
+    <None Include="Licenses\v8.main.license" />
+    <None Include="Licenses\v8.strongtalk.license" />
+    <None Include="Licenses\v8.v8.license" />
+    <None Include="Licenses\v8.valgrind.license" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+if not exist "$(TargetDir)" md "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.5.0\tools\native\x86\*.*" "$(TargetDir)"
+if not exist "$(TargetDir)" md "$(TargetDir)"
+xcopy /s /y "$(SolutionDir)packages\ClearScript.V8.5.5.0\tools\native\amd64\*.*" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
+</Project>
