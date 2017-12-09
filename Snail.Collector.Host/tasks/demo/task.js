@@ -9,7 +9,7 @@
 }
 
 function parse(url) {
-    // 建立10个任务
+    // 建立10个任务测试
     for (var i = 1; i <= 10; i++) {
         host.newTask(i + ".html", "task_item.js");
     }
