@@ -26,8 +26,8 @@ namespace Snail.Collector.Storage.DB
 
         public DbProvider(DbProviderConfig config)
         {
-            this._conStr = config.ConnectionString;
-            this._driver = config.Provider;
+            this._conStr = config.Connection;
+            this._driver = config.Driver;
         }
 
         /// <summary>

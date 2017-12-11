@@ -24,6 +24,6 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取或设置当前对应的任务存储执行者
         /// </summary>
-        public TaskInvokerStorageEntity TaskInvokerInfo { get; set; }
+        public TaskItemEntity TaskInvokerInfo { get; set; }
     }
 }

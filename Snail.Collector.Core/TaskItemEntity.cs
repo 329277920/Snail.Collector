@@ -9,7 +9,7 @@ namespace Snail.Collector.Core
     /// <summary>
     /// 任务存储实体
     /// </summary>
-    public class TaskInvokerStorageEntity
+    public class TaskItemEntity
     {
         /// <summary>
         /// 任务执行自增Id

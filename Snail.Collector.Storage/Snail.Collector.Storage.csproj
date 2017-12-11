@@ -108,7 +108,7 @@
     <Content Include="docs\MySqlParameter.xml" />
     <Content Include="docs\MySqlParameterCollection.xml" />
     <Content Include="docs\MySqlTransaction.xml" />
-    <Content Include="StorageDataModule.js" />
+    <EmbeddedResource Include="StorageDataModule.js" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

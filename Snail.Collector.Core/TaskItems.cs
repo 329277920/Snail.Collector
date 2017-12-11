@@ -13,24 +13,24 @@ namespace Snail.Collector.Core
     /// <summary>
     /// 任务存储对象
     /// </summary>
-    public class TaskInvokerStorage
+    public class TaskItems
     {
-        public static TaskInvokerStorage Instance = new Lazy<TaskInvokerStorage>(() =>
+        public static TaskItems Instance = new Lazy<TaskItems>(() =>
         {
-            return new TaskInvokerStorage(new
+            return new TaskItems(new DbProviderConfig
             {
-                driver = StorageProviders.Sqlite,
-                conStr = "Data Source=" + ConfigManager.Current.DatabaseFilePath + ";Version=3;"
+                Driver = StorageProviders.Sqlite,
+                Connection = "Data Source=" + ConfigManager.Current.DatabaseFilePath + ";Version=3;"
             });
         }, true).Value;
        
         private IStorageProvider _db;
 
-        private string _tbName = "TaskInvokers";
+        private string _tbName = "TaskItems";
 
-        private TaskInvokerStorage(dynamic cfg)
+        private TaskItems(DbProviderConfig cfg)
         {
-            this._db = new DbProvider(new DbProviderConfig() { Provider = cfg.driver, ConnectionString = cfg.conStr });
+            this._db = new DbProvider(cfg);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="task">任务对象</param>
         /// <returns>返回是否添加成功</returns>
-        public bool Add(TaskInvokerStorageEntity task)
+        public bool Add(TaskItemEntity task)
         {
             return this._db.Insert(this._tbName, new
             {
@@ -64,7 +64,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="task"></param>
         /// <returns></returns>
-        public bool AddRoot(TaskInvokerStorageEntity task)
+        public bool AddRoot(TaskItemEntity task)
         {
             var taskInfo = this.Get(new { taskId = task.TaskId });
             if (taskInfo != null)
@@ -79,9 +79,9 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="filter">过滤器</param>
         /// <returns></returns>
-        public TaskInvokerStorageEntity Get(object filter)
+        public TaskItemEntity Get(object filter)
         {
-            return this._db.SelectSingle<TaskInvokerStorageEntity>(this._tbName, filter);
+            return this._db.SelectSingle<TaskItemEntity>(this._tbName, filter);
         }
 
         /// <summary>
@@ -89,13 +89,13 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="taskId">所属任务Id</param>
         /// <returns></returns>
-        public TaskInvokerStorageEntity GetExec(int taskId)
+        public TaskItemEntity GetExec(int taskId)
         {
             try
             {
                 var filter = "{ \"taskId\" : " + taskId + " , \"status\" : { \"$in\" : [0,2] } }";
                
-                var taskInfo = this._db.SelectSingle<TaskInvokerStorageEntity>(this._tbName, Serializer.JsonDeserialize(filter));                
+                var taskInfo = this._db.SelectSingle<TaskItemEntity>(this._tbName, Serializer.JsonDeserialize(filter));                
                 if (taskInfo != null)
                 {
                     taskInfo.Status = 1;
@@ -117,7 +117,7 @@ namespace Snail.Collector.Core
         /// </summary>
         /// <param name="entity"></param>
         /// <returns></returns>
-        public bool Update(TaskInvokerStorageEntity entity)
+        public bool Update(TaskItemEntity entity)
         {
             try
             {

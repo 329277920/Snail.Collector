@@ -18,21 +18,21 @@ namespace Snail.Collector.Http
         /// </summary>
         public HttpHeaderCollection headers { get; }
 
-        public string getStr(string uri)
+        public virtual string getStr(string uri)
         {
             var res = this.SendAsync(this.GetReqMsg(uri, HttpMethod.Get)).ConfigureAwait(false).GetAwaiter().GetResult();
 
             return res.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
-        public dynamic getJson(string uri)
+        public virtual dynamic getJson(string uri)
         {
             var result = this.getStr(uri);
 
             return Snail.Data.Serializer.JsonDeserialize<dynamic>(result);
         }
-        
-        public bool getFile(params dynamic[] files)
+
+        public virtual bool getFile(params dynamic[] files)
         {
             var downList = (from file in files ?? new dynamic[0]
                             select new FileDownloader(this,

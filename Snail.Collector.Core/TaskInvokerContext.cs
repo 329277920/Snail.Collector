@@ -20,7 +20,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取或设置当前任务存储对象
         /// </summary>
-        public TaskInvokerStorageEntity TaskInvokerInfo { get; set; }
+        public TaskItemEntity TaskInvokerInfo { get; set; }
 
         /// <summary>
         /// 获取当前任务执行上下文

@@ -1,0 +1,37 @@
+﻿using Snail.Collector.Storage;
+using Snail.Collector.Storage.DB;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Snail.Collector.Core.SystemModules
+{
+    /// <summary>
+    /// 存储模块
+    /// </summary>
+    public class StorageDataModuleExtend : StorageDataModule
+    {
+        public StorageDataModuleExtend(DbProviderConfig cfg)
+        {
+            base.Config(cfg);
+        }
+
+        public bool add(string table, params object[] data)
+        {
+            var invokerContext = ContextManager.GetTaskInvokerContext();
+            if (invokerContext == null)
+            {
+                // todo: 写入日志
+                return false;
+            }
+            var rest = base.insert(table, data);
+            if (rest > 0)
+            {
+                invokerContext.TaskContext.SetStat(rest, TaskStatTypes.Article);
+            }           
+            return rest > 0;
+        }        
+    }
+}

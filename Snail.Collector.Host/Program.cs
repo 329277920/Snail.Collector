@@ -16,7 +16,7 @@ namespace Snail.Collector.Host
             };
 
             TaskFactory.OnTaskComplete += (sender, e) => {
-                System.Diagnostics.Debug.WriteLine(string.Format("Task:{0},结束运行", e.Task.TaskName));
+                System.Diagnostics.Debug.WriteLine(string.Format("Task:{0},结束运行，新增子任务数:{1}", e.Task.TaskName, e.Task.Context.Stat.NewTaskCount));
             };
 
             var task = TaskFactory.InitTask("tasks/demo/task.js");

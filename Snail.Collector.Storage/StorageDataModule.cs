@@ -12,11 +12,12 @@ namespace Snail.Collector.Storage
     /// </summary>
     public class StorageDataModule
     {
-        private dynamic _cfg;
+        private DbProviderConfig _cfg;
 
-        private void config(dynamic config)
+        public StorageDataModule Config(DbProviderConfig config)
         {
             _cfg = config;
+            return this;
         }
 
         /// <summary>
@@ -25,7 +26,7 @@ namespace Snail.Collector.Storage
         /// <param name="table">数据表名称</param>
         /// <param name="data">需要插入的记录</param>
         /// <returns>返回新增条数</returns>
-        public int insert(string table, params object[] data)
+        public virtual int insert(string table, params object[] data)
         {
             try
             {
@@ -47,7 +48,7 @@ namespace Snail.Collector.Storage
         /// <param name="filter">过滤条件</param>
         /// <param name="data">需要更新的记录</param>
         /// <returns>返回更新条数</returns>
-        public int update(string table, object filter, params object[] data)
+        public virtual int update(string table, object filter, params object[] data)
         {
             try
             {
@@ -69,7 +70,7 @@ namespace Snail.Collector.Storage
         /// <param name="filter"></param>
         /// <param name="data">需要删除的记录</param>
         /// <returns>返回删除行数</returns>
-        public int delete(string table, object filter, params object[] data)
+        public virtual int delete(string table, object filter, params object[] data)
         {
             try
             {
@@ -96,15 +97,15 @@ namespace Snail.Collector.Storage
 
         #region 私有成员
 
-        private IStorageProvider getProvider(dynamic config)
+        private IStorageProvider getProvider(DbProviderConfig config)
         {
-            switch (config.driver)
+            switch (config.Driver)
             {
                 case "mysql":
                 case "sqlite":
                     return new DbProvider(config);
             }
-            throw new Exception("not supported for export type '" + config.target + "'.");
+            throw new Exception("not supported for export type '" + config.Driver + "'.");
         }
 
         /// <summary>
@@ -114,7 +115,7 @@ namespace Snail.Collector.Storage
         /// <param name="table">数据表名称</param>
         /// <param name="filter">过滤条件</param>
         /// <returns>返回js数组</returns>
-        public JSArray InnerSelect(dynamic config, string table, object filter)
+        public JSArray InnerSelect(DbProviderConfig config, string table, object filter)
         {
             JSArray result = new JSArray();
             try
@@ -144,7 +145,7 @@ namespace Snail.Collector.Storage
         /// <param name="table">数据表名称</param>
         /// <param name="filter">过滤条件</param>
         /// <returns>返回js数组</returns>
-        public dynamic InnerSelectSingle(dynamic config, string table, object filter)
+        public dynamic InnerSelectSingle(DbProviderConfig config, string table, object filter)
         {
             JSArray array = this.InnerSelect(config, table, filter);
             if (array == null || array.Count <= 0)

@@ -19,7 +19,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取或设置此次执行对应的存储对象
         /// </summary>
-        public TaskInvokerStorageEntity TaskInvokerInfo { get; set; }
+        public TaskItemEntity TaskInvokerInfo { get; set; }
 
         public TaskInvokerExecResult()
         {

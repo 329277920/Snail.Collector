@@ -12,11 +12,11 @@ namespace Snail.Collector.Storage.DB
         /// <summary>
         /// 提供者（mysql|sqlite|sqlserver）
         /// </summary>
-        public string Provider { get; set; }
+        public string Driver { get; set; }
 
         /// <summary>
         /// 连接串
         /// </summary>
-        public string ConnectionString { get; set; }
+        public string Connection { get; set; }
     }
 }

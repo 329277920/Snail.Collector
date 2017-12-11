@@ -1,8 +1,11 @@
 ﻿using Microsoft.ClearScript.V8;
+using Snail.Collector.Core.SystemModules;
+using Snail.Collector.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,7 +69,13 @@ namespace Snail.Collector.Core
             this.Context.TaskContext = taskContext;
             this._innerSE = new V8ScriptEngine();
             this._innerSE.LoadSystemModules();
-            this._innerSE.AddHostObject("http", this.Context.TaskContext.HttpClient);          
+            this._innerSE.AddHostObject("http", this.Context.TaskContext.HttpClient);
+            this._innerSE.AddHostObject("storage", new StorageDataModuleExtend(taskContext.Settings.Storage));
+            var storageProxy = Unity.ReadResource("Snail.Collector.Storage.StorageDataModule.js", Assembly.GetAssembly(typeof(StorageDataModule)));
+            if (!string.IsNullOrEmpty(storageProxy))
+            {
+                this._innerSE.Execute(storageProxy);
+            }
             this.Context.Engine = this._innerSE;
             this._worker = new Thread(ThreadWork);
             this._notify = new AutoResetEvent(false);
@@ -134,7 +143,7 @@ namespace Snail.Collector.Core
                         this._needInit = false;
                     }
                     // 执行任务
-                    var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);
+                    var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);                   
                     if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int rest) && rest == 1)
                     {
                         this.Result.Success = true;

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Storage.DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +25,8 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取脚本引擎最大数量T
         /// </summary>
-        public int Parallel { get; set; }   
-        
+        public int Parallel { get; set; }
+
         /// <summary>
         /// 任务开始地址
         /// </summary>
@@ -35,5 +36,10 @@ namespace Snail.Collector.Core
         /// 任务开始脚本文件路径
         /// </summary>
         public string Script { get; set; }
+
+        /// <summary>
+        /// 任务存储配置
+        /// </summary>
+        public DbProviderConfig Storage { get; set; }
     }
 }

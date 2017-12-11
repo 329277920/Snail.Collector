@@ -14,7 +14,10 @@ namespace Snail.Collector.Core
     /// </summary>
     public class TaskContext
     {
-        internal TaskContext() { }
+        internal TaskContext()
+        {
+            this.Stat = new TaskStatictics();
+        }
 
         /// <summary>
         /// 获取任务执行的工作目录
@@ -34,17 +37,12 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取当前执行任务的V8引擎
         /// </summary>
-        public V8ScriptEngine Engine { get; internal set; }
+        public V8ScriptEngine Engine { get; internal set; }         
 
         /// <summary>
-        /// 获取或设置新增任务总数
+        /// 任务执行统计信息
         /// </summary>
-        public int NewTaskCount { get; set; }
-
-        /// <summary>
-        /// 获取或设置下载文件数
-        /// </summary>
-        public int DownFileCount { get; set; }      
+        public TaskStatictics Stat { get; private set; }
 
         /// <summary>
         /// 将此上线文绑定到线程执行环境
@@ -63,6 +61,49 @@ namespace Snail.Collector.Core
             {
                 return ContextManager.GetTaskContext();
             }
+        }
+
+        /// <summary>
+        /// 设置统计信息
+        /// </summary>
+        /// <param name="num">数量值</param>
+        /// <param name="type">统计类型</param>
+        public void SetStat(int num, TaskStatTypes type)
+        {
+            lock (this)
+            {
+                switch (type)
+                {
+                    case TaskStatTypes.NewTask:
+                        this.Stat.NewTaskCount++;
+                        break;
+                    case TaskStatTypes.Task:
+                        this.Stat.ExecTaskCount++;
+                        break;
+                    case TaskStatTypes.File:
+                        this.Stat.FileCount++;
+                        break;
+                    case TaskStatTypes.Article:
+                        this.Stat.ArticleCount++;
+                        break;
+                    case TaskStatTypes.ErrTask:
+                        this.Stat.ErrTaskCount++;
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 任务配置
+        /// </summary>
+        public TaskSetting Settings { get; set; }
+
+        internal void ClearStat()
+        {
+            this.Stat = new TaskStatictics()
+            {
+                StartTime = DateTime.Now
+            };
         }
     }
 }

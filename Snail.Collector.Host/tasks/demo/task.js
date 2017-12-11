@@ -4,7 +4,11 @@
         taskName: "测试Http",
         parallel: 4,
         url: "xxxx.com",
-        script: "task.js"
+        script: "task.js",
+        storage: {
+            driver: "mysql",
+            connection: "server=localhost;database=1yyg;uid=root;pwd=chennanfei;"
+        },
     };
 }
 

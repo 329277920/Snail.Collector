@@ -59,6 +59,7 @@
     <Compile Include="ScriptEngineExtend.cs" />
     <Compile Include="SystemModules\HostModuleExtend.cs" />
     <Compile Include="SystemModules\HttpModuleExtend.cs" />
+    <Compile Include="SystemModules\StorageDataModuleExtend.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskContext.cs" />
     <Compile Include="TaskEventArgs.cs" />
@@ -67,12 +68,15 @@
     <Compile Include="TaskInvoker.cs" />
     <Compile Include="TaskInvokerContext.cs" />
     <Compile Include="TaskInvokerExecResult.cs" />
-    <Compile Include="TaskInvokerStatStorage.cs" />
+    <Compile Include="TaskItemStats.cs" />
+    <Compile Include="TaskItemStatEntity.cs" />
     <Compile Include="TaskInvokerStatus.cs" />
-    <Compile Include="TaskInvokerStorage.cs" />
-    <Compile Include="TaskInvokerStorageEntity.cs" />
+    <Compile Include="TaskItems.cs" />
+    <Compile Include="TaskItemEntity.cs" />
     <Compile Include="TaskItemSetting.cs" />
     <Compile Include="TaskSetting.cs" />
+    <Compile Include="TaskStatictics.cs" />
+    <Compile Include="TaskStatTypes.cs" />
     <Compile Include="TaskStatus.cs" />
     <Compile Include="Unity.cs" />
   </ItemGroup>

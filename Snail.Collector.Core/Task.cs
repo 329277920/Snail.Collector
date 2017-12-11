@@ -98,13 +98,14 @@ namespace Snail.Collector.Core
             this._http = new HttpModule();
             this._mainSE.AddHostObject("http", this._http);
             // 临时绑定上下文到当前线程中，该引用会被下一个初始化任务覆盖
-            this.Context = new TaskContext();
+            this.Context = new TaskContext();         
             this.Context.ExecutePath = this.ExecutePath;
             this.Context.HttpClient = this._http;
             this.Context.Engine = this._mainSE;
             this.Context.BindContext();
             this.ExecuteInitScript();         
             this.Context.TaskId = this.TaskId;
+            this.Context.Settings = this.TaskSetting;
             this._lock = new Semaphore(this.TaskSetting.Parallel, this.TaskSetting.Parallel);
         }
 
@@ -125,8 +126,8 @@ namespace Snail.Collector.Core
             {
                 throw new Exception("Task Init Error, the \"config\" method return value is empty.");
             }
-            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(strSet);
-            if (!TaskInvokerStorage.Instance.AddRoot(new TaskInvokerStorageEntity()
+            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(strSet);            
+            if (!TaskItems.Instance.AddRoot(new TaskItemEntity()
             {
                 ParentId = 0,
                 Script = this.TaskSetting.Script,
@@ -258,6 +259,7 @@ namespace Snail.Collector.Core
                     return;
                 }
                 Status = TaskStatus.Init;
+                this.Context.ClearStat();
             }
         }
 
@@ -268,7 +270,8 @@ namespace Snail.Collector.Core
                 lock (LockObj)
                 {
                     Status = TaskStatus.Stop;
-                }                
+                }
+                this.Context.Stat.EndTime = DateTime.Now;
                 return true;
             }
             return false;
@@ -312,7 +315,7 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         private TaskInvoker NewInvoker()
         {
-            var item = TaskInvokerStorage.Instance.GetExec(this.TaskId);
+            var item = TaskItems.Instance.GetExec(this.TaskId);
             if (item == null)
             {
                 return null;
@@ -357,10 +360,12 @@ namespace Snail.Collector.Core
                     {
                         invoker.Result.TaskInvokerInfo.Status = invoker.Result.Success ? 3 :
                             invoker.Result.TaskInvokerInfo.ExecCount >= ConfigManager.Current.ErrorRetry ? 4 : 2;
-                        if (!TaskInvokerStorage.Instance.Update(invoker.Result.TaskInvokerInfo))
+                        if (!TaskItems.Instance.Update(invoker.Result.TaskInvokerInfo))
                         {
                             // todo: 记录日志
                         }
+                        // 新增统计信息
+                        this.Context.SetStat(1, invoker.Result.Success ? TaskStatTypes.Task : TaskStatTypes.ErrTask);
                     }
                 }
             }

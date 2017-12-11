@@ -53,7 +53,7 @@ namespace Snail.Collector.Core.SystemModules
                     // todo: 写入日志
                     return;
                 }
-                if (TaskInvokerStorage.Instance.AddObj(new
+                if (!TaskItems.Instance.AddObj(new
                 {
                     taskId = invokerContext.TaskContext.TaskId,
                     parentId = invokerContext.TaskInvokerInfo?.Id,
@@ -62,12 +62,15 @@ namespace Snail.Collector.Core.SystemModules
                 }))
                 {
                     // todo: 写入日志
-                };
+                }
+                else
+                {
+                    invokerContext.TaskContext.SetStat(1, TaskStatTypes.NewTask);
+                }                
             }
             catch (Exception ex)
             {
                 // 写入日志
-
             }
         }
 
