@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClearScript.V8;
+using Snail.Collector.Core.SystemModules;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取任务共享HttpClient
         /// </summary>
-        public HttpClient HttpClient { get; internal set; }
+        public HttpModuleExtend HttpClient { get; internal set; }
 
         /// <summary>
         /// 获取当前任务ID

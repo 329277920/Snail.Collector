@@ -144,7 +144,11 @@ namespace Snail.Collector.Core
                     }
                     // 执行任务
                     var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);                   
-                    if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int rest) && rest == 1)
+                    if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int intRest) && intRest == 1)
+                    {
+                        this.Result.Success = true;
+                    }
+                    if (bool.TryParse(execRest == null ? "false" : execRest.ToString(), out bool boolRest) && boolRest)
                     {
                         this.Result.Success = true;
                     }

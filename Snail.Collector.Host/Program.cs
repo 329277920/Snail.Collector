@@ -11,15 +11,19 @@ namespace Snail.Collector.Host
     {
         static void Main(string[] args)
         {
+            Snail.Log.Logger.Info("hehe");
+
+            return;
+
             TaskFactory.OnTaskRunning += (sender, e) => {
-                System.Diagnostics.Debug.WriteLine(string.Format("Task:{0},开始运行", e.Task.TaskName));
+                Console.WriteLine(string.Format("Task:{0},开始运行", e.Task.TaskName));               
             };
 
             TaskFactory.OnTaskComplete += (sender, e) => {
-                System.Diagnostics.Debug.WriteLine(string.Format("Task:{0},结束运行，新增子任务数:{1}", e.Task.TaskName, e.Task.Context.Stat.NewTaskCount));
+                Console.WriteLine(string.Format("Task:{0},结束运行，新增子任务数:{1}", e.Task.TaskName, e.Task.Context.Stat.NewTaskCount));                
             };
 
-            var task = TaskFactory.InitTask("tasks/demo/task.js");
+            var task = TaskFactory.InitTask("tasks/jd/task.js");
 
             TaskFactory.Run(task.TaskId);
 

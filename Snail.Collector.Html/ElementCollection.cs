@@ -81,7 +81,7 @@ namespace Snail.Collector.Html
             return this[0].children();          
         }
 
-        public ElementCollection getElementsByTagName(string name, bool isFindAll = false)
+        public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
         {
             var eles = new ElementCollection();
             ForEach(item =>
@@ -92,7 +92,7 @@ namespace Snail.Collector.Html
             return eles;
         }
 
-        public ElementCollection getElementsByClassName(string name, bool isFindAll = false)
+        public ElementCollection getElementsByClassName(string name, bool isFindAll = true)
         {
             var eles = new ElementCollection();
             ForEach(item =>

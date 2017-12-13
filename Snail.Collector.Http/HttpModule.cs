@@ -8,9 +8,9 @@ namespace Snail.Collector.Http
     /// </summary>
     public class HttpModule : HttpClient
     {
-        public HttpModule() : base(new HttpClientHandler() { UseDefaultCredentials = false })
+        public HttpModule() : base(new HttpClientHandler() { UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
-            this.headers = new HttpHeaderCollection();
+            this.headers = new HttpHeaderCollection();            
         }
 
         /// <summary>
@@ -35,8 +35,9 @@ namespace Snail.Collector.Http
         public virtual bool getFile(params dynamic[] files)
         {
             var downList = (from file in files ?? new dynamic[0]
+                            where file != null
                             select new FileDownloader(this,
-                            this.GetReqMsg(file.uri, HttpMethod.Get),
+                            this.GetReqMsg(file.url, HttpMethod.Get),
                             file.savePath)).ToArray();
             return FileDownManager.DownFiles(downList);
         }

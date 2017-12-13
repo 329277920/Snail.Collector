@@ -4,6 +4,23 @@
 // 定义通用集合
 // var MyArray = core.Snail.Collector.Modules.Core.JSArray;
 
+String.prototype.getFileName = function () {
+    if (!this) {
+        return this;
+    }
+    var name = this.substring(this.lastIndexOf("/") + 1);
+    var idx = name.indexOf("?");
+    if (idx >= 0) {
+        name = name.substring(0, idx);
+    }
+    return name;
+}
+
+String.prototype.getUri = function (baseUri) {
+    baseUri = baseUri == undefined ? "" : baseUri;
+    return host.getUri(this + "", baseUri);
+}
+
 
 // 扩展string，移除所有样式class
 String.prototype.removeClass = function () {

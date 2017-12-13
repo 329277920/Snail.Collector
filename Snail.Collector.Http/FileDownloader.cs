@@ -44,7 +44,7 @@ namespace Snail.Collector.Http
                 if (File.Exists(this._savePath))
                 {
                     return true;
-                }
+                }               
                 using (var localStream = GetLocalStream())
                 {
                     this._reqMsg.Headers.Range = new RangeHeaderValue(localStream.Length, null);

@@ -74,6 +74,30 @@ namespace Snail.Collector.Core.SystemModules
             }
         }
 
+        /// <summary>
+        /// 获取一个完整路径
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <param name="baseUri"></param>
+        /// <returns></returns>
+        public string getUri(string uri, string baseUri)
+        {
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                baseUri = TaskInvokerContext.Current?.TaskInvokerInfo?.Url;
+            }
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                return uri;
+            }
+            return new Uri(new Uri(baseUri), uri).ToString();
+        }
+
+        public TaskInvokerContext taskContext
+        {
+            get { return TaskInvokerContext.Current; }
+        }
+
         #region 私有成员
 
         private V8ScriptEngine GetEngine()

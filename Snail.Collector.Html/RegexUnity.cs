@@ -44,6 +44,11 @@ namespace Snail.Collector.Html
             return new Regex("class=['|\"]1.?['|\"]1");
         }, true);
 
+        private static Lazy<Regex> LazyClass2 = new Lazy<Regex>(() =>
+        {
+            return new Regex(@"\.[\w\W]+");
+        }, true);
+
         #endregion
     }
 }

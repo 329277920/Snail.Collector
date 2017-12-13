@@ -41,7 +41,12 @@ namespace Snail.Collector.Html
         {
             get { return _innerNode?.InnerText; }
         }
-       
+
+        public string tagName
+        {
+            get { return _innerNode?.OriginalName; }
+        }
+
 
         #endregion
 
@@ -59,7 +64,7 @@ namespace Snail.Collector.Html
 
         public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
         {
-            return Select(this, (item) => item.attr("name") == name, null, isFindAll);
+            return Select(this, (item) => item.tagName == name, null, isFindAll);
         }
 
         public ElementCollection find(string selector)
@@ -70,20 +75,20 @@ namespace Snail.Collector.Html
             }
 
             // 选择某个属性
-            var css = RegexUnity.AttrSelector(selector);
-            if (!string.IsNullOrEmpty(css))
-            {
-                ElementCollection eles = new ElementCollection();
-                ElementIterator.Each(this, (item) => 
-                {
-                    if (!string.IsNullOrEmpty(item.attr(css)))
-                    {
-                        eles.Add(item);
-                    }
-                    return true;
-                });
-                return eles;
-            }         
+            //var css = RegexUnity.AttrSelector(selector);
+            //if (!string.IsNullOrEmpty(css))
+            //{
+            //    ElementCollection eles = new ElementCollection();
+            //    ElementIterator.Each(this, (item) => 
+            //    {
+            //        if (!string.IsNullOrEmpty(item.attr(css)))
+            //        {
+            //            eles.Add(item);
+            //        }
+            //        return true;
+            //    });
+            //    return eles;
+            //}         
             return new ElementCollection(from node in _innerNode.QuerySelectorAll(selector)
                                          select new Element(node));
         }

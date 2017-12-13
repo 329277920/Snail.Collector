@@ -44,6 +44,10 @@ namespace Snail.Collector.Http
         /// <param name="loaders"></param>
         public static bool DownFiles(params FileDownloader[] loaders)
         {
+            if (loaders == null || loaders.Length <= 0)
+            {
+                return true;
+            }
             Init(DefMax);
             var rest = true;
             Parallel.ForEach<FileDownloader>(loaders, loader => 

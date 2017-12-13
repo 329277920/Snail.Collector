@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Host", "Sna
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.Core", "Snail.Collector.Core\Snail.Collector.Core.csproj", "{C1ADA098-21EC-4CEA-A92F-1DC65B24263E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snail.Collector.IDE", "Snail.Collector.IDE\Snail.Collector.IDE.csproj", "{4A2CC0DD-55C1-4AF1-BE26-B6F927DADA46}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,10 @@ Global
 		{C1ADA098-21EC-4CEA-A92F-1DC65B24263E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C1ADA098-21EC-4CEA-A92F-1DC65B24263E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1ADA098-21EC-4CEA-A92F-1DC65B24263E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A2CC0DD-55C1-4AF1-BE26-B6F927DADA46}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A2CC0DD-55C1-4AF1-BE26-B6F927DADA46}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A2CC0DD-55C1-4AF1-BE26-B6F927DADA46}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A2CC0DD-55C1-4AF1-BE26-B6F927DADA46}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

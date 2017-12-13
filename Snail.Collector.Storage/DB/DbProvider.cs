@@ -212,7 +212,7 @@ namespace Snail.Collector.Storage.DB
             using (IDbConnection db = getConnection(_driver, this._conStr))
             {
                 db.Open();
-                return db.Query<T>(sql);                
+                return db.Query<T>(sql);                       
             }           
         }
 

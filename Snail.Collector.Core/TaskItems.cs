@@ -14,7 +14,7 @@ namespace Snail.Collector.Core
     /// 任务存储对象
     /// </summary>
     public class TaskItems
-    {
+    {        
         public static TaskItems Instance = new Lazy<TaskItems>(() =>
         {
             return new TaskItems(new DbProviderConfig
@@ -23,7 +23,7 @@ namespace Snail.Collector.Core
                 Connection = "Data Source=" + ConfigManager.Current.DatabaseFilePath + ";Version=3;"
             });
         }, true).Value;
-       
+        
         private IStorageProvider _db;
 
         private string _tbName = "TaskItems";
@@ -40,8 +40,11 @@ namespace Snail.Collector.Core
         /// <returns>返回是否添加成功</returns>
         public bool AddObj(object task)
         {
-            return this._db.Insert(this._tbName, task) > 0;
-        }
+            lock (this) {
+                return this._db.Insert(this._tbName, task) > 0;
+            }
+           
+        }        
 
         /// <summary>
         /// 添加一个任务
@@ -50,13 +53,17 @@ namespace Snail.Collector.Core
         /// <returns>返回是否添加成功</returns>
         public bool Add(TaskItemEntity task)
         {
-            return this._db.Insert(this._tbName, new
+            lock (this)
             {
-                parentId = task.ParentId,
-                script = task.Script,
-                taskId = task.TaskId,
-                url = task.Url,
-            }) > 0;
+                return this._db.Insert(this._tbName, new
+                {
+                    parentId = task.ParentId,
+                    script = task.Script,
+                    taskId = task.TaskId,
+                    url = task.Url,
+                }) > 0;
+            }
+           
         }
 
         /// <summary>
@@ -66,12 +73,16 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         public bool AddRoot(TaskItemEntity task)
         {
-            var taskInfo = this.Get(new { taskId = task.TaskId });
-            if (taskInfo != null)
+            lock (this)
             {
-                return true;
+                var taskInfo = this.Get(new { taskId = task.TaskId });
+                if (taskInfo != null)
+                {
+                    return true;
+                }
+                return this.Add(task);
             }
-            return this.Add(task);
+          
         }
 
         /// <summary>
@@ -81,7 +92,11 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         public TaskItemEntity Get(object filter)
         {
-            return this._db.SelectSingle<TaskItemEntity>(this._tbName, filter);
+            lock (this)
+            {
+                return this._db.SelectSingle<TaskItemEntity>(this._tbName, filter);
+            }
+            
         }
 
         /// <summary>
@@ -91,25 +106,32 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         public TaskItemEntity GetExec(int taskId)
         {
-            try
+            lock (this)
             {
-                var filter = "{ \"taskId\" : " + taskId + " , \"status\" : { \"$in\" : [0,2] } }";
-               
-                var taskInfo = this._db.SelectSingle<TaskItemEntity>(this._tbName, Serializer.JsonDeserialize(filter));                
-                if (taskInfo != null)
+                try
                 {
-                    taskInfo.Status = 1;
-                    taskInfo.ExecCount++;
-                    taskInfo.ExecTime = DateTime.Now;
-                    return this._db.Update(this._tbName, new { Id = taskInfo.Id }, taskInfo) == 1 ? taskInfo : null;
+                    var filter = "{ \"taskId\" : " + taskId + " , \"status\" : { \"$in\" : [0,2] } }";
+
+                    var taskInfo = this._db.SelectSingle<TaskItemEntity>(this._tbName, Serializer.JsonDeserialize(filter));
+                    if (taskInfo != null)
+                    {
+                        taskInfo.Status = 1;
+                        taskInfo.ExecCount++;
+                        taskInfo.ExecTime = DateTime.Now;
+                        lock (this)
+                        {
+                            return this._db.Update(this._tbName, new { Id = taskInfo.Id }, taskInfo) == 1 ? taskInfo : null;
+                        }
+                    }
                 }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                    // todo: 写日志                 
+                }
+                return null;
             }
-            catch (Exception ex)
-            {                
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
-            }
-            return null;
+            
         }
 
         /// <summary>
@@ -118,20 +140,23 @@ namespace Snail.Collector.Core
         /// <param name="entity"></param>
         /// <returns></returns>
         public bool Update(TaskItemEntity entity)
-        {
-            try
+        {           
+            lock (this)
             {
-                return this._db.Update(this._tbName, new
+                try
                 {
-                    id = entity.Id
-                }, entity) == 1;
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
-            }
-            return false;
+                    return this._db.Update(this._tbName, new
+                    {
+                        id = entity.Id
+                    }, entity) == 1;
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                    // todo: 写日志                 
+                }
+                return false;
+            }            
         }        
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Microsoft.ClearScript.V8;
 using Snail.Collector.Core.Configuration;
+using Snail.Collector.Core.SystemModules;
 using Snail.Collector.Http;
 using Snail.Data;
 using System;
@@ -95,7 +96,7 @@ namespace Snail.Collector.Core
             this._mainSE = new V8ScriptEngine();
             this._mainSE.LoadSystemModules();
             this._freeSE = new Queue<TaskInvoker>();
-            this._http = new HttpModule();
+            this._http = new HttpModuleExtend();
             this._mainSE.AddHostObject("http", this._http);
             // 临时绑定上下文到当前线程中，该引用会被下一个初始化任务覆盖
             this.Context = new TaskContext();         
@@ -238,7 +239,7 @@ namespace Snail.Collector.Core
 
         private object LockObj = new object();
 
-        private HttpModule _http;
+        private HttpModuleExtend _http;
 
         #endregion
 

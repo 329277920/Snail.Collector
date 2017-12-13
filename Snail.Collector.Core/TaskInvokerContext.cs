@@ -26,6 +26,14 @@ namespace Snail.Collector.Core
         /// 获取当前任务执行上下文
         /// </summary>
         public TaskContext TaskContext { get; internal set; }
-       
+
+        public static TaskInvokerContext Current
+        {
+            get
+            {
+                return ContextManager.GetTaskInvokerContext();
+            }
+        }
+
     }
 }

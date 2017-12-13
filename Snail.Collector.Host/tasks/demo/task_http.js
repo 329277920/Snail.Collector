@@ -14,6 +14,8 @@
 
     //return;     
 
+    return http.getFiles("http://devimg.manjd.net/shop/20171102111226580.jpg", "http://devimg.manjd.net/spu/desc/20171127132751481.jpg");
+    
     // 测试下载文件
     var rest = http.getFile(
         { uri: "http://devimg.manjd.net/shop/20171102111226580.jpg", savePath: "F:/images/1.jpg" },
