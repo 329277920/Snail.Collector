@@ -47,6 +47,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Snail.Collector.Common\Snail.Collector.Common.csproj">
+      <Project>{87A30DE7-804C-474F-B1E9-FC38B8BCFA08}</Project>
+      <Name>Snail.Collector.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snail\Snail\Snail.csproj">
       <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
       <Name>Snail</Name>

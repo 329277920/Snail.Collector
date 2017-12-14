@@ -8,6 +8,8 @@ namespace Snail.Collector.Http
     /// </summary>
     public class HttpModule : HttpClient
     {
+        protected string LogSource = "http";
+
         public HttpModule() : base(new HttpClientHandler() { UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
             this.headers = new HttpHeaderCollection();            

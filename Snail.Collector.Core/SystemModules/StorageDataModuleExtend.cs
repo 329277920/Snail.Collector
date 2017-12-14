@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Storage;
+﻿using Snail.Collector.Common;
+using Snail.Collector.Storage;
 using Snail.Collector.Storage.DB;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace Snail.Collector.Core.SystemModules
     /// </summary>
     public class StorageDataModuleExtend : StorageDataModule
     {
+        protected string LogSource = "storage";
+
         public StorageDataModuleExtend(DbProviderConfig cfg)
         {
             base.Config(cfg);
@@ -20,18 +23,25 @@ namespace Snail.Collector.Core.SystemModules
 
         public bool add(string table, params object[] data)
         {
-            var invokerContext = ContextManager.GetTaskInvokerContext();
-            if (invokerContext == null)
+            try
             {
-                // todo: 写入日志
-                return false;
+                var invokerContext = ContextManager.GetTaskInvokerContext();
+                if (invokerContext == null)
+                {
+                    throw new Exception("failed to get the taskInvokerContext.");
+                }
+                var rest = base.insert(table, data);
+                if (rest > 0)
+                {
+                    invokerContext.TaskContext.SetStat(rest, TaskStatTypes.Article);
+                }
+                return rest > 0;
             }
-            var rest = base.insert(table, data);
-            if (rest > 0)
+            catch (Exception ex)
             {
-                invokerContext.TaskContext.SetStat(rest, TaskStatTypes.Article);
-            }           
-            return rest > 0;
+                LoggerProxy.Error(LogSource, string.Format("call add error,table is {0}.", table), ex);
+            }
+            return false;
         }        
     }
 }

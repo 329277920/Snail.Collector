@@ -8,6 +8,7 @@ using Snail.IO;
 using System.IO;
 using Snail.Data;
 using Snail.Collector.Core.Configuration;
+using Snail.Collector.Common;
 
 namespace Snail.Collector.Core
 {
@@ -16,6 +17,8 @@ namespace Snail.Collector.Core
     /// </summary>
     internal sealed class ModuleMamanger
     {
+        private const string LogSource = "modules";
+
         /// <summary>
         /// 查找指定名称的模块定义
         /// </summary>
@@ -153,7 +156,7 @@ namespace Snail.Collector.Core
                 }
                 catch (Exception ex)
                 {
-                    // todo: 写日志
+                    LoggerProxy.Error(LogSource, string.Format("call FindAssembly error.dir is '{0}', assName is '{1}'.", dir, assFullName), ex);
                 }
             }
             return null;

@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.ClearScript;
 using Microsoft.ClearScript.V8;
+using Snail.Collector.Common;
 using Snail.Collector.Core.Configuration;
 using Snail.Collector.Storage;
 using System;
@@ -10,14 +11,24 @@ using System.Threading.Tasks;
 namespace Snail.Collector.Core.SystemModules
 {
     public class HostModuleExtend : ExtendedHostFunctions
-    {        
+    {
+        private const string LogSource = "host";
+
         /// <summary>
         /// 加载指定的模块到JS运行环境中
         /// </summary>
         /// <param name="module">模块名称</param>        
         public object require(string module)
         {
-            return GetEngine()?.LoadModule(module);         
+            try
+            {
+                return GetEngine()?.LoadModule(module);
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, string.Format("call require error.module name is '{0}'.", module), ex);
+            }
+            return null;
         }
 
         /// <summary>
@@ -50,8 +61,7 @@ namespace Snail.Collector.Core.SystemModules
                 var invokerContext = ContextManager.GetTaskInvokerContext();
                 if (invokerContext == null)
                 {
-                    // todo: 写入日志
-                    return;
+                    throw new Exception("failed to get the taskInvokerContext.");
                 }
                 if (!TaskItems.Instance.AddObj(new
                 {
@@ -61,7 +71,7 @@ namespace Snail.Collector.Core.SystemModules
                     script = script
                 }))
                 {
-                    // todo: 写入日志
+                    LoggerProxy.Error(LogSource, string.Format("call newTask error, add task failed. url is '{0}',script is '{1}'.", url, script));
                 }
                 else
                 {
@@ -70,7 +80,7 @@ namespace Snail.Collector.Core.SystemModules
             }
             catch (Exception ex)
             {
-                // 写入日志
+                LoggerProxy.Error(LogSource, string.Format("call newTask error. url is '{0}',script is '{1}'.", url, script), ex);
             }
         }
 
@@ -82,15 +92,23 @@ namespace Snail.Collector.Core.SystemModules
         /// <returns></returns>
         public string getUri(string uri, string baseUri)
         {
-            if (string.IsNullOrEmpty(baseUri))
+            try
             {
-                baseUri = TaskInvokerContext.Current?.TaskInvokerInfo?.Url;
+                if (string.IsNullOrEmpty(baseUri))
+                {
+                    baseUri = TaskInvokerContext.Current?.TaskInvokerInfo?.Url;
+                }
+                if (string.IsNullOrEmpty(baseUri))
+                {
+                    return uri;
+                }
+                return new Uri(new Uri(baseUri), uri).ToString();
             }
-            if (string.IsNullOrEmpty(baseUri))
+            catch (Exception ex)
             {
-                return uri;
+                LoggerProxy.Error(LogSource, string.Format("call getUri error. url is '{0}',baseUri is '{1}'.", uri, baseUri), ex);
             }
-            return new Uri(new Uri(baseUri), uri).ToString();
+            return "";
         }
 
         public TaskInvokerContext taskContext

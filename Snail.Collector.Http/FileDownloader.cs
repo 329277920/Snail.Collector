@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +20,8 @@ namespace Snail.Collector.Http
         private HttpRequestMessage _reqMsg;
 
         private string _savePath;
+
+        protected string LogSource = "fileDown";
 
         /// <summary>
         /// 使用指定的Http客户端初始化文件下载器
@@ -44,7 +47,7 @@ namespace Snail.Collector.Http
                 if (File.Exists(this._savePath))
                 {
                     return true;
-                }               
+                }
                 using (var localStream = GetLocalStream())
                 {
                     this._reqMsg.Headers.Range = new RangeHeaderValue(localStream.Length, null);
@@ -52,14 +55,14 @@ namespace Snail.Collector.Http
                     using (var remoteStream = res.Content.ReadAsStreamAsync().ConfigureAwait(false).GetAwaiter().GetResult())
                     {
                         remoteStream.CopyTo(localStream);
-                    }                       
-                }                  
+                    }
+                }
                 this.Compelte();
                 return File.Exists(this._savePath);
             }
             catch (Exception ex)
             {
-              
+                LoggerProxy.Error(LogSource, string.Format("call Down error,url is '{0}', file is '{1}'.", this._reqMsg.RequestUri.ToString(), this._savePath), ex);
                 return false;
             }            
         }
