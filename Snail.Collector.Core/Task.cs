@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClearScript.V8;
+using Snail.Collector.Common;
 using Snail.Collector.Core.Configuration;
 using Snail.Collector.Core.SystemModules;
 using Snail.Collector.Http;
@@ -14,6 +15,8 @@ namespace Snail.Collector.Core
     /// </summary>
     public sealed class Task
     {
+        private const string LogSource = "task";
+
         /// <summary>
         /// 获取任务Id
         /// </summary>
@@ -42,12 +45,17 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 在任务开始执行时触发
         /// </summary>
-        internal event EventHandler OnStart;
+        internal event EventHandler<TaskEventArgs> OnStart;
 
         /// <summary>
         /// 在任务结束时触发
         /// </summary>
-        internal event EventHandler OnStop;
+        internal event EventHandler<TaskEventArgs> OnStop;
+
+        /// <summary>
+        /// 在任务发生异常时触发
+        /// </summary>
+        internal event EventHandler<TaskErrorEventArgs> OnError;
 
         /// <summary>
         /// 获取当前上下文
@@ -99,12 +107,12 @@ namespace Snail.Collector.Core
             this._http = new HttpModuleExtend();
             this._mainSE.AddHostObject("http", this._http);
             // 临时绑定上下文到当前线程中，该引用会被下一个初始化任务覆盖
-            this.Context = new TaskContext();         
+            this.Context = new TaskContext();
             this.Context.ExecutePath = this.ExecutePath;
             this.Context.HttpClient = this._http;
             this.Context.Engine = this._mainSE;
             this.Context.BindContext();
-            this.ExecuteInitScript();         
+            this.ExecuteInitScript();
             this.Context.TaskId = this.TaskId;
             this.Context.Settings = this.TaskSetting;
             this._lock = new Semaphore(this.TaskSetting.Parallel, this.TaskSetting.Parallel);
@@ -127,7 +135,7 @@ namespace Snail.Collector.Core
             {
                 throw new Exception("Task Init Error, the \"config\" method return value is empty.");
             }
-            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(strSet);            
+            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(strSet);
             if (!TaskItems.Instance.AddRoot(new TaskItemEntity()
             {
                 ParentId = 0,
@@ -137,82 +145,93 @@ namespace Snail.Collector.Core
             }))
             {
                 throw new Exception("Task Init Error, add rootTask failed.");
-            }            
+            }
         }
 
         /// <summary>
         /// 执行任务
         /// </summary>        
-        internal void Run()
+        internal bool Run()
         {
             Init();
-
             if (Status != TaskStatus.Init)
             {
-                return;
+                return false;
             }
             lock (LockObj)
             {
                 if (Status != TaskStatus.Init)
                 {
-                    return;
+                    return false;
                 }
                 Status = TaskStatus.Running;
             }
 
             new Thread(() =>
             {
-                // 绑定任务执行上下文
-                this.Context.BindContext();
-
-                while (true)
+                try
                 {
-                    var isStop = false;
-                    lock (this)
+                    // 绑定任务执行上下文
+                    this.Context.BindContext();
+                    while (true)
                     {
-                        isStop = this.Status == TaskStatus.Stopping;
-                    }
-                    // 获取执行者
-                    TaskInvoker invoker = isStop ? null : NewInvoker();
-                    if (invoker == null)
-                    {                       
-                        if (SetStop())
+                        var isStop = false;
+                        lock (this)
                         {
-                            OnStop?.Invoke(this, null);
-                            this.Free();
-                            break;
+                            isStop = this.Status == TaskStatus.Stopping;
                         }
-                        Thread.Sleep(1000);
-                        continue;
+                        // 获取执行者
+                        TaskInvoker invoker = isStop ? null : NewInvoker();
+                        if (invoker == null)
+                        {
+                            if (SetStop())
+                            {
+                                OnStop?.Invoke(this, new TaskEventArgs() { Task = this });
+                                this.Free();
+                                break;
+                            }
+                            Thread.Sleep(1000);
+                            continue;
+                        }
+                        invoker.RunAsync((task) =>
+                        {
+                            // 释放执行者
+                            FreeInvoker(task);
+                        });
                     }
-                    invoker.RunAsync((task) =>
-                    {                       
-                        // 释放执行者
-                        FreeInvoker(task);                        
-                    });
                 }
+                catch (Exception ex)
+                {
+                    LoggerProxy.Error(LogSource, "call Run error.", ex);
+                    OnError?.Invoke(this, new TaskErrorEventArgs()
+                    {
+                        Ex = ex,
+                        Task = this
+                    });              
+                }                
             }).Start();
-
-            OnStart?.Invoke(this, null);
+            OnStart?.Invoke(this, new TaskEventArgs() { Task = this });
+            return true;
         }
 
         /// <summary>
         /// 结束任务
         /// </summary>
-        internal void Stop()
+        internal bool Stop()
         {
             if (this.Status != TaskStatus.Running)
             {
-                return;
+                return false;
             }
             lock (this)
             {
                 if (this.Status != TaskStatus.Running)
                 {
-                    return;
+                    return false;
                 }
                 this.Status = TaskStatus.Stopping;
             }
+            return true;
         }
 
         #region 私有成员
@@ -303,7 +322,7 @@ namespace Snail.Collector.Core
                     }
                     catch (Exception ex)
                     {
-                        // todo: 日志
+                        LoggerProxy.Error(LogSource, "call Free error.", ex);
                     }
                 }
                 while (true);
@@ -316,34 +335,42 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         private TaskInvoker NewInvoker()
         {
-            var item = TaskItems.Instance.GetExec(this.TaskId);
-            if (item == null)
+            try
             {
-                return null;
-            }
-            var settings = new TaskItemSetting()
-            {
-                ScriptFile = System.IO.Path.Combine(this.Context.ExecutePath, item.Script),
-                Url = item.Url,
-                TaskInvokerInfo = item              
-            };            
-            this._lock.WaitOne();
-            TaskInvoker invoker = null;
-            lock (this)
-            {
-                if (this._freeSE.Count > 0)
+                var item = TaskItems.Instance.GetExec(this.TaskId);
+                if (item == null)
                 {
-                    invoker = this._freeSE.Dequeue();
+                    return null;
                 }
-                if (invoker == null)
+                var settings = new TaskItemSetting()
                 {
-                    invoker = new TaskInvoker(this.Context);
-                    this._count++;
+                    ScriptFile = System.IO.Path.Combine(this.Context.ExecutePath, item.Script),
+                    Url = item.Url,
+                    TaskInvokerInfo = item
+                };
+                this._lock.WaitOne();
+                TaskInvoker invoker = null;
+                lock (this)
+                {
+                    if (this._freeSE.Count > 0)
+                    {
+                        invoker = this._freeSE.Dequeue();
+                    }
+                    if (invoker == null)
+                    {
+                        invoker = new TaskInvoker(this.Context);
+                        this._count++;
+                    }
                 }
+                invoker.SetSetting(settings);
+                Interlocked.Increment(ref this._busyCount);
+                return invoker;
             }
-            invoker.SetSetting(settings);
-            Interlocked.Increment(ref this._busyCount);
-            return invoker;
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call NewInvoker failed.", ex);
+            }
+            return null;            
         }
 
         /// <summary>
@@ -363,7 +390,7 @@ namespace Snail.Collector.Core
                             invoker.Result.TaskInvokerInfo.ExecCount >= ConfigManager.Current.ErrorRetry ? 4 : 2;
                         if (!TaskItems.Instance.Update(invoker.Result.TaskInvokerInfo))
                         {
-                            // todo: 记录日志
+                            LoggerProxy.Error(LogSource, "update callInvoker status failed.");
                         }
                         // 新增统计信息
                         this.Context.SetStat(1, invoker.Result.Success ? TaskStatTypes.Task : TaskStatTypes.ErrTask);
@@ -372,7 +399,7 @@ namespace Snail.Collector.Core
             }
             catch (Exception ex)
             {
-                // todo: 写入日志
+                LoggerProxy.Error(LogSource, "call FreeInvoker failed.", ex);                
             }
             finally
             {
@@ -382,7 +409,6 @@ namespace Snail.Collector.Core
                     lock (this)
                     {
                         this._freeSE.Enqueue(invoker);
-
                         this._lock.Release();
                     }
                 }

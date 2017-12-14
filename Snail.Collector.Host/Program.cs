@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Core;
+﻿using Snail.Collector.Common;
+using Snail.Collector.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +10,20 @@ namespace Snail.Collector.Host
 {
     class Program
     {
+        private const string LogSource = "main";
+
         static void Main(string[] args)
         {
-            Snail.Log.Logger.Info("hehe");
-
-            return;
-
+            System.AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
+            {
+                var error = new StringBuilder("an unhandled exception occurred in the application.");
+                if (e?.ExceptionObject != null)
+                {
+                    error.AppendFormat("\r\n{0}", e.ExceptionObject.ToString());
+                }
+                LoggerProxy.Error(LogSource, error.ToString());                
+            };
+             
             TaskFactory.OnTaskRunning += (sender, e) => {
                 Console.WriteLine(string.Format("Task:{0},开始运行", e.Task.TaskName));               
             };

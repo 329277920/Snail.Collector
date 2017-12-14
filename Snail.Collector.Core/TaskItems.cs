@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Core.Configuration;
+﻿using Snail.Collector.Common;
+using Snail.Collector.Core.Configuration;
 using Snail.Collector.Storage;
 using Snail.Collector.Storage.DB;
 using Snail.Data;
@@ -14,9 +15,16 @@ namespace Snail.Collector.Core
     /// 任务存储对象
     /// </summary>
     public class TaskItems
-    {        
+    {
+        private const string LogSource = "taskitems";
+
         public static TaskItems Instance = new Lazy<TaskItems>(() =>
         {
+            var file = Snail.IO.PathUnity.GetFullPath(ConfigManager.Current.DatabaseFilePath);
+            if (string.IsNullOrEmpty(file))
+            {
+                throw new Exception("failed to find the file with path '" + ConfigManager.Current.DatabaseFilePath + "'.");
+            }
             return new TaskItems(new DbProviderConfig
             {
                 Driver = StorageProviders.Sqlite,
@@ -40,11 +48,19 @@ namespace Snail.Collector.Core
         /// <returns>返回是否添加成功</returns>
         public bool AddObj(object task)
         {
-            lock (this) {
-                return this._db.Insert(this._tbName, task) > 0;
+            try
+            {
+                lock (this)
+                {
+                    return this._db.Insert(this._tbName, task) > 0;
+                }
             }
-           
-        }        
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call AddObj error.", ex);
+            }
+            return false;
+        }
 
         /// <summary>
         /// 添加一个任务
@@ -53,17 +69,24 @@ namespace Snail.Collector.Core
         /// <returns>返回是否添加成功</returns>
         public bool Add(TaskItemEntity task)
         {
-            lock (this)
+            try
             {
-                return this._db.Insert(this._tbName, new
+                lock (this)
                 {
-                    parentId = task.ParentId,
-                    script = task.Script,
-                    taskId = task.TaskId,
-                    url = task.Url,
-                }) > 0;
+                    return this._db.Insert(this._tbName, new
+                    {
+                        parentId = task.ParentId,
+                        script = task.Script,
+                        taskId = task.TaskId,
+                        url = task.Url,
+                    }) > 0;
+                }
             }
-           
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call Add error.", ex);
+            }
+            return false;
         }
 
         /// <summary>
@@ -73,16 +96,23 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         public bool AddRoot(TaskItemEntity task)
         {
-            lock (this)
+            try
             {
-                var taskInfo = this.Get(new { taskId = task.TaskId });
-                if (taskInfo != null)
+                lock (this)
                 {
-                    return true;
+                    var taskInfo = this.Get(new { taskId = task.TaskId });
+                    if (taskInfo != null)
+                    {
+                        return true;
+                    }
+                    return this.Add(task);
                 }
-                return this.Add(task);
             }
-          
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call AddRoot error.", ex);
+            }
+            return false;
         }
 
         /// <summary>
@@ -92,11 +122,18 @@ namespace Snail.Collector.Core
         /// <returns></returns>
         public TaskItemEntity Get(object filter)
         {
-            lock (this)
+            try
             {
-                return this._db.SelectSingle<TaskItemEntity>(this._tbName, filter);
+                lock (this)
+                {
+                    return this._db.SelectSingle<TaskItemEntity>(this._tbName, filter);
+                }
             }
-            
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call Get error.", ex);
+            }
+            return null;
         }
 
         /// <summary>
@@ -105,13 +142,12 @@ namespace Snail.Collector.Core
         /// <param name="taskId">所属任务Id</param>
         /// <returns></returns>
         public TaskItemEntity GetExec(int taskId)
-        {
+        {            
             lock (this)
             {
                 try
                 {
                     var filter = "{ \"taskId\" : " + taskId + " , \"status\" : { \"$in\" : [0,2] } }";
-
                     var taskInfo = this._db.SelectSingle<TaskItemEntity>(this._tbName, Serializer.JsonDeserialize(filter));
                     if (taskInfo != null)
                     {
@@ -126,12 +162,10 @@ namespace Snail.Collector.Core
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                    // todo: 写日志                 
+                    LoggerProxy.Error(LogSource, "call GetExec error.", ex);
                 }
                 return null;
-            }
-            
+            }            
         }
 
         /// <summary>
@@ -140,23 +174,22 @@ namespace Snail.Collector.Core
         /// <param name="entity"></param>
         /// <returns></returns>
         public bool Update(TaskItemEntity entity)
-        {           
-            lock (this)
+        {
+            try
             {
-                try
+                lock (this)
                 {
                     return this._db.Update(this._tbName, new
                     {
                         id = entity.Id
                     }, entity) == 1;
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex);
-                    // todo: 写日志                 
-                }
-                return false;
-            }            
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call AddObj error.", ex);
+            }
+            return false;             
         }        
     }
 }

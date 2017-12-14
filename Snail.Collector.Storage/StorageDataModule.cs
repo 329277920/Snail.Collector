@@ -28,17 +28,8 @@ namespace Snail.Collector.Storage
         /// <returns>返回新增条数</returns>
         public virtual int insert(string table, params object[] data)
         {
-            try
-            {
-                IStorageProvider provider = this.getProvider(_cfg);
-                return provider.Insert(table, data);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
-            }
-            return 0;
+            IStorageProvider provider = this.getProvider(_cfg);
+            return provider.Insert(table, data);
         }
 
         /// <summary>
@@ -50,17 +41,8 @@ namespace Snail.Collector.Storage
         /// <returns>返回更新条数</returns>
         public virtual int update(string table, object filter, params object[] data)
         {
-            try
-            {
-                IStorageProvider provider = this.getProvider(_cfg);
-                return provider.Update(table, filter, data);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
-            }
-            return 0;
+            IStorageProvider provider = this.getProvider(_cfg);
+            return provider.Update(table, filter, data);
         }
 
         /// <summary>
@@ -72,17 +54,8 @@ namespace Snail.Collector.Storage
         /// <returns>返回删除行数</returns>
         public virtual int delete(string table, object filter, params object[] data)
         {
-            try
-            {
-                IStorageProvider provider = this.getProvider(_cfg);
-                return provider.Delete(table, filter, data);
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
-            }
-            return 0;
+            IStorageProvider provider = this.getProvider(_cfg);
+            return provider.Delete(table, filter, data);
         }
 
         /// <summary>
@@ -118,22 +91,14 @@ namespace Snail.Collector.Storage
         public JSArray InnerSelect(DbProviderConfig config, string table, object filter)
         {
             JSArray result = new JSArray();
-            try
+            IStorageProvider provider = this.getProvider(config);
+            var data = provider.Select<dynamic>(table, filter);
+            if (data != null)
             {
-                IStorageProvider provider = this.getProvider(config);
-                var data = provider.Select<dynamic>(table, filter);
-                if (data != null)
+                foreach (var item in data)
                 {
-                    foreach (var item in data)
-                    {
-                        result.Add(JsonConvert.SerializeObject(item));
-                    }
+                    result.Add(JsonConvert.SerializeObject(item));
                 }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex);
-                // todo: 写日志                 
             }
             return result;
         }

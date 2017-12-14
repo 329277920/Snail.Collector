@@ -62,6 +62,7 @@
     <Compile Include="SystemModules\StorageDataModuleExtend.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskContext.cs" />
+    <Compile Include="TaskErrorEventArgs.cs" />
     <Compile Include="TaskEventArgs.cs" />
     <Compile Include="TaskFactory.cs" />
     <Compile Include="TaskInvokeEventArgs.cs" />

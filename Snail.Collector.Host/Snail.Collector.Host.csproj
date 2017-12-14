@@ -88,6 +88,10 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Snail.Collector.Common\Snail.Collector.Common.csproj">
+      <Project>{87a30de7-804c-474f-b1e9-fc38b8bcfa08}</Project>
+      <Name>Snail.Collector.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snail.Collector.Core\Snail.Collector.Core.csproj">
       <Project>{c1ada098-21ec-4cea-a92f-1dc65b24263e}</Project>
       <Name>Snail.Collector.Core</Name>

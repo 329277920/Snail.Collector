@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Common;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Snail.Collector.Core
 
         private static object LockObj = new object();
 
+        private const string LogSource = "taskfactory";
+
         /// <summary>
         /// 当任务运行时触发
         /// </summary>
@@ -25,6 +28,11 @@ namespace Snail.Collector.Core
         public static event EventHandler<TaskEventArgs> OnTaskComplete;
 
         /// <summary>
+        /// 在任务发生异常，未能启动时发生
+        /// </summary>
+        public static event EventHandler<TaskErrorEventArgs> OnTaskError;
+
+        /// <summary>
         /// 初始化一个任务
         /// </summary>
         /// <param name="cfgFile">任务配置文件路径，如果已经初始化，则返回任务ID</param>        
@@ -34,13 +42,13 @@ namespace Snail.Collector.Core
             var fullPath = Snail.IO.PathUnity.GetFullPath(cfgFile);
             if (string.IsNullOrEmpty(fullPath))
             {
-                return null;
+                throw new Exception("could not find the file with path:" + cfgFile);
             }
             Task task = null;
             lock (LockObj)
             {
                 if (!BufferTasks.ContainsKey(fullPath))
-                {                   
+                {
                     task = new Task(fullPath);
                     foreach (var kv in BufferTasks)
                     {
@@ -48,14 +56,39 @@ namespace Snail.Collector.Core
                         {
                             throw new Exception(string.Format("任务id:{0},重复出现,请检查配置,并重新启动任务.", task.TaskId));
                         }
-                    }                     
+                    }
                     task.OnStart += (sender, e) =>
                     {
-                        OnTaskRunning?.Invoke(task, new TaskEventArgs() { Task = task });
+                        try
+                        {
+                            OnTaskRunning?.Invoke(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggerProxy.Error(LogSource, "invoke OnTaskRunning failed.", ex);
+                        }
                     };
                     task.OnStop += (sender, e) =>
                     {
-                        OnTaskComplete?.Invoke(task, new TaskEventArgs() { Task = task });
+                        try
+                        {
+                            OnTaskComplete?.Invoke(sender, e);
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggerProxy.Error(LogSource, "invoke OnTaskComplete failed.", ex);
+                        }
+                    };
+                    task.OnError += (sender, e) =>
+                    {
+                        try
+                        {
+                            OnTaskError?.Invoke(sender, e);                            
+                        }
+                        catch (Exception ex)
+                        {
+                            LoggerProxy.Error(LogSource, "invoke OnTaskError failed.", ex);
+                        }
                     };
                     BufferTasks.Add(fullPath, task);
                 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClearScript.V8;
+using Snail.Collector.Common;
 using Snail.Collector.Core.SystemModules;
 using Snail.Collector.Storage;
 using System;
@@ -17,6 +18,8 @@ namespace Snail.Collector.Core
     /// </summary>
     internal class TaskInvoker:IDisposable
     {
+        private const string LogSource = "taskinvoker";
+
         /// <summary>
         /// 任务执行状态
         /// </summary>
@@ -132,7 +135,7 @@ namespace Snail.Collector.Core
             // 绑定Invoker执行上下文
             this.BindContext();
             do
-            {              
+            {
                 this._notify.WaitOne();
                 try
                 {
@@ -143,7 +146,7 @@ namespace Snail.Collector.Core
                         this._needInit = false;
                     }
                     // 执行任务
-                    var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);                   
+                    var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);
                     if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int intRest) && intRest == 1)
                     {
                         this.Result.Success = true;
@@ -155,7 +158,7 @@ namespace Snail.Collector.Core
                 }
                 catch (Exception ex)
                 {
-                    // todo: 记录错误信息
+                    LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item error,url:'{0}'.", this.CurrSetting.Url), ex);
                 }
                 finally
                 {

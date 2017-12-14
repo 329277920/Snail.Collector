@@ -59,7 +59,7 @@ namespace Snail.Collector.Http
             }
             catch (Exception ex)
             {
-                // todo: 
+              
                 return false;
             }            
         }

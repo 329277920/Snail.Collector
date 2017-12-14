@@ -46,10 +46,17 @@
     <Compile Include="JSCallBackEventArgs.cs" />
     <Compile Include="JSEntityConvert.cs" />
     <Compile Include="JSException.cs" />
+    <Compile Include="LoggerProxy.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Snail\Snail\Snail.csproj">
+      <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
+      <Name>Snail</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
