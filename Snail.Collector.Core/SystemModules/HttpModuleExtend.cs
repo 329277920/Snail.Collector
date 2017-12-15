@@ -13,9 +13,7 @@ using System.Threading.Tasks;
 namespace Snail.Collector.Core.SystemModules
 {
     public class HttpModuleExtend : HttpModule
-    {
-      
-
+    {      
         public virtual Element getDoc(string uri)
         {
             return new Element(this.getStr(uri));
@@ -62,9 +60,6 @@ namespace Snail.Collector.Core.SystemModules
                 LoggerProxy.Error(LogSource, "call getFile error.", ex);
             }
             return false;
-        }
-
-         
-
+        }         
     }
 }
