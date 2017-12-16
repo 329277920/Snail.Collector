@@ -33,6 +33,7 @@ namespace Snail.Collector.Core
             {
                 v8.Execute(moduleProxy);
             }
+            v8.AddHostType(typeof(HttpResultExtend));
         }
 
         /// <summary>

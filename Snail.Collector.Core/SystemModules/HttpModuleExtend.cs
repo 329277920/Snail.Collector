@@ -13,11 +13,8 @@ using System.Threading.Tasks;
 namespace Snail.Collector.Core.SystemModules
 {
     public class HttpModuleExtend : HttpModule
-    {      
-        public virtual Element getDoc(string uri)
-        {
-            return new Element(this.getStr(uri));
-        }        
+    {             
+        // public virtual 
 
         public override bool getFile(params dynamic[] files)
         {

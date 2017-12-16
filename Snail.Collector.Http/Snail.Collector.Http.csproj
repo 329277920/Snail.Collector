@@ -42,8 +42,10 @@
   <ItemGroup>
     <Compile Include="FileDownloader.cs" />
     <Compile Include="FileDownManager.cs" />
+    <Compile Include="HttpContentTypes.cs" />
     <Compile Include="HttpHeaderCollection.cs" />
     <Compile Include="HttpModule.cs" />
+    <Compile Include="HttpResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -51,10 +53,18 @@
       <Project>{87A30DE7-804C-474F-B1E9-FC38B8BCFA08}</Project>
       <Name>Snail.Collector.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Snail.Collector.Html\Snail.Collector.Html.csproj">
+      <Project>{5aa3c17e-03f5-4071-a7cf-fdf47bb00225}</Project>
+      <Name>Snail.Collector.Html</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snail\Snail\Snail.csproj">
       <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
       <Name>Snail</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

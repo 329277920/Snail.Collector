@@ -36,13 +36,13 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 运行脚本
         /// </summary>
-        /// <param name="script"></param>
-        /// <param name="uri"></param>
-        public bool Run(string script, string uri)
+        /// <param name="script"></param>         
+        public bool Run(string script)
         {
+            ContextManager.SetTaskInvokerContext(this.Context);
             this._innerSE.Execute(script);
             // 执行任务
-            var execRest = this._innerSE.Invoke("parse", uri);
+            var execRest = this._innerSE.Invoke("parse");
             if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int intRest) && intRest == 1)
             {
                 return true;
@@ -54,13 +54,13 @@ namespace Snail.Collector.Core
             return false;
         }
 
-        public NetTask RunAsync(string script, string uri)
+        public NetTask RunAsync(string script)
         {
             return new NetTaskFactory().StartNew(objData =>
             {
                 var data = objData as Tuple<string, string>;
-                return Run(data.Item1, data.Item2);
-            }, new Tuple<string, string>(script, uri));
+                return Run(objData.ToString());
+            }, script);
         }
 
         #region 资源释放

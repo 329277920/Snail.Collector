@@ -59,6 +59,7 @@
     <Compile Include="ScriptEngineExtend.cs" />
     <Compile Include="SystemModules\HostModuleExtend.cs" />
     <Compile Include="SystemModules\HttpModuleExtend.cs" />
+    <Compile Include="SystemModules\HttpResultExtend.cs" />
     <Compile Include="SystemModules\StorageDataModuleExtend.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="TaskContext.cs" />

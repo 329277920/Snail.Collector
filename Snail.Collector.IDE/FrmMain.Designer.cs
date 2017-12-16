@@ -30,84 +30,158 @@ namespace Snail.Collector.IDE
         /// </summary>
         private void InitializeComponent()
         {
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtUrl = new System.Windows.Forms.TextBox();
-            this.txtScript = new ICSharpCode.TextEditor.TextEditorControl();
-            this.btnRun = new System.Windows.Forms.Button();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool_new = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool_Open = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool_Save = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool_SaveAs = new System.Windows.Forms.ToolStripMenuItem();
+            this.tool_Run = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.editor = new Snail.Collector.IDE.Editor();
             this.txtResult = new System.Windows.Forms.RichTextBox();
+            this.menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label1
+            // menuStrip1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 17);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "地址:";
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.文件ToolStripMenuItem,
+            this.tool_Run});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(792, 24);
+            this.menuStrip1.TabIndex = 8;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // txtUrl
+            // 文件ToolStripMenuItem
             // 
-            this.txtUrl.Location = new System.Drawing.Point(80, 12);
-            this.txtUrl.Name = "txtUrl";
-            this.txtUrl.Size = new System.Drawing.Size(843, 25);
-            this.txtUrl.TabIndex = 2;
+            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tool_new,
+            this.tool_Open,
+            this.tool_Save,
+            this.tool_SaveAs});
+            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(49, 20);
+            this.文件ToolStripMenuItem.Text = "文件";
             // 
-            // txtScript
+            // tool_new
             // 
-            this.txtScript.IsReadOnly = false;
-            this.txtScript.Location = new System.Drawing.Point(15, 53);
-            this.txtScript.Name = "txtScript";
-            this.txtScript.Size = new System.Drawing.Size(989, 366);
-            this.txtScript.TabIndex = 4;
-            this.txtScript.Text = "function parse(uri) {\r\n    // 自定义请求头\r\n    http.headers.add(\"client\",\"Snail_Collec" +
-    "tor\");\r\n\r\n    // 获取文档\r\n    var doc = http.getDoc(uri);\r\n\r\n    // 返回成功\r\n    retur" +
-    "n 1;\r\n}";
+            this.tool_new.Name = "tool_new";
+            this.tool_new.Size = new System.Drawing.Size(125, 26);
+            this.tool_new.Text = "新建";
             // 
-            // btnRun
+            // tool_Open
             // 
-            this.btnRun.Location = new System.Drawing.Point(929, 13);
-            this.btnRun.Name = "btnRun";
-            this.btnRun.Size = new System.Drawing.Size(75, 23);
-            this.btnRun.TabIndex = 6;
-            this.btnRun.Text = "运行脚本";
-            this.btnRun.UseVisualStyleBackColor = true;
-            this.btnRun.Click += new System.EventHandler(this.btnRun_Click);
+            this.tool_Open.Name = "tool_Open";
+            this.tool_Open.Size = new System.Drawing.Size(125, 26);
+            this.tool_Open.Text = "打开";
+            // 
+            // tool_Save
+            // 
+            this.tool_Save.Name = "tool_Save";
+            this.tool_Save.Size = new System.Drawing.Size(125, 26);
+            this.tool_Save.Text = "保存";
+            // 
+            // tool_SaveAs
+            // 
+            this.tool_SaveAs.Name = "tool_SaveAs";
+            this.tool_SaveAs.Size = new System.Drawing.Size(125, 26);
+            this.tool_SaveAs.Text = "另存为";
+            // 
+            // tool_Run
+            // 
+            this.tool_Run.Name = "tool_Run";
+            this.tool_Run.Size = new System.Drawing.Size(49, 20);
+            this.tool_Run.Text = "运行";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 546);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(792, 22);
+            this.statusStrip1.TabIndex = 9;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.editor);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.txtResult);
+            this.splitContainer1.Size = new System.Drawing.Size(792, 522);
+            this.splitContainer1.SplitterDistance = 365;
+            this.splitContainer1.TabIndex = 11;
+            // 
+            // editor
+            // 
+            this.editor.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.editor.Location = new System.Drawing.Point(0, 0);
+            this.editor.Name = "editor";
+            this.editor.Size = new System.Drawing.Size(365, 522);
+            this.editor.TabIndex = 11;
             // 
             // txtResult
             // 
+            this.txtResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtResult.BackColor = System.Drawing.Color.White;
-            this.txtResult.Location = new System.Drawing.Point(15, 425);
+            this.txtResult.Location = new System.Drawing.Point(2, 24);
             this.txtResult.Name = "txtResult";
             this.txtResult.ReadOnly = true;
-            this.txtResult.Size = new System.Drawing.Size(989, 299);
-            this.txtResult.TabIndex = 7;
+            this.txtResult.Size = new System.Drawing.Size(421, 497);
+            this.txtResult.TabIndex = 8;
             this.txtResult.Text = "";
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1016, 736);
-            this.Controls.Add(this.txtResult);
-            this.Controls.Add(this.btnRun);
-            this.Controls.Add(this.txtScript);
-            this.Controls.Add(this.txtUrl);
-            this.Controls.Add(this.label1);
-            this.MaximumSize = new System.Drawing.Size(1024, 768);
+            this.ClientSize = new System.Drawing.Size(792, 568);
+            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.menuStrip1);
+            this.MainMenuStrip = this.menuStrip1;
+            this.MinimumSize = new System.Drawing.Size(800, 600);
             this.Name = "FrmMain";
             this.Text = "IDE";
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtUrl;
-        protected ICSharpCode.TextEditor.TextEditorControl txtScript;
-        private System.Windows.Forms.Button btnRun;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tool_new;
+        private System.Windows.Forms.ToolStripMenuItem tool_Open;
+        private System.Windows.Forms.ToolStripMenuItem tool_Save;
+        private System.Windows.Forms.ToolStripMenuItem tool_SaveAs;
+        private System.Windows.Forms.ToolStripMenuItem tool_Run;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private Editor editor;
         private System.Windows.Forms.RichTextBox txtResult;
     }
 }

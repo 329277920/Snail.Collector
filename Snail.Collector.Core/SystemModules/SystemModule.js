@@ -38,6 +38,6 @@ require = function (module) {
 }
 
 // 字符串转json
-String.prototype.parseJSON = function () {
+String.prototype.toJson = function () {
     return JSON.parse(this);
 }

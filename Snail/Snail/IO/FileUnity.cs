@@ -33,5 +33,16 @@ namespace Snail.IO
             fs.Close();
             return content;
         }
+
+        public static void Save(string file, string content, Encoding encode)
+        {
+            using (var fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                using (var fw = new StreamWriter(fs, encode))
+                {
+                    fw.Write(content);
+                }
+            }
+        }
     }
 }
