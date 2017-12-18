@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.TextEditor.Document;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -31,19 +32,42 @@ namespace Snail.Collector.IDE
         /// <summary>
         /// 获取编辑器
         /// </summary>
-        public RichTextBox EditorControl { get; protected set; }
+        public ICSharpCode.TextEditor.TextEditorControl EditorControl { get; protected set; }
+
+        /// <summary>
+        /// 获取或设置该对象加载的TabPage
+        /// </summary>
+        public TabPage TagPage { get; set; }
+
+        /// <summary>
+        /// 在文本发生变更时触发
+        /// </summary>
+        public event EventHandler OnTextChanged;
 
         public EditorItem()
         {
-            var txtBox = new RichTextBox();
-            txtBox.Dock = DockStyle.Fill;
-            this.EditorControl = txtBox;
+            this.EditorControl = new ICSharpCode.TextEditor.TextEditorControl();
+            this.EditorControl.Dock = DockStyle.Fill;
+            this.EditorControl.Encoding = System.Text.Encoding.Default;
+            this.EditorControl.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");           
+            this.EditorControl.TextChanged += EditorControl_TextChanged;
+        }
+
+        private void EditorControl_TextChanged(object sender, EventArgs e)
+        {
+            if (this.IsModify)
+            {
+                return;
+            }
+            this.IsModify = true;
+            this.OnTextChanged?.Invoke(this, e);
         }
 
         public void Bind(string file)
         {
             this.IsBindFile = true;
-            this.BindFile = new FileInfo(file);       
+            this.BindFile = new FileInfo(file);
+            this.IsModify = false;
         }
 
         public string Value

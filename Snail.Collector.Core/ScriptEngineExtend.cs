@@ -33,6 +33,11 @@ namespace Snail.Collector.Core
             {
                 v8.Execute(moduleProxy);
             }
+            var stringExt = Unity.ReadResource("Snail.Collector.Core.SystemModules.StringExtend.js");
+            if (!string.IsNullOrEmpty(stringExt))
+            {
+                v8.Execute(stringExt);
+            }
             v8.AddHostType(typeof(HttpResultExtend));
         }
 

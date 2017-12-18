@@ -5,7 +5,7 @@
     http.headers.add("client","Snail_Collector");
 
     // 获取文档
-    var doc = http.getDoc(uri);
+    var doc = http.get(uri).toHtml();
 
     // 返回成功
     return 1;

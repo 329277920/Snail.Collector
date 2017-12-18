@@ -15,15 +15,17 @@ namespace Snail.Collector.IDE
     public partial class FrmMain : Form
     {      
         public FrmMain()
-        {            
+        {           
             InitializeComponent();
             InitStyle();
             this.tool_Run.Click += toolRun_Click;
             this.tool_new.Click += toolNew_Click;
             this.tool_Save.Click += toolSave_Click;
             this.tool_Open.Click += toolOpen_Click;
+            this.KeyPreview = true;
+            this.KeyDown += FrmMain_KeyDown;
         }
-
+      
         private void InitStyle()
         {
             this.txtResult.ReadOnly = true;
@@ -32,6 +34,24 @@ namespace Snail.Collector.IDE
 
         #region 事件
 
+        private void FrmMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            // 保存
+            if (e.KeyCode == Keys.S && e.Control)
+            {
+                e.Handled = true;
+                toolSave_Click(sender, e);
+                return;
+            }
+
+            // 运行
+            if (e.KeyCode == Keys.F5)
+            {
+                e.Handled = true;
+                this.toolRun_Click(sender, e);
+            }
+        }
+
         private async void toolRun_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(this.editor.Value))
@@ -39,6 +59,7 @@ namespace Snail.Collector.IDE
                 return;
             }
             InitResult();
+            this.SetResult(true, "正在执行...", true);
             try
             {
                 using (var tester = new TaskTester())
@@ -58,6 +79,7 @@ namespace Snail.Collector.IDE
             {
                 this.SetResult(false, ex.ToString(), false);
             }
+            this.SetResult(true, "执行结束.", true);
         }
 
         private void toolNew_Click(object sender, EventArgs e)

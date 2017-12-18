@@ -13,7 +13,7 @@ namespace Snail.Collector.Core.SystemModules
     /// </summary>
     public static class HttpResultExtend
     {
-        public static Element toDocument(this HttpResult rest)
+        public static Element toHtml(this HttpResult rest)
         {
             return new Element(rest.toString());
         }

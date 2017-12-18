@@ -14,7 +14,7 @@ namespace Snail.Collector.Html
     {
         public Element(HtmlNode node)
         {
-            _innerNode = node;            
+            _innerNode = node;               
         }
 
         public Element(string html)

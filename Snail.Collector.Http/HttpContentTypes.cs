@@ -22,5 +22,7 @@ namespace Snail.Collector.Http
         public const string String = "text/plain";
 
         public const string MultipartFormData = "multipart/form-data";
+
+        public const string File = "application/octet-stream";
     }
 }

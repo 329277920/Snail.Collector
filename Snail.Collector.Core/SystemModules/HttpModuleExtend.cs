@@ -41,14 +41,13 @@ namespace Snail.Collector.Core.SystemModules
                 {
                     if (!FileUnity.SafeCreateDirectory(file.savePath.Substring(0, file.savePath.LastIndexOf("\\"))))
                     {
-
                         return false;
                     }
                 }
                 var result = base.getFile(allFiles.ToArray());
                 if (result)
                 {
-                    invokerContext.TaskContext.SetStat(files.Length, TaskStatTypes.File);
+                    invokerContext.TaskContext?.SetStat(files.Length, TaskStatTypes.File);
                 }
                 return result;
             }

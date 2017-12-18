@@ -59,7 +59,9 @@ namespace Snail.Collector.IDE
             this._openFileDialog.DefaultExt = ".js";
             this._openFileDialog.Filter = "脚本文件(*.js)|*.js";
             this._openFileDialog.CheckFileExists = true;
-        }
+
+            this.tabs.DoubleClick += Tabs_DoubleClick;
+        }      
 
         /// <summary>
         /// 添加一个编辑项
@@ -73,6 +75,7 @@ namespace Snail.Collector.IDE
                 Value = this.ReadScript(filePath)
             };
             var tabPage = new TabPage() { Tag = item };
+            item.TagPage = tabPage;
             if (filePath?.Length > 0)
             {
                 var fullPath = Snail.IO.PathUnity.GetFullPath(filePath);
@@ -93,7 +96,47 @@ namespace Snail.Collector.IDE
             }
             this.tabs.TabPages.Add(tabPage);
             tabPage.Controls.Add(item.EditorControl);
+            this.tabs.SelectedTab = tabPage;
+            item.OnTextChanged += Item_OnTextChanged;
             return true;
+        }
+
+        /// <summary>
+        /// 双击关闭窗口
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tabs_DoubleClick(object sender, EventArgs e)
+        {
+            if (this.SelectedTab != null)
+            {
+                if (this.SelectedItem != null && this.SelectedItem.IsModify)
+                {
+                    var rest = MessageBox.Show("是否保存修改?", "提示", MessageBoxButtons.YesNoCancel);
+                    if (rest == DialogResult.Cancel)
+                    {
+                        return;
+                    }
+                    if (rest == DialogResult.Yes)
+                    {
+                        if (this.Save())
+                        {
+                            this.tabs.TabPages.Remove(this.SelectedTab);
+                        }
+                        return;
+                    }
+                }
+                this.tabs.TabPages.Remove(this.SelectedTab);
+            }
+        }
+
+        private void Item_OnTextChanged(object sender, EventArgs e)
+        {
+            var item = sender as EditorItem;
+            if (item.IsModify && item.TagPage != null)
+            {
+                item.TagPage.Text = item.TagPage.Text + "*";
+            }
         }
 
         public bool Open()
@@ -106,31 +149,30 @@ namespace Snail.Collector.IDE
             return this.AddFile(fullPath);            
         }
 
-        public void Save()
+        public bool Save()
         {
             if (this.SelectedItem == null)
             {
-                return;
+                return false;
             }
             var fullPath = this.SelectedItem.IsBindFile ? this.SelectedItem.BindFile.FullName : "";
             if (string.IsNullOrEmpty(fullPath))
             {
                 if (this._saveFileDialog.ShowDialog() != DialogResult.OK)
                 {
-                    return;
+                    return false;
                 }
                 fullPath = this._saveFileDialog.FileName;
             }
             if (string.IsNullOrEmpty(fullPath))
             {
-                return;
+                return false;
             }
             this.Save(fullPath, this.SelectedItem.Value);
             this.SelectedItem.Bind(fullPath);
             this.SelectedTab.Text = fullPath.Substring(fullPath.LastIndexOf("\\") + 1);
+            return true;
         }
-
-
 
         #region 私有成员
 
