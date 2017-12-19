@@ -104,7 +104,7 @@ namespace Snail.Collector.Core
             this._mainSE = new V8ScriptEngine();
             this._mainSE.LoadSystemModules();
             this._freeSE = new Queue<TaskInvoker>();
-            this._http = new HttpModuleExtend();
+            this._http = new HttpModule();
             this._mainSE.AddHostObject("http", this._http);
             // 临时绑定上下文到当前线程中，该引用会被下一个初始化任务覆盖
             this.Context = new TaskContext();
@@ -258,7 +258,7 @@ namespace Snail.Collector.Core
 
         private object LockObj = new object();
 
-        private HttpModuleExtend _http;
+        private HttpModule _http;
 
         #endregion
 

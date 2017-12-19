@@ -64,7 +64,7 @@ namespace Snail.Collector.Http
             {
                 LoggerProxy.Error(LogSource, string.Format("call Down error,url is '{0}', file is '{1}'.", this._reqMsg.RequestUri.ToString(), this._savePath), ex);
                 return false;
-            }            
+            }
         }
 
         /// <summary>

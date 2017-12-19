@@ -51,6 +51,7 @@ namespace Snail.Collector.IDE
             this.EditorControl.Encoding = System.Text.Encoding.Default;
             this.EditorControl.Document.HighlightingStrategy = HighlightingStrategyFactory.CreateHighlightingStrategy("C#");           
             this.EditorControl.TextChanged += EditorControl_TextChanged;
+            
         }
 
         private void EditorControl_TextChanged(object sender, EventArgs e)

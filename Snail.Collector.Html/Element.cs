@@ -1,4 +1,5 @@
 ﻿using HtmlAgilityPack;
+using Snail.Collector.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,8 @@ namespace Snail.Collector.Html
     /// </summary>
     public class Element
     {
+        private const string LogSource = "htmlParse";
+
         public Element(HtmlNode node)
         {
             _innerNode = node;               
@@ -73,24 +76,16 @@ namespace Snail.Collector.Html
             {
                 return new ElementCollection();
             }
-
-            // 选择某个属性
-            //var css = RegexUnity.AttrSelector(selector);
-            //if (!string.IsNullOrEmpty(css))
-            //{
-            //    ElementCollection eles = new ElementCollection();
-            //    ElementIterator.Each(this, (item) => 
-            //    {
-            //        if (!string.IsNullOrEmpty(item.attr(css)))
-            //        {
-            //            eles.Add(item);
-            //        }
-            //        return true;
-            //    });
-            //    return eles;
-            //}         
-            return new ElementCollection(from node in _innerNode.QuerySelectorAll(selector)
-                                         select new Element(node));
+            try
+            {
+                return new ElementCollection(from node in _innerNode.QuerySelectorAll(selector)
+                                             select new Element(node));
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, string.Format("未能执行表达式:{0}", selector), ex);
+                return new ElementCollection();
+            }
         }
 
         /// <summary>
@@ -124,14 +119,66 @@ namespace Snail.Collector.Html
                                          select new Element(item));
         }
 
-        public void removeClass()
+        /// <summary>
+        /// 移除某个属性
+        /// </summary>
+        /// <param name="attrName">属性名称</param>        
+        public Element removeAttr(params string[] attrs)
         {
-            var html = this.outerHTML;
-            if (string.IsNullOrEmpty(html))
+            if (attrs == null || attrs.Length <= 0)
             {
-                return;
+                return this;
             }
-           
+            this.innerRemoveAttr(this, attrs);
+
+            ElementIterator.Each(this, (child) =>
+            {
+                this.innerRemoveAttr(child, attrs);
+                return true;
+            });
+
+            return this;
+        }
+
+        /// <summary>
+        /// 移除标签
+        /// </summary>
+        /// <param name="tagNames">标签名称</param>           
+        public Element removeTag(params string[] tags)
+        {
+            if (tags == null || tags.Length <= 0)
+            {
+                return this;
+            }
+            innerRemoveTag(this, (from item in tags select item.ToLower()).ToArray());
+            return this;
+        }
+
+        private void innerRemoveTag(Element target, params string[] tags)
+        {
+            ElementCollection children = target.children();
+            for (var i = 0; i < children.length; i++)
+            {
+                var tag = children[i].tagName?.ToLower();
+                if (!string.IsNullOrEmpty(tag) && tags.Contains(tag))
+                {
+                    children[i].remove();
+                    continue;
+                }
+                innerRemoveTag(children[i], tags);
+            }
+        }
+
+        private void innerRemoveAttr(Element target, params string[] attrs)
+        {
+            foreach (var name in attrs)
+            {
+                var attr = target._innerNode.Attributes[name];
+                if (attr != null)
+                {
+                    target._innerNode.Attributes.Remove(attr);
+                }
+            }             
         }
 
         #endregion

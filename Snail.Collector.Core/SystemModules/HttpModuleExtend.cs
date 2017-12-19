@@ -12,11 +12,9 @@ using System.Threading.Tasks;
 
 namespace Snail.Collector.Core.SystemModules
 {
-    public class HttpModuleExtend : HttpModule
-    {             
-        // public virtual 
-
-        public override bool getFile(params dynamic[] files)
+    public static class HttpModuleExtend 
+    {
+        public static bool getFile(this HttpModule http, params dynamic[] files)
         {
             try
             {
@@ -44,7 +42,7 @@ namespace Snail.Collector.Core.SystemModules
                         return false;
                     }
                 }
-                var result = base.getFile(allFiles.ToArray());
+                var result = http.getFiles(allFiles.ToArray());
                 if (result)
                 {
                     invokerContext.TaskContext?.SetStat(files.Length, TaskStatTypes.File);
@@ -53,7 +51,7 @@ namespace Snail.Collector.Core.SystemModules
             }
             catch (Exception ex)
             {
-                LoggerProxy.Error(LogSource, "call getFile error.", ex);
+                LoggerProxy.Error("HttpModuleExtend", "call getFile error.", ex);
             }
             return false;
         }         

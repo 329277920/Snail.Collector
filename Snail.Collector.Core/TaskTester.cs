@@ -1,4 +1,5 @@
 ﻿using Microsoft.ClearScript.V8;
+using Snail.Collector.Common;
 using System;
 using NetTask = System.Threading.Tasks.Task;
 using NetTaskFactory = System.Threading.Tasks.TaskFactory;
@@ -10,6 +11,11 @@ namespace Snail.Collector.Core
     /// </summary>
     public class TaskTester : IDisposable
     {
+        static TaskTester()
+        {
+            ErrorMananger.Instance.Init();
+        }
+
         /// <summary>
         /// 获取执行上下文
         /// </summary>
@@ -41,16 +47,25 @@ namespace Snail.Collector.Core
         {
             ContextManager.SetTaskInvokerContext(this.Context);
             this._innerSE.Execute(script);
+            this._innerSE.Execute(@"function ______tryParse(){ 
+try{
+    var result = parse();
+    if(result == undefined || result == 1 || result == true){
+        return 'OK';
+    }
+    else{
+        return 'parse is not return 1 or true';
+    }     
+}catch(e){
+    return e.message;
+}}");
             // 执行任务
-            var execRest = this._innerSE.Invoke("parse");
-            if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int intRest) && intRest == 1)
+            var execRest = this._innerSE.Invoke("______tryParse");
+            if (execRest.ToString() == "OK")
             {
                 return true;
             }
-            if (bool.TryParse(execRest == null ? "false" : execRest.ToString(), out bool boolRest) && boolRest)
-            {
-                return true;
-            }
+            LoggerProxy.Error("taskTester", "执行任务失败," + execRest.ToString());
             return false;
         }
 

@@ -11,6 +11,7 @@ using Microsoft.ClearScript;
 using Snail.Collector.Core.SystemModules;
 using Snail.Collector.JSAdapter;
 using Snail.Collector.Storage;
+using Snail.Collector.Http;
 
 namespace Snail.Collector.Core
 {
@@ -27,7 +28,8 @@ namespace Snail.Collector.Core
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
             v8.AddHostObject("host", new HostModuleExtend());
             v8.AddHostType("Array", typeof(JSArray));
-            v8.AddHostObject("http", new HttpModuleExtend());                        
+            v8.AddHostObject("http", new HttpModule());
+            v8.AddHostType(typeof(HttpModuleExtend));
             var moduleProxy = Unity.ReadResource("Snail.Collector.Core.SystemModules.SystemModule.js");
             if (!string.IsNullOrEmpty(moduleProxy))
             {

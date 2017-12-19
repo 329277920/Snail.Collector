@@ -11,6 +11,14 @@ namespace Snail.Collector.Core
     /// </summary>
     public static class TaskFactory
     {
+        /// <summary>
+        /// 初始化日志组件
+        /// </summary>
+        static TaskFactory()
+        {
+            ErrorMananger.Instance.Init();
+        }
+
         private static Dictionary<string, Task> BufferTasks = new Dictionary<string, Task>();
 
         private static object LockObj = new object();

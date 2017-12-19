@@ -16,7 +16,7 @@ namespace Snail.Collector.Core
     /// <summary>
     /// 采集任务执行者
     /// </summary>
-    internal class TaskInvoker:IDisposable
+    public class TaskInvoker:IDisposable
     {
         private const string LogSource = "taskinvoker";
 

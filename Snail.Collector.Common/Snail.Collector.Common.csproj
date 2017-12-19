@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogger.cs" />
     <Compile Include="JSArray.cs" />
     <Compile Include="JSCallBackEventArgs.cs" />
     <Compile Include="JSEntityConvert.cs" />

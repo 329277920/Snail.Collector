@@ -11,9 +11,16 @@ namespace Snail.Collector.Common
     /// </summary>
     public sealed class LoggerProxy
     {
+        private static ILogger Logger;
+
+        public static void RegLogger(ILogger logger)
+        {
+            Logger = logger;
+        }
+
         public static void Error(string source, string content, Exception ex = null)
         {
-            Snail.Log.Logger.Error(string.Format("[{0}] {1}", source, content), ex);
+            Logger.Error(source, content, ex);
         }
     }
 }

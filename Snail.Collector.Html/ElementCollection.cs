@@ -134,12 +134,30 @@ namespace Snail.Collector.Html
             });
         }
 
-        public void removeClass()
+        /// <summary>
+        /// 移除某个属性
+        /// </summary>
+        /// <param name="attrs">属性名称</param>        
+        public ElementCollection removeAttr(params string[] attrs)
         {
             ForEach(item =>
             {
-                item.removeClass();
+                item.removeAttr(attrs);
             });
+            return this;                
+        }
+
+        /// <summary>
+        /// 移除标签
+        /// </summary>
+        /// <param name="tags">标签名称</param>                
+        public ElementCollection removeTag(params string[] tags)
+        {
+            ForEach(item =>
+            {
+                item.removeTag(tags);
+            });
+            return this;
         }
 
         public void each(dynamic callBack)

@@ -12,7 +12,7 @@ namespace Snail.Collector.Http
     {
         protected string LogSource = "http";
 
-        public HttpModule() : base(new HttpClientHandler() { UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
+        public HttpModule() : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
             this.headers = new HttpHeaderCollection();            
         }
@@ -52,22 +52,8 @@ namespace Snail.Collector.Http
         /// 获取默认提交的请求头
         /// </summary>
         public HttpHeaderCollection headers { get; }
-
-        //public virtual string getStr(string uri)
-        //{
-        //    var res = this.SendAsync(this.GetReqMsg(uri, HttpMethod.Get)).ConfigureAwait(false).GetAwaiter().GetResult();
-
-        //    return res.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-        //}
-
-        //public virtual dynamic getJson(string uri)
-        //{
-        //    var result = this.getStr(uri);
-
-        //    return Snail.Data.Serializer.JsonDeserialize<dynamic>(result);
-        //}
-
-        public virtual bool getFile(params dynamic[] files)
+        
+        public virtual bool getFiles(params dynamic[] files)
         {
             var downList = (from file in files ?? new dynamic[0]
                             where file != null

@@ -24,6 +24,7 @@ namespace Snail.Collector.IDE
             this.tool_Open.Click += toolOpen_Click;
             this.KeyPreview = true;
             this.KeyDown += FrmMain_KeyDown;
+            ErrorMananger.Instance.OnOccursError += Instance_OnOccursError;
         }
       
         private void InitStyle()
@@ -71,13 +72,13 @@ namespace Snail.Collector.IDE
                     }
                     catch (Exception ex)
                     {
-                        this.SetResult(false, ex.ToString(), false);
+                        this.SetResult(false, ex.ToString(), true);
                     }
                 }
             }
             catch (Exception ex)
             {
-                this.SetResult(false, ex.ToString(), false);
+                this.SetResult(false, ex.ToString(), true);
             }
             this.SetResult(true, "执行结束.", true);
         }
@@ -95,6 +96,11 @@ namespace Snail.Collector.IDE
         private void toolOpen_Click(object sender, EventArgs e)
         {
             this.editor.Open();
+        }
+
+        private void Instance_OnOccursError(object sender, ErrorEventArgs e)
+        {
+            SetResult(false, e.Message, true);
         }
 
         #endregion
@@ -134,7 +140,7 @@ namespace Snail.Collector.IDE
                 return;
             }
             if (!success)
-            {
+            {                
                 this.txtResult.ForeColor = Color.Red;
             }
             if (!append)
