@@ -101,7 +101,7 @@ namespace Snail.Collector.Core
                 var data = objData as Tuple<string, string>;
                 return Run(objData.ToString());
             }, scriptFile);
-        }
+        }       
 
         /// <summary>
         /// 设置当前的配置信息
