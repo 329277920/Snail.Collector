@@ -13,7 +13,7 @@ namespace Snail.Collector.Core
     {
         static TaskTester()
         {
-            ErrorMananger.Instance.Init();
+            TaskErrorMananger.Instance.Init();
         }
 
         /// <summary>

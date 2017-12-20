@@ -45,7 +45,7 @@ namespace Snail.Collector.Core.SystemModules
                 var result = http.getFiles(allFiles.ToArray());
                 if (result)
                 {
-                    invokerContext.TaskContext?.SetStat(files.Length, TaskStatTypes.File);
+                    invokerContext.Task?.SetStat(files.Length, TaskStatTypes.File);
                 }
                 return result;
             }

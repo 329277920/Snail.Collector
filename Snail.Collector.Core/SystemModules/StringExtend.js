@@ -1,4 +1,4 @@
-﻿// 截取文件名
+﻿// 截取地址中的文件名
 String.prototype.subFileName = function () {
     if (!this) {
         return this;
@@ -11,23 +11,37 @@ String.prototype.subFileName = function () {
     return name;
 }
 
+// 转换完整地址
 String.prototype.toUri = function (baseUri) {
-    baseUri = baseUri == undefined ? "" : baseUri;
+    baseUri = baseUri === undefined ? "" : baseUri;
     return host.getUri(this + "", baseUri);
 }
 
 
-// 扩展string，移除所有样式class
-String.prototype.removeClass = function () {
-    return this.replace(/class=['"]?[a-zA-Z0-9]*['"]?/ig, "");
-}
-
-// 扩展string，移除所有超链接
-String.prototype.removeLink = function () {
-    return this.replace(/<\/?a.*?>/ig, "");
-}
-
 // 字符串转json
 String.prototype.toJson = function () {
     return JSON.parse(this);
+}
+
+String.prototype.format = function (args) {
+    if (!arguments || !arguments.length || arguments.length <= 0) {
+        return this;
+    }
+    var result = this;
+    if (arguments.length === 1 && typeof (args) === "object") {
+        for (var key in args) {
+            if (args[key] !== undefined) {
+                var reg = new RegExp("({" + key + "})", "g");
+                result = result.replace(reg, args[key]);
+            }
+        }
+        return result;
+    }
+    for (var i = 0; i < arguments.length; i++) {
+        if (arguments[i] !== undefined) {           
+            var regItem = new RegExp("({)" + i + "(})", "g");
+            result = result.replace(regItem, arguments[i]);
+        }
+    }
+    return result;
 }

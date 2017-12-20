@@ -63,9 +63,13 @@ namespace Snail.Collector.Core.SystemModules
                 {
                     throw new Exception("failed to get the taskInvokerContext.");
                 }
+                if (invokerContext.Task == null)
+                {
+                    throw new Exception("failed to get the taskInvokerContext.Task.");
+                }
                 if (!TaskItems.Instance.AddObj(new
                 {
-                    taskId = invokerContext.TaskContext.TaskId,
+                    taskId = invokerContext.Task.TaskId,
                     parentId = invokerContext.TaskInvokerInfo?.Id,
                     url = url,
                     script = script
@@ -75,7 +79,7 @@ namespace Snail.Collector.Core.SystemModules
                 }
                 else
                 {
-                    invokerContext.TaskContext.SetStat(1, TaskStatTypes.NewTask);
+                    invokerContext.Task.SetStat(1, TaskStatTypes.NewTask);
                 }                
             }
             catch (Exception ex)
@@ -120,18 +124,8 @@ namespace Snail.Collector.Core.SystemModules
 
         private V8ScriptEngine GetEngine()
         {
-            return this.GetTaskContext()?.Engine;           
-        }
-
-        private TaskContext GetTaskContext()
-        {
-            var task = ContextManager.GetTaskInvokerContext()?.TaskContext;
-            if (task == null)
-            {
-                return ContextManager.GetTaskContext();
-            }
-            return task;
-        }
+            return taskContext?.Engine;
+        }        
         
         #endregion
     }

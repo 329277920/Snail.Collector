@@ -16,7 +16,7 @@ namespace Snail.Collector.Core
         /// </summary>
         static TaskFactory()
         {
-            ErrorMananger.Instance.Init();
+            TaskErrorMananger.Instance.Init();
         }
 
         private static Dictionary<string, Task> BufferTasks = new Dictionary<string, Task>();

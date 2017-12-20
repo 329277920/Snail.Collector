@@ -58,9 +58,9 @@ namespace Snail.Collector.Core
         internal event EventHandler<TaskErrorEventArgs> OnError;
 
         /// <summary>
-        /// 获取当前上下文
+        /// 任务执行统计信息
         /// </summary>
-        public TaskContext Context { get; private set; }
+        public TaskStatictics Stat { get; private set; }
 
         private int _count;
         /// <summary>
@@ -103,18 +103,8 @@ namespace Snail.Collector.Core
             this.ConfigFile = cfgFile;
             this._mainSE = new V8ScriptEngine();
             this._mainSE.LoadSystemModules();
-            this._freeSE = new Queue<TaskInvoker>();
-            this._http = new HttpModule();
-            this._mainSE.AddHostObject("http", this._http);
-            // 临时绑定上下文到当前线程中，该引用会被下一个初始化任务覆盖
-            this.Context = new TaskContext();
-            this.Context.ExecutePath = this.ExecutePath;
-            this.Context.HttpClient = this._http;
-            this.Context.Engine = this._mainSE;
-            this.Context.BindContext();
-            this.ExecuteInitScript();
-            this.Context.TaskId = this.TaskId;
-            this.Context.Settings = this.TaskSetting;
+            this._freeSE = new Queue<TaskInvoker>();                    
+            this.ExecuteInitScript();          
             this._lock = new Semaphore(this.TaskSetting.Parallel, this.TaskSetting.Parallel);
         }
 
@@ -170,9 +160,7 @@ namespace Snail.Collector.Core
             new Thread(() =>
             {
                 try
-                {
-                    // 绑定任务执行上下文
-                    this.Context.BindContext();
+                {                   
                     while (true)
                     {
                         var isStop = false;
@@ -256,9 +244,7 @@ namespace Snail.Collector.Core
         /// </summary>
         private dynamic _script;
 
-        private object LockObj = new object();
-
-        private HttpModule _http;
+        private object LockObj = new object();      
 
         #endregion
 
@@ -279,7 +265,7 @@ namespace Snail.Collector.Core
                     return;
                 }
                 Status = TaskStatus.Init;
-                this.Context.ClearStat();
+                this.Stat = new TaskStatictics() { StartTime = DateTime.Now };
             }
         }
 
@@ -291,7 +277,7 @@ namespace Snail.Collector.Core
                 {
                     Status = TaskStatus.Stop;
                 }
-                this.Context.Stat.EndTime = DateTime.Now;
+                this.Stat.EndTime = DateTime.Now;
                 return true;
             }
             return false;
@@ -344,7 +330,7 @@ namespace Snail.Collector.Core
                 }
                 var settings = new TaskItemSetting()
                 {
-                    ScriptFile = System.IO.Path.Combine(this.Context.ExecutePath, item.Script),
+                    ScriptFile = System.IO.Path.Combine(this.ExecutePath, item.Script),
                     Url = item.Url,
                     TaskInvokerInfo = item
                 };
@@ -358,7 +344,7 @@ namespace Snail.Collector.Core
                     }
                     if (invoker == null)
                     {
-                        invoker = new TaskInvoker(this.Context);
+                        invoker = new TaskInvoker(this);
                         this._count++;
                     }
                 }
@@ -393,7 +379,7 @@ namespace Snail.Collector.Core
                             LoggerProxy.Error(LogSource, "update callInvoker status failed.");
                         }
                         // 新增统计信息
-                        this.Context.SetStat(1, invoker.Result.Success ? TaskStatTypes.Task : TaskStatTypes.ErrTask);
+                        this.SetStat(1, invoker.Result.Success ? TaskStatTypes.Task : TaskStatTypes.ErrTask);
                     }
                 }
             }
@@ -415,7 +401,37 @@ namespace Snail.Collector.Core
                 catch { }
             }            
         }
-      
+
+        /// <summary>
+        /// 设置统计信息
+        /// </summary>
+        /// <param name="num">数量值</param>
+        /// <param name="type">统计类型</param>
+        public void SetStat(int num, TaskStatTypes type)
+        {
+            lock (this)
+            {
+                switch (type)
+                {
+                    case TaskStatTypes.NewTask:
+                        this.Stat.NewTaskCount++;
+                        break;
+                    case TaskStatTypes.Task:
+                        this.Stat.ExecTaskCount++;
+                        break;
+                    case TaskStatTypes.File:
+                        this.Stat.FileCount++;
+                        break;
+                    case TaskStatTypes.Article:
+                        this.Stat.ArticleCount++;
+                        break;
+                    case TaskStatTypes.ErrTask:
+                        this.Stat.ErrTaskCount++;
+                        break;
+                }
+            }
+        }
+
         #endregion
     }
 }

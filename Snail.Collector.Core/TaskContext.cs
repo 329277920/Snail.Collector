@@ -24,12 +24,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取任务执行的工作目录
         /// </summary>
-        public string ExecutePath { get; internal set; }
-
-        /// <summary>
-        /// 获取任务共享HttpClient
-        /// </summary>
-        public HttpModule HttpClient { get; internal set; }
+        public string ExecutePath { get; internal set; }     
 
         /// <summary>
         /// 获取当前任务ID
@@ -63,37 +58,7 @@ namespace Snail.Collector.Core
             {
                 return ContextManager.GetTaskContext();
             }
-        }
-
-        /// <summary>
-        /// 设置统计信息
-        /// </summary>
-        /// <param name="num">数量值</param>
-        /// <param name="type">统计类型</param>
-        public void SetStat(int num, TaskStatTypes type)
-        {
-            lock (this)
-            {
-                switch (type)
-                {
-                    case TaskStatTypes.NewTask:
-                        this.Stat.NewTaskCount++;
-                        break;
-                    case TaskStatTypes.Task:
-                        this.Stat.ExecTaskCount++;
-                        break;
-                    case TaskStatTypes.File:
-                        this.Stat.FileCount++;
-                        break;
-                    case TaskStatTypes.Article:
-                        this.Stat.ArticleCount++;
-                        break;
-                    case TaskStatTypes.ErrTask:
-                        this.Stat.ErrTaskCount++;
-                        break;
-                }
-            }
-        }
+        }        
 
         /// <summary>
         /// 任务配置

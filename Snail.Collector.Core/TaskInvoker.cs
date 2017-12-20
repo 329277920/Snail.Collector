@@ -1,15 +1,7 @@
 ﻿using Microsoft.ClearScript.V8;
 using Snail.Collector.Common;
-using Snail.Collector.Core.SystemModules;
-using Snail.Collector.Storage;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Reflection;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Snail.Collector.Core
 {
@@ -64,21 +56,14 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 初始化一个任务执行者
         /// </summary>       
-        /// <param name="http"></param>
-        public TaskInvoker(TaskContext taskContext)
+        /// <param name="task"></param>
+        public TaskInvoker(Task task)
         {
             this.Status = TaskInvokerStatus.Init;
             this.Context = new TaskInvokerContext();
-            this.Context.TaskContext = taskContext;
+            this.Context.Task = task;
             this._innerSE = new V8ScriptEngine();
-            this._innerSE.LoadSystemModules();
-            this._innerSE.AddHostObject("http", this.Context.TaskContext.HttpClient);
-            this._innerSE.AddHostObject("storage", new StorageDataModuleExtend(taskContext.Settings.Storage));
-            var storageProxy = Unity.ReadResource("Snail.Collector.Storage.StorageDataModule.js", Assembly.GetAssembly(typeof(StorageDataModule)));
-            if (!string.IsNullOrEmpty(storageProxy))
-            {
-                this._innerSE.Execute(storageProxy);
-            }
+            this._innerSE.LoadSystemModules();                      
             this.Context.Engine = this._innerSE;
             this._worker = new Thread(ThreadWork);
             this._notify = new AutoResetEvent(false);
@@ -143,18 +128,26 @@ namespace Snail.Collector.Core
                     {
                         // 初始化执行脚本                        
                         this._innerSE.Execute(FileUnity.ReadConfigFile(this.CurrSetting.ScriptFile));
+                        this._innerSE.Execute(@"function ______tryParse(){ 
+try{
+    var result = parse();
+    if(result == undefined || result == 1 || result == true){
+        return 'OK';
+    }
+    else{
+        return 'parse is not return 1 or true';
+    }     
+}catch(e){
+    return e.message;
+}}");
                         this._needInit = false;
-                    }
-                    // 执行任务
-                    var execRest = this._innerSE.Invoke("parse", this.CurrSetting.Url);
-                    if (int.TryParse(execRest == null ? "0" : execRest.ToString(), out int intRest) && intRest == 1)
+                    }                    
+                    var execRest = this._innerSE.Invoke("______tryParse").ToString();
+                    if (execRest != "OK")
                     {
-                        this.Result.Success = true;
+                        throw new Exception(execRest);
                     }
-                    if (bool.TryParse(execRest == null ? "false" : execRest.ToString(), out bool boolRest) && boolRest)
-                    {
-                        this.Result.Success = true;
-                    }
+                    this.Result.Success = true;
                 }
                 catch (Exception ex)
                 {

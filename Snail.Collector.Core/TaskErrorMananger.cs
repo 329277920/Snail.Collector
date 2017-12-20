@@ -11,9 +11,9 @@ namespace Snail.Collector.Core
     /// <summary>
     /// 异常管理器
     /// </summary>
-    public class ErrorMananger : Common.ILogger
+    public class TaskErrorMananger : Common.ILogger
     {
-        public static ErrorMananger Instance = new ErrorMananger();
+        public static TaskErrorMananger Instance = new TaskErrorMananger();
 
         /// <summary>
         /// 在发生异常时触发

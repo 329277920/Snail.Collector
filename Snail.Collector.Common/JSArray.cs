@@ -8,9 +8,20 @@ namespace Snail.Collector.JSAdapter
 {
     public class JSArray : List<dynamic>
     {
-        public void push(dynamic item)
+        public void push(params dynamic[] items)
         {
-            this.Add(item);
+            if (items == null) {
+                return;
+            }
+            foreach (var item in items)
+            {
+                if (item is JSArray)
+                {
+                    this.AddRange(item as JSArray);
+                    continue;
+                }
+                this.Add(item);
+            }            
         }
 
         public int indexOf(dynamic item)

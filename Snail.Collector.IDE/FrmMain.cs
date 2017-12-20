@@ -24,7 +24,7 @@ namespace Snail.Collector.IDE
             this.tool_Open.Click += toolOpen_Click;
             this.KeyPreview = true;
             this.KeyDown += FrmMain_KeyDown;
-            ErrorMananger.Instance.OnOccursError += Instance_OnOccursError;
+            TaskErrorMananger.Instance.OnOccursError += Instance_OnOccursError;
         }
       
         private void InitStyle()

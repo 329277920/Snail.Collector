@@ -16,24 +16,27 @@ namespace Snail.Collector.Core.SystemModules
     {
         protected string LogSource = "storage";
 
-        public StorageDataModuleExtend(DbProviderConfig cfg)
+        public void config(dynamic cfg)
         {
-            base.Config(cfg);
+            try
+            {
+                base.Config(new DbProviderConfig() { Driver = cfg.provider, Connection = cfg.connectionString });
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "call config error.", ex);
+            }
         }
 
         public bool add(string table, params object[] data)
         {
             try
-            {
-                var invokerContext = ContextManager.GetTaskInvokerContext();
-                if (invokerContext == null)
-                {
-                    throw new Exception("failed to get the taskInvokerContext.");
-                }
+            {                                
                 var rest = base.insert(table, data);
-                if (rest > 0)
+                var invokerContext = ContextManager.GetTaskInvokerContext();
+                if (rest > 0 && invokerContext != null && invokerContext.Task != null)
                 {
-                    invokerContext.TaskContext.SetStat(rest, TaskStatTypes.Article);
+                    invokerContext.Task.SetStat(rest, TaskStatTypes.Article);
                 }
                 return rest > 0;
             }

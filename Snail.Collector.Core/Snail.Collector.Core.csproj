@@ -53,7 +53,7 @@
     <Compile Include="Configuration\ConfigManager.cs" />
     <Compile Include="ContextManager.cs" />
     <Compile Include="ErrorEventArgs.cs" />
-    <Compile Include="ErrorMananger.cs" />
+    <Compile Include="TaskErrorMananger.cs" />
     <Compile Include="FileUnity.cs" />
     <Compile Include="ModuleInfo.cs" />
     <Compile Include="ModuleMamanger.cs" />

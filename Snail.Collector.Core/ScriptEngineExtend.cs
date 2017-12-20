@@ -24,12 +24,18 @@ namespace Snail.Collector.Core
         /// 加载系统扩展模块
         /// </summary>
         internal static void LoadSystemModules(this V8ScriptEngine v8)
-        {
+        {            
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
             v8.AddHostObject("host", new HostModuleExtend());
-            v8.AddHostType("Array", typeof(JSArray));
+            v8.AddHostType("Array", typeof(JSArray));                        
             v8.AddHostObject("http", new HttpModule());
             v8.AddHostType(typeof(HttpModuleExtend));
+            v8.AddHostObject("storage", new StorageDataModuleExtend());
+            var storageProxy = Unity.ReadResource("Snail.Collector.Storage.StorageDataModule.js", Assembly.GetAssembly(typeof(StorageDataModule)));
+            if (!string.IsNullOrEmpty(storageProxy))
+            {
+                v8.Execute(storageProxy);
+            }
             var moduleProxy = Unity.ReadResource("Snail.Collector.Core.SystemModules.SystemModule.js");
             if (!string.IsNullOrEmpty(moduleProxy))
             {
@@ -39,7 +45,7 @@ namespace Snail.Collector.Core
             if (!string.IsNullOrEmpty(stringExt))
             {
                 v8.Execute(stringExt);
-            }
+            }           
             v8.AddHostType(typeof(HttpResultExtend));
         }
 

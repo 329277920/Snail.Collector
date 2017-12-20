@@ -23,9 +23,9 @@ namespace Snail.Collector.Core
         public TaskItemEntity TaskInvokerInfo { get; set; }
 
         /// <summary>
-        /// 获取当前任务执行上下文
+        /// 获取当前执行的任务对象
         /// </summary>
-        public TaskContext TaskContext { get; internal set; }
+        public Task Task { get; internal set; }
 
         public static TaskInvokerContext Current
         {
@@ -34,6 +34,5 @@ namespace Snail.Collector.Core
                 return ContextManager.GetTaskInvokerContext();
             }
         }
-
     }
 }
