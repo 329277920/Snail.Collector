@@ -91,41 +91,34 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 获取任务配置信息
         /// </summary>
-        public TaskSetting TaskSetting { get; private set; }
+        public TaskSetting TaskSetting { get; private set; }       
 
         /// <summary>
         /// 初始化任务生成工厂
         /// </summary>        
         /// <param name="cfgFile">任务工厂配置文件</param>
+        /// <param name="isTest">是否为测试任务</param>
         public Task(string cfgFile)
-        {
-            this.ExecutePath = FileUnity.GetDrectory(cfgFile);
-            this.ConfigFile = cfgFile;
-            this._mainSE = new V8ScriptEngine();
-            this._mainSE.LoadSystemModules();
-            this._freeSE = new Queue<TaskInvoker>();                    
-            this.ExecuteInitScript();          
+        {           
+            this.ExecutePath = FileUnity.GetDrectory(cfgFile);            
+            this._freeSE = new Queue<TaskInvoker>();
+            var script = FileUnity.ReadConfigFile(cfgFile);                     
+            if (string.IsNullOrEmpty(script))
+            {
+                throw new Exception("task init error, the config file content is empty.");
+            }
+            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(script);
+            this.InitTaskStorage();
             this._lock = new Semaphore(this.TaskSetting.Parallel, this.TaskSetting.Parallel);
         }
 
+        internal Task() { }
+       
         /// <summary>
-        /// 执行初始化脚本
+        /// 初始化任务存储
         /// </summary>
-        private void ExecuteInitScript()
+        private void InitTaskStorage()
         {
-            var script = FileUnity.ReadConfigFile(this.ConfigFile);
-            this._mainSE.Execute(script);
-            this._script = this._mainSE.Invoke("config");
-            if (this._script == null)
-            {
-                throw new Exception("Task Init Error, the \"config\" method has no return value.");
-            }
-            var strSet = Serializer.JsonSerialize(this._script);
-            if (string.IsNullOrWhiteSpace(strSet))
-            {
-                throw new Exception("Task Init Error, the \"config\" method return value is empty.");
-            }
-            this.TaskSetting = Serializer.JsonDeserialize<TaskSetting>(strSet);
             if (!TaskItems.Instance.AddRoot(new TaskItemEntity()
             {
                 ParentId = 0,
@@ -232,12 +225,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 记录空闲的任务执行者
         /// </summary>
-        private Queue<TaskInvoker> _freeSE;
-
-        /// <summary>
-        /// 记录任务生成器运行的V8实例
-        /// </summary>
-        private V8ScriptEngine _mainSE;
+        private Queue<TaskInvoker> _freeSE;      
 
         /// <summary>
         /// 用于执行js代理脚本

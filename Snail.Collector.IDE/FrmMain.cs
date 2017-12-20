@@ -55,20 +55,20 @@ namespace Snail.Collector.IDE
 
         private async void toolRun_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(this.editor.Value))
+            if (!this.editor.Save())
             {
                 return;
-            }
+            }            
             InitResult();
             this.SetResult(true, "正在执行...", true);
             try
-            {
+            {                
                 using (var tester = new TaskTester())
                 {
                     tester.AddObj("log", this);
                     try
                     {
-                        await tester.RunAsync(this.editor.Value);
+                        await TaskInvoker.RunAsync(this.editor.SelectedItem.BindFile.FullName);
                     }
                     catch (Exception ex)
                     {

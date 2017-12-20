@@ -2,6 +2,8 @@
 using Snail.Collector.Common;
 using System;
 using System.Threading;
+using NetTask = System.Threading.Tasks.Task;
+using NetTaskFactory = System.Threading.Tasks.TaskFactory;
 
 namespace Snail.Collector.Core
 {
@@ -62,12 +64,43 @@ namespace Snail.Collector.Core
             this.Status = TaskInvokerStatus.Init;
             this.Context = new TaskInvokerContext();
             this.Context.Task = task;
+            this.Context.ExecutePath = task.ExecutePath;
             this._innerSE = new V8ScriptEngine();
             this._innerSE.LoadSystemModules();                      
             this.Context.Engine = this._innerSE;
             this._worker = new Thread(ThreadWork);
             this._notify = new AutoResetEvent(false);
             this._worker.Start();
+        }
+
+        private TaskInvoker() { }
+
+        /// <summary>
+        /// 执行一次测试任务
+        /// </summary>
+        /// <param name="scriptFile"></param>
+        public static bool Run(string scriptFile)
+        {
+            using (var invoker = new TaskInvoker())
+            {
+                invoker._innerSE = new V8ScriptEngine();
+                invoker._innerSE.LoadSystemModules();
+                invoker.Context = new TaskInvokerContext();
+                invoker.Context.ExecutePath = FileUnity.GetDrectory(scriptFile);
+                invoker.Context.Engine = invoker._innerSE;
+                invoker.BindContext();
+                invoker._needInit = true;
+                return invoker.ExecItem(scriptFile, "");
+            }
+        }
+
+        public static NetTask RunAsync(string scriptFile)
+        {
+            return new NetTaskFactory().StartNew(objData =>
+            {
+                var data = objData as Tuple<string, string>;
+                return Run(objData.ToString());
+            }, scriptFile);
         }
 
         /// <summary>
@@ -116,21 +149,36 @@ namespace Snail.Collector.Core
         /// 工作线程执行方法
         /// </summary>
         private void ThreadWork()
-        {           
-            // 绑定Invoker执行上下文
+        {                     
             this.BindContext();
             do
             {
                 this._notify.WaitOne();
+                this.Result.Success = ExecItem(this.CurrSetting.ScriptFile, this.CurrSetting.Url);
+                this.Status = TaskInvokerStatus.Stop;
                 try
                 {
-                    if (this._needInit)
-                    {
-                        // 初始化执行脚本                        
-                        this._innerSE.Execute(FileUnity.ReadConfigFile(this.CurrSetting.ScriptFile));
-                        this._innerSE.Execute(@"function ______tryParse(){ 
+                    this._callBack?.Invoke(this);
+                }
+                catch (Exception ex)
+                {
+                    LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item callback error,url:'{0}'.", this.CurrSetting.Url), ex);
+                }               
+            }
+            while (true);
+        }
+
+        private bool ExecItem(string scriptFile, string uri)
+        {
+            try
+            {
+                if (this._needInit)
+                {
+                    // 初始化执行脚本                        
+                    this._innerSE.Execute(FileUnity.ReadConfigFile(scriptFile));
+                    this._innerSE.Execute(@"function ______tryParse(uri){ 
 try{
-    var result = parse();
+    var result = parse(uri);
     if(result == undefined || result == 1 || result == true){
         return 'OK';
     }
@@ -140,26 +188,20 @@ try{
 }catch(e){
     return e.message;
 }}");
-                        this._needInit = false;
-                    }                    
-                    var execRest = this._innerSE.Invoke("______tryParse").ToString();
-                    if (execRest != "OK")
-                    {
-                        throw new Exception(execRest);
-                    }
-                    this.Result.Success = true;
+                    this._needInit = false;
                 }
-                catch (Exception ex)
+                var execRest = this._innerSE.Invoke("______tryParse", uri).ToString();
+                if (execRest != "OK")
                 {
-                    LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item error,url:'{0}'.", this.CurrSetting.Url), ex);
+                    throw new Exception(execRest);
                 }
-                finally
-                {
-                    this.Status = TaskInvokerStatus.Stop;
-                    this._callBack?.Invoke(this);
-                }
+                return true;
             }
-            while (true);
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item error,url:'{0}'.{1}.", uri, ex.Message), ex);
+            }
+            return false;
         }
 
         /// <summary>
@@ -188,13 +230,13 @@ try{
                 return;
             try
             {
-                this._worker.Abort();
+                this._worker?.Abort();
             }
             catch { }
             if (disposing)
             {
-                this._innerSE.Dispose();
-                this._notify.Dispose();
+                this._innerSE?.Dispose();
+                this._notify?.Dispose();
             }            
         }
         #endregion

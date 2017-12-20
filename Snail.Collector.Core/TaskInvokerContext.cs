@@ -27,6 +27,11 @@ namespace Snail.Collector.Core
         /// </summary>
         public Task Task { get; internal set; }
 
+        /// <summary>
+        /// 获取任务执行的主目录
+        /// </summary>
+        public string ExecutePath { get; internal set; }
+
         public static TaskInvokerContext Current
         {
             get
