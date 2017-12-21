@@ -13,16 +13,36 @@ namespace Snail.Collector.Core
     /// </summary>
     public class TaskErrorMananger : Common.ILogger
     {
-        public static TaskErrorMananger Instance = new TaskErrorMananger();
+        public static TaskErrorMananger Instance = new Lazy<TaskErrorMananger>(() =>
+        {
+            var instance = new TaskErrorMananger();
+            instance.Init();
+            return instance;
+        }, true).Value;
+
+        private TaskErrorMananger() { }
 
         /// <summary>
         /// 在发生异常时触发
         /// </summary>
         public event EventHandler<ErrorEventArgs> OnOccursError;
 
+        private bool _isInit = false;
         public void Init()
         {
-            LoggerProxy.RegLogger(this);
+            if (this._isInit)
+            {
+                return;
+            }
+            lock (this)
+            {
+                if (this._isInit)
+                {
+                    return;
+                }
+                LoggerProxy.RegLogger(this);
+                this._isInit = true;
+            }          
         }
 
         public void Error(string source, string message, Exception ex = null)

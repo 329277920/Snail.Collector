@@ -73,35 +73,67 @@ namespace Snail.Collector.Core
             this._worker.Start();
         }
 
-        private TaskInvoker() { }
-
-        /// <summary>
-        /// 执行一次测试任务
-        /// </summary>
-        /// <param name="scriptFile"></param>
-        public static bool Run(string scriptFile)
+        public TaskInvoker(string scriptFile)
         {
-            using (var invoker = new TaskInvoker())
-            {
-                invoker._innerSE = new V8ScriptEngine();
-                invoker._innerSE.LoadSystemModules();
-                invoker.Context = new TaskInvokerContext();
-                invoker.Context.ExecutePath = FileUnity.GetDrectory(scriptFile);
-                invoker.Context.Engine = invoker._innerSE;
-                invoker.BindContext();
-                invoker._needInit = true;
-                return invoker.ExecItem(scriptFile, "");
-            }
+            this._innerSE = new V8ScriptEngine();
+            this._innerSE.LoadSystemModules();
+            this.Context = new TaskInvokerContext();
+            this.Context.ExecutePath = FileUnity.GetDrectory(scriptFile);
+            this.Context.Engine = this._innerSE;
+            this.BindContext();
+            this._needInit = true;
+            this.InitScript(scriptFile);
         }
 
-        public static NetTask RunAsync(string scriptFile)
+        public bool Run()
         {
-            return new NetTaskFactory().StartNew(objData =>
-            {
-                var data = objData as Tuple<string, string>;
-                return Run(objData.ToString());
-            }, scriptFile);
-        }       
+            return this.ExecItem("");
+        }
+
+
+        ///// <summary>
+        ///// 执行一次测试任务
+        ///// </summary>
+        ///// <param name="scriptFile"></param>
+        ///// <param name="onStart"></param>
+        //public static bool Run(string scriptFile, Action<TaskInvoker> onStart = null)
+        //{
+        //    using (var invoker = new TaskInvoker())
+        //    {               
+        //        invoker._innerSE = new V8ScriptEngine();
+        //        invoker._innerSE.LoadSystemModules();
+        //        invoker.Context = new TaskInvokerContext();
+        //        invoker.Context.ExecutePath = FileUnity.GetDrectory(scriptFile);
+        //        invoker.Context.Engine = invoker._innerSE;
+        //        invoker.BindContext();
+        //        invoker._needInit = true;
+        //        onStart?.Invoke(invoker);
+        //        if (!invoker.InitScript(scriptFile))
+        //        {
+        //            return false;
+        //        }
+        //        return invoker.ExecItem("");
+        //    }
+        //}
+
+        //public static NetTask RunAsync(string scriptFile, Action<TaskInvoker> onStart = null)
+        //{
+        //    return new NetTaskFactory().StartNew(objData =>
+        //    {
+        //        var data = objData as Tuple<string, Action<TaskInvoker>>;
+        //        return Run(data.Item1, data.Item2);
+        //    }, new Tuple<string, Action<TaskInvoker>>(scriptFile, onStart));
+        //}
+
+        /// <summary>
+        /// 添加宿主对象
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="obj"></param>
+        public void AddHostObj(string name, object obj)
+        {
+            this._innerSE.AddHostObject(name, obj);
+        }
 
         /// <summary>
         /// 设置当前的配置信息
@@ -149,12 +181,16 @@ namespace Snail.Collector.Core
         /// 工作线程执行方法
         /// </summary>
         private void ThreadWork()
-        {                     
+        {
             this.BindContext();
             do
             {
                 this._notify.WaitOne();
-                this.Result.Success = ExecItem(this.CurrSetting.ScriptFile, this.CurrSetting.Url);
+                if (!this.InitScript(this.CurrSetting.ScriptFile))
+                {
+                    continue;
+                }
+                this.Result.Success = ExecItem(this.CurrSetting.Url);
                 this.Status = TaskInvokerStatus.Stop;
                 try
                 {
@@ -163,12 +199,16 @@ namespace Snail.Collector.Core
                 catch (Exception ex)
                 {
                     LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item callback error,url:'{0}'.", this.CurrSetting.Url), ex);
-                }               
+                }
             }
             while (true);
         }
 
-        private bool ExecItem(string scriptFile, string uri)
+        /// <summary>
+        /// 初始化脚本
+        /// </summary>
+        /// <param name="scriptFile"></param>
+        private bool InitScript(string scriptFile)
         {
             try
             {
@@ -190,6 +230,24 @@ try{
 }}");
                     this._needInit = false;
                 }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, string.Format("call InitScript error,scriptFile:'{0}'.{1}.", scriptFile, ex.Message), ex);
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 执行脚本
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        private bool ExecItem(string uri)
+        {
+            try
+            {                
                 var execRest = this._innerSE.Invoke("______tryParse", uri).ToString();
                 if (execRest != "OK")
                 {
@@ -199,7 +257,7 @@ try{
             }
             catch (Exception ex)
             {
-                LoggerProxy.Error(LogSource, string.Format("call ThreadWork-item error,url:'{0}'.{1}.", uri, ex.Message), ex);
+                LoggerProxy.Error(LogSource, string.Format("call ExecItem error,url:'{0}'.{1}.", uri, ex.Message), ex);
             }
             return false;
         }

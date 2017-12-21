@@ -47,6 +47,9 @@ namespace Snail.Collector.IDE
         public Editor()
         {
             InitializeComponent();
+
+            this.BorderStyle = BorderStyle.None;
+
             this._saveFileDialog = new SaveFileDialog();
             this._saveFileDialog.Title = "选择脚本文件保存路径";
             this._saveFileDialog.AddExtension = true;

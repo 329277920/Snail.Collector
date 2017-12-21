@@ -20,12 +20,35 @@ namespace Snail.Sync
         }
 
         /// <summary>
+        /// 获取最小并行度
+        /// </summary>
+        public int MinParallelDegree
+        {
+            get;
+            private set;
+        }
+
+        private int _runCount = 0;
+        /// <summary>
+        /// 获取当前执行任务的线程数
+        /// </summary>
+        public int RunningTaskCount
+        {
+            get
+            {
+                return this._runCount;
+            }            
+        }
+
+        /// <summary>
         /// 初始化Snail.Sync.Parallel
         /// </summary>
         /// <param name="maxParallelDegree">设置最大并行度，该值应考虑在任务中是否有IO操作</param>
-        public Parallel(int maxParallelDegree)
+        /// <param name="minParallelDegree">设置最小并行度</param>
+        public Parallel(int maxParallelDegree, int minParallelDegree = 0)// todo: 未实现
         {
             this.MaxParallelDegree = maxParallelDegree;
+            this.MinParallelDegree = minParallelDegree;
             this._pool = new Semaphore(this.MaxParallelDegree, this.MaxParallelDegree);
             this._poolWork = new Semaphore(0, this.MaxParallelDegree);
             this._thds = new Queue<Thread>();
@@ -74,11 +97,14 @@ namespace Snail.Sync
         {
             var thd = new Thread(new ThreadStart(() =>
             {
+
                 while (true)
                 {
+                    var isAdd = false;
                     // 等待来自任务入队列的消息
                     this._poolWork.WaitOne();
-
+                    Interlocked.Add(ref this._runCount, 1);
+                    isAdd = true;
                     WorkInfo work = null;
                     lock (this)
                     {
@@ -95,6 +121,10 @@ namespace Snail.Sync
 
                         // 通知任务结束
                         work?.Waiter.Release();
+                        if (isAdd)
+                        {
+                            Interlocked.Add(ref this._runCount, -1);
+                        }
                     }
                 }
             }));
