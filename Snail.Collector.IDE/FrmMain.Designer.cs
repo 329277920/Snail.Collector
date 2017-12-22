@@ -39,22 +39,21 @@ namespace Snail.Collector.IDE
             this.tool_Run = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.editor = new Snail.Collector.IDE.Editor();
-            this.txtResult = new System.Windows.Forms.RichTextBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.labUser = new System.Windows.Forms.Label();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.LabStatus = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtReqCount = new System.Windows.Forms.TextBox();
+            this.txtResult = new System.Windows.Forms.RichTextBox();
+            this.txtStat = new System.Windows.Forms.RichTextBox();
+            this.editor = new Snail.Collector.IDE.Editor();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -132,53 +131,17 @@ namespace Snail.Collector.IDE
             // 
             // splitContainer1.Panel2
             // 
+            this.splitContainer1.Panel2.Controls.Add(this.txtStat);
             this.splitContainer1.Panel2.Controls.Add(this.groupBox1);
             this.splitContainer1.Panel2.Controls.Add(this.txtResult);
             this.splitContainer1.Size = new System.Drawing.Size(792, 522);
             this.splitContainer1.SplitterDistance = 365;
             this.splitContainer1.TabIndex = 11;
             // 
-            // editor
-            // 
-            this.editor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editor.Location = new System.Drawing.Point(0, 54);
-            this.editor.Name = "editor";
-            this.editor.Size = new System.Drawing.Size(365, 468);
-            this.editor.TabIndex = 11;
-            // 
-            // txtResult
-            // 
-            this.txtResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtResult.BackColor = System.Drawing.Color.White;
-            this.txtResult.Location = new System.Drawing.Point(2, 54);
-            this.txtResult.Name = "txtResult";
-            this.txtResult.ReadOnly = true;
-            this.txtResult.Size = new System.Drawing.Size(421, 467);
-            this.txtResult.TabIndex = 8;
-            this.txtResult.Text = "";
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.LabStatus);
-            this.groupBox1.Location = new System.Drawing.Point(2, 5);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(421, 43);
-            this.groupBox1.TabIndex = 9;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "状态";
-            // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.txtReqCount);
-            this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.txtUser);
             this.groupBox2.Controls.Add(this.labUser);
             this.groupBox2.Location = new System.Drawing.Point(3, 5);
@@ -190,7 +153,7 @@ namespace Snail.Collector.IDE
             // 
             // txtUser
             // 
-            this.txtUser.Location = new System.Drawing.Point(83, 14);
+            this.txtUser.Location = new System.Drawing.Point(83, 15);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(100, 25);
             this.txtUser.TabIndex = 15;
@@ -205,6 +168,18 @@ namespace Snail.Collector.IDE
             this.labUser.TabIndex = 14;
             this.labUser.Text = "用户数:";
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.LabStatus);
+            this.groupBox1.Location = new System.Drawing.Point(2, 5);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(421, 43);
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "状态";
+            // 
             // LabStatus
             // 
             this.LabStatus.AutoSize = true;
@@ -214,22 +189,40 @@ namespace Snail.Collector.IDE
             this.LabStatus.TabIndex = 0;
             this.LabStatus.Text = "label1";
             // 
-            // label1
+            // txtResult
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(189, 20);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(60, 15);
-            this.label1.TabIndex = 16;
-            this.label1.Text = "请求数:";
+            this.txtResult.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtResult.BackColor = System.Drawing.Color.White;
+            this.txtResult.Location = new System.Drawing.Point(2, 181);
+            this.txtResult.Name = "txtResult";
+            this.txtResult.ReadOnly = true;
+            this.txtResult.Size = new System.Drawing.Size(421, 340);
+            this.txtResult.TabIndex = 8;
+            this.txtResult.Text = "";
             // 
-            // txtReqCount
+            // txtStat
             // 
-            this.txtReqCount.Location = new System.Drawing.Point(255, 14);
-            this.txtReqCount.Name = "txtReqCount";
-            this.txtReqCount.Size = new System.Drawing.Size(100, 25);
-            this.txtReqCount.TabIndex = 17;
-            this.txtReqCount.Text = "1";
+            this.txtStat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtStat.BackColor = System.Drawing.Color.White;
+            this.txtStat.Location = new System.Drawing.Point(2, 55);
+            this.txtStat.Name = "txtStat";
+            this.txtStat.ReadOnly = true;
+            this.txtStat.Size = new System.Drawing.Size(421, 121);
+            this.txtStat.TabIndex = 10;
+            this.txtStat.Text = "";
+            // 
+            // editor
+            // 
+            this.editor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.editor.Location = new System.Drawing.Point(0, 54);
+            this.editor.Name = "editor";
+            this.editor.Size = new System.Drawing.Size(365, 468);
+            this.editor.TabIndex = 11;
             // 
             // FrmMain
             // 
@@ -249,10 +242,10 @@ namespace Snail.Collector.IDE
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -275,8 +268,7 @@ namespace Snail.Collector.IDE
         private System.Windows.Forms.TextBox txtUser;
         private System.Windows.Forms.Label labUser;
         private System.Windows.Forms.Label LabStatus;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txtReqCount;
+        private System.Windows.Forms.RichTextBox txtStat;
     }
 }
 

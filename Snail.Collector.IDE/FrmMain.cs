@@ -13,12 +13,14 @@ using System.Windows.Forms;
 namespace Snail.Collector.IDE
 {
     public partial class FrmMain : Form
-    {
-        private RunStatus runStatus;
-
+    {       
         private RunSetting runSetting;
 
         private Snail.Sync.Parallel tasks;
+
+        private TaskStatistics stat;
+
+        private bool isRun = false;
 
         public FrmMain()
         {           
@@ -29,18 +31,21 @@ namespace Snail.Collector.IDE
             this.tool_Save.Click += toolSave_Click;
             this.tool_Open.Click += toolOpen_Click;
             this.KeyPreview = true;
-            this.KeyDown += FrmMain_KeyDown;
-            TaskErrorMananger.Instance.OnOccursError += Instance_OnOccursError;
-            this.LabStatus.Text = "";
-            this.runStatus = new RunStatus();
+            this.KeyDown += FrmMain_KeyDown;            
+            this.LabStatus.Text = "";            
             this.runSetting = new RunSetting();
+            TaskErrorMananger.Instance.OnOccursError += Instance_OnOccursError;
             StartWatch();
+            this.stat = new TaskStatistics();
         }
       
         private void InitStyle()
         {
             this.txtResult.ReadOnly = true;
-            this.txtResult.BackColor = Color.FromArgb(230, 231, 232);          
+            this.txtResult.BackColor = Color.FromArgb(230, 231, 232);
+            this.txtStat.ReadOnly = true;
+            this.txtStat.BackColor = Color.FromArgb(230, 231, 232);
+            this.txtResult.Text = "";
         }
 
         #region 事件
@@ -64,81 +69,76 @@ namespace Snail.Collector.IDE
         }
 
         private async void toolRun_Click(object sender, EventArgs e)
-        {
-            System.Net.Http.HttpClient ss;
-            
-            if (this.runStatus.Running)
+        {                        
+            if (this.isRun)
             {
                 return;
             }
             if (!this.editor.Save())
             {
                 return;
-            }           
-            this.LabStatus.Text = "";
-            InitResult();
-            this.SetRunSetting();
-            this.SetResult(true, "正在执行...", true);
-            this.runStatus.Init();
+            }
+            if (this.isRun)
+            {
+                return;
+            }
+            this.isRun = true;
+            this.SetRunSetting();                         
+            this.stat.clear();
+            this.LabStatus.Text = "正在执行...";
             var scriptFile = this.editor.SelectedItem.BindFile.FullName;
             await new System.Threading.Tasks.TaskFactory().StartNew(() =>
             {
                 try
                 {
-                    this.runStatus.Running = true;
                     using (tasks = new Snail.Sync.Parallel(this.runSetting.UserCount))
                     {
                         tasks.ForEach<int>(new int[this.runSetting.UserCount], (item) =>
                         {
                             try
                             {
+                                // 启动一个用户客户端
                                 using (var invoker = new TaskInvoker(scriptFile))
                                 {
+                                    invoker.AddHostObj("console", this);
                                     invoker.AddHostObj("log", this);
-                                    for (var i = 0; i < this.runSetting.RequestCount; i++)
+                                    invoker.AddHostObj("stat", this.stat);
+                                    this.stat.addUser();
+                                    var runResult = false;
+                                    try
                                     {
-                                        var runResult = false;
-                                        try
-                                        {
-                                            runResult = invoker.Run();
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            this.SetResult(false, ex.ToString(), true);
-                                            runResult = false;
-                                        }
-                                        SafeSetRunStatus(status =>
-                                        {
-                                            status.TotalReqCount++;
-                                            if (runResult)
-                                            {
-                                                status.SuccessReqCount++;
-                                            }
-                                            else
-                                            {
-                                                status.ErrorReqCount++;
-                                            }
-                                        });
+                                        runResult = invoker.Run();
                                     }
+                                    catch (Exception ex)
+                                    {
+                                        this.SetResult(false, ex.ToString() + "\r\n", true);
+                                        runResult = false;
+                                    }
+                                    this.stat.addUser(-1);
                                 }
                             }
                             catch (Exception ex)
                             {
-                                this.SetResult(false, ex.ToString(), true);
+                                this.SetResult(false, ex.ToString() + "\r\n", true);
                             }
                         });
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.SetResult(false, ex.ToString(), true);
+                    this.SetResult(false, ex.ToString() + "\r\n", true);
                 }
                 finally
                 {
-                    this.SetResult(true, "执行结束.", true);
-                    this.runStatus.Running = false;
+                    this.isRun = false;
+                    this.LabStatus.BeginInvoke(new MethodInvoker(() =>
+                    {
+                        this.LabStatus.Text = "已结束";
+                    }));
+                    SetRunStatus();
                 }
-            });                   
+            });
+            this.isRun = false;
         }
 
         private void toolNew_Click(object sender, EventArgs e)
@@ -207,15 +207,9 @@ namespace Snail.Collector.IDE
             }
             else
             {
-                this.txtResult.AppendText(content.ToString() + "\r\n");
+                this.txtResult.AppendText(content.ToString());
             }
-        }
-
-        private void InitResult()
-        {
-            this.txtResult.ForeColor = Color.Black;
-            this.txtResult.Text = "";
-        }
+        }       
 
         private void SetRunSetting()
         {
@@ -226,21 +220,9 @@ namespace Snail.Collector.IDE
                 if (int.TryParse(this.txtUser.Text.Trim(), out int userCount))
                 {
                     this.runSetting.UserCount = userCount;
-                }
-                if (int.TryParse(this.txtReqCount.Text.Trim(), out int reqCount))
-                {
-                    this.runSetting.RequestCount = reqCount;
-                }
+                }                   
             }
-        }
-
-        private void SafeSetRunStatus(Action<RunStatus> func)
-        {
-            lock (this)
-            {
-                func(this.runStatus);
-            }
-        }
+        }       
 
         private void StartWatch()
         {
@@ -248,41 +230,66 @@ namespace Snail.Collector.IDE
             {
                 while (true)
                 {
-                    if (!this.runStatus.Running)
+                    if (!this.isRun)
                     {
+                        System.Threading.Thread.Sleep(1000);
                         continue;
                     }
-                    try
-                    {
-                        this.SafeSetRunStatus((status) => { status.UserCount = this.tasks.RunningTaskCount; });
-                        var content = new StringBuilder();
-                        content.AppendFormat("用户数:{0},", runStatus.UserCount);
-                        content.AppendFormat("请求数:{0},", runStatus.TotalReqCount);
-                        content.AppendFormat("成功数:{0},", runStatus.SuccessReqCount);
-                        content.AppendFormat("失败数:{0},", runStatus.ErrorReqCount);
-                        this.LabStatus.BeginInvoke(new MethodInvoker(() =>
-                        {
-                            this.LabStatus.Text = content.ToString();
-                        }));
-                    }
-                    catch { }
-                    System.Threading.Thread.Sleep(500);
+                    SetRunStatus();
+                    System.Threading.Thread.Sleep(1000);
                 }
             });
+        }
+
+        private void SetRunStatus()
+        {
+            try
+            {                                           
+                this.txtStat.BeginInvoke(new MethodInvoker(() =>
+                {
+                    var content = new StringBuilder();
+                    this.stat.each(item =>
+                    {
+                        content.AppendFormat("用户:{0},总请求:{1},成功:{2},失败:{3},并发:{4}\r\n",
+                        this.stat.TotalUser,
+                        this.stat.TotalReq,
+                        this.stat.TotalReqSuccess,
+                        this.stat.TotalReqError,
+                        this.stat.Concurrent);
+                        content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3}\r\n",
+                            item.Uri,
+                            item.TotalReq,
+                            item.TotalReqSuccess,
+                            item.TotalReqError);
+                    });
+                    this.txtStat.Text = content.ToString();
+                }));
+            }
+            catch { }
         }
 
         #endregion
 
         #region 导出脚本
 
-        public void debug(object content)
+        public void writeLine(object content)
+        {
+            this.SetResult(true, content + "\r\n", true);
+        }
+
+        public void write(object content)
         {
             this.SetResult(true, content, true);
         }
 
+        public void info(object content)
+        {
+            TaskErrorMananger.Instance.Info("task", content.ToString() + "\r\n");
+        }
+
         public void error(object content)
         {
-            this.SetResult(false, content, true);
+            TaskErrorMananger.Instance.Error("task", content.ToString() + "\r\n");
         }
 
         #endregion

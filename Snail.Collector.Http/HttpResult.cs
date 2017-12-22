@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Html;
+﻿using Snail.Collector.Common;
+using Snail.Collector.Html;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,6 +15,8 @@ namespace Snail.Collector.Http
     /// </summary>
     public class HttpResult
     {
+        private string LogSource = "httpResult";
+
         private HttpResponseMessage _response;
 
         public HttpResult(HttpResponseMessage res)
@@ -23,11 +26,21 @@ namespace Snail.Collector.Http
 
         public string toString()
         {
-            if (this._response == null)
+            try
             {
-                return null;
+                if (this._response == null)
+                {
+                    return null;
+                }
+                var result =  this._response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+                // LoggerProxy.Info(LogSource, result);
+                return result;
             }
-            return this._response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "error", ex);
+            }
+            return null;
         }
 
         public bool toFile(string savePath)

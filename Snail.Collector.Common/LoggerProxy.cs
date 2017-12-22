@@ -18,5 +18,10 @@ namespace Snail.Collector.Common
         {
             Logger.Error(source, content, ex);
         }
+
+        public static void Info(string source, string content, Exception ex = null)
+        {
+            Logger.Error(source, content, ex);
+        }
     }
 }

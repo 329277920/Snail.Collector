@@ -51,7 +51,7 @@ namespace Snail.Sync
             this.MinParallelDegree = minParallelDegree;
             this._pool = new Semaphore(this.MaxParallelDegree, this.MaxParallelDegree);
             this._poolWork = new Semaphore(0, this.MaxParallelDegree);
-            this._thds = new Queue<Thread>();
+            this._thds = new Queue<Thread>();            
         }
 
         /// <summary>

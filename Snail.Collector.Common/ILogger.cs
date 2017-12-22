@@ -15,5 +15,12 @@ namespace Snail.Collector.Common
         /// <param name="message"></param>
         /// <param name="ex"></param>
         void Error(string source, string message, Exception ex = null);
+
+        /// <summary>
+        /// 写入提示日志
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="message"></param>
+        void Info(string source, string message);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Common;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -19,9 +20,17 @@ namespace Snail.Collector.Http
 
         public virtual HttpResult get(string uri)
         {
-            var res = this.SendAsync(this.NewHttpReqForGet(uri)).ConfigureAwait(false).GetAwaiter().GetResult();
+            try
+            {
+                var res = this.SendAsync(this.NewHttpReqForGet(uri)).ConfigureAwait(false).GetAwaiter().GetResult();
 
-            return new HttpResult(res);
+                return new HttpResult(res);
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "error", ex);
+            }
+            return null;
         }
 
         public virtual HttpResult postJson(string uri, object data = null)

@@ -23,6 +23,10 @@ String.prototype.toJson = function () {
     return JSON.parse(this);
 }
 
+Object.prototype.toString = function () {
+    return JSON.stringify(this);
+}
+
 String.prototype.format = function (args) {
     if (!arguments || !arguments.length || arguments.length <= 0) {
         return this;

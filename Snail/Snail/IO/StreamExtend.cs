@@ -30,6 +30,7 @@ namespace Snail.IO
                 }
             }
         }
+        
 
         /// <summary>
         /// 读取流中的所有字节

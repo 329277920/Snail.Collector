@@ -216,9 +216,9 @@ namespace Snail.Collector.Core
                 {
                     // 初始化执行脚本                        
                     this._innerSE.Execute(FileUnity.ReadConfigFile(scriptFile));
-                    this._innerSE.Execute(@"function ______tryParse(uri){ 
+                    this._innerSE.Execute(@"function ______tryRun(uri){ 
 try{
-    var result = parse(uri);
+    var result = run(uri);
     if(result == undefined || result == 1 || result == true){
         return 'OK';
     }
@@ -248,7 +248,7 @@ try{
         {
             try
             {                
-                var execRest = this._innerSE.Invoke("______tryParse", uri).ToString();
+                var execRest = this._innerSE.Invoke("______tryRun", uri).ToString();
                 if (execRest != "OK")
                 {
                     throw new Exception(execRest);

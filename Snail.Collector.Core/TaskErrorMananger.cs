@@ -57,5 +57,15 @@ namespace Snail.Collector.Core
                 Logger.Error(string.Format("[{0}] {1}", "errorManager", "执行异常回调失败"), cbEx);
             }
         }
+
+        /// <summary>
+        /// 写入提示日志
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="message"></param>
+        public void Info(string source, string message)
+        {
+            Logger.Info(string.Format("[{0}] {1}", source.ToString(), message));
+        }
     }
 }
