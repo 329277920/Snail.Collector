@@ -82,6 +82,8 @@ namespace Snail.Collector.IDE
             {
                 return;
             }
+            this.txtResult.Text = "";
+            this.txtResult.ForeColor = Color.Black;
             this.isRun = true;
             this.SetRunSetting();                         
             this.stat.clear();

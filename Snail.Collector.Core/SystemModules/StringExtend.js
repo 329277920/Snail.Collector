@@ -1,4 +1,24 @@
-﻿// 截取地址中的文件名
+﻿// 任意对象转Json字符串
+Object.prototype.toString = function () {
+    return JSON.stringify(this);
+}
+
+// 任意对象转form表单格式
+Object.prototype.toForm = function () {
+    var form = "";
+    var idx = 0;
+    for (var key in this) {
+        if (typeof (this[key]) == "function") {
+            continue;
+        }
+        var value = this[key] == undefined ? "" : encodeURIComponent(this[key]);
+        form += ("{2}{0}={1}".format(key, value, idx++ > 0 ? "&" : ""));
+    }
+    return form;
+}
+
+
+// 截取地址中的文件名
 String.prototype.subFileName = function () {
     if (!this) {
         return this;
@@ -23,9 +43,6 @@ String.prototype.toJson = function () {
     return JSON.parse(this);
 }
 
-Object.prototype.toString = function () {
-    return JSON.stringify(this);
-}
 
 String.prototype.format = function (args) {
     if (!arguments || !arguments.length || arguments.length <= 0) {

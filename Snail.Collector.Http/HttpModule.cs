@@ -35,7 +35,7 @@ namespace Snail.Collector.Http
 
         public virtual HttpResult postJson(string uri, object data = null)
         {
-            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json)).ConfigureAwait(false).GetAwaiter().GetResult();
+            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json)).Result;
 
             return new HttpResult(res);
         }
@@ -52,10 +52,26 @@ namespace Snail.Collector.Http
             }
             using (var fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                var res = this.SendAsync(this.NewHttpReqForPostFile(uri, fs, name, fileName)).ConfigureAwait(false).GetAwaiter().GetResult();
+                var res = this.SendAsync(this.NewHttpReqForPostFile(uri, fs, name, fileName)).Result;
                 return new HttpResult(res);
             }
         }
+
+        public virtual HttpResult post(string uri, object data = null)
+        {
+            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.FormData)).Result;
+
+            return new HttpResult(res);
+        }
+
+        //public virtual HttpResult postForm(string uri, object data = null)
+        //{
+        //    var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.FormData)).Result;
+
+        //    return new HttpResult(res);
+        //}
+
+        public Func<string, string, object> postForm;
 
         /// <summary>
         /// 获取默认提交的请求头
@@ -86,11 +102,15 @@ namespace Snail.Collector.Http
             {
                 case HttpContentTypes.Json:
                     strPostData = Snail.Data.Serializer.JsonSerialize(data);
-                    break;               
+                    break;
+                case HttpContentTypes.FormData:
+                    strPostData = data.ToString();
+                    break;                
+
             }
-            if (data != null)
+            if (!string.IsNullOrEmpty(strPostData))
             {
-                req.Content = new StringContent(strPostData, System.Text.Encoding.UTF8, HttpContentTypes.Json);
+                req.Content = new StringContent(strPostData, System.Text.Encoding.UTF8, contentType);
             }
             return req;
         }
