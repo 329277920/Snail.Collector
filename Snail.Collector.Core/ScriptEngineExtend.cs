@@ -9,6 +9,9 @@ using Snail.IO;
 using System.Reflection;
 using Microsoft.ClearScript;
 using Snail.Collector.Core.SystemModules;
+using Snail.Collector.JSAdapter;
+using Snail.Collector.Storage;
+using Snail.Collector.Http;
 
 namespace Snail.Collector.Core
 {
@@ -21,19 +24,29 @@ namespace Snail.Collector.Core
         /// 加载系统扩展模块
         /// </summary>
         internal static void LoadSystemModules(this V8ScriptEngine v8)
-        {
+        {            
             v8.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
-
             v8.AddHostObject("host", new HostModuleExtend());
-
-            v8.AddHostObject("core", new HostTypeCollection("Snail.Collector.Modules.Core"));
-            v8.AddHostType("Array", typeof(Snail.Collector.Modules.Core.JSArray));
-
+            v8.AddHostType("Array", typeof(JSArray));                        
+            v8.AddHostObject("http", new HttpModule());
+            v8.AddHostType(typeof(HttpModuleExtend));
+            v8.AddHostObject("storage", new StorageDataModuleExtend());
+            var storageProxy = Unity.ReadResource("Snail.Collector.Storage.StorageDataModule.js", Assembly.GetAssembly(typeof(StorageDataModule)));
+            if (!string.IsNullOrEmpty(storageProxy))
+            {
+                v8.Execute(storageProxy);
+            }
             var moduleProxy = Unity.ReadResource("Snail.Collector.Core.SystemModules.SystemModule.js");
             if (!string.IsNullOrEmpty(moduleProxy))
             {
                 v8.Execute(moduleProxy);
             }
+            var stringExt = Unity.ReadResource("Snail.Collector.Core.SystemModules.StringExtend.js");
+            if (!string.IsNullOrEmpty(stringExt))
+            {
+                v8.Execute(stringExt);
+            }           
+            v8.AddHostType(typeof(HttpResultExtend));
         }
 
         /// <summary>
@@ -58,7 +71,7 @@ namespace Snail.Collector.Core
         /// <param name="module"></param>
         internal static object LoadModule(this V8ScriptEngine v8, ModuleInfo module)
         {
-            var ass = Assembly.LoadFile(module.Assembly);
+            var ass = Assembly.LoadFile(Path.Combine(module.ExecutePath, module.Assembly));
             if (ass == null)
             {
                 throw new Exception("the path is not found,'" + module.Assembly + "'.");
