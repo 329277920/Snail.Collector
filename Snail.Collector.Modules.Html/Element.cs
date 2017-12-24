@@ -22,13 +22,13 @@ namespace Snail.Collector.Modules.Html
 
         public string innerHTML
         {
-            get => _innerNode.InnerHtml; 
-            set => _innerNode.InnerHtml = value;
+            get { return _innerNode.InnerHtml; }
+            set { _innerNode.InnerHtml = value; }
         }
 
         public string outerHTML
         {
-            get => _innerNode.OuterHtml;           
+            get { return _innerNode.OuterHtml; }          
         }
 
         public string innerText

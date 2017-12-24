@@ -8,7 +8,7 @@ function catchList(url) {
     http.getString(url, function (content) {
         try {
             var doc = html.load(content);
-            var nodes = doc.css("#list").css("div.title>a");
+            var nodes = doc.css("#list>div.title>a");
             for (var i = 0; i < nodes.length; i++) {
                 catchContent(nodes[i].attr("href"));
             }
@@ -23,16 +23,18 @@ function catchContent(url) {
     http.getString(url, function (content) {
         try {
             var doc = html.load(content);
-
+            
             // doc.css("script").remove();
             // doc.css("[class]").removeClass();
             // host.debug(script.length);
 
             // return;
 
-            var title = doc.css("#info").css("div.biaoti>h1").innerText;
+            var title = doc.css("#info>div.biaoti>h1").innerText;
 
             host.debug(title);
+
+            return;
 
             // doc.css("td.content").css("[class]").removeClass();
             
