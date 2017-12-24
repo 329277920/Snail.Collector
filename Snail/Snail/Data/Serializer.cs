@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 namespace Snail.Data
 {
     public class Serializer
-    {
+    {        
         /// <summary>
         /// xml序列化
         /// </summary>
