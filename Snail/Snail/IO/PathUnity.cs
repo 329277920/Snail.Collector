@@ -12,7 +12,7 @@ namespace Snail.IO
     {
         private static Lazy<Type> CurrType => new Lazy<Type>(() => typeof(PathUnity), true);
 
-        /// <summary>
+        /// <summary>  
         /// 在程序执行目录下查找指定的文件或目录
         /// </summary>
         /// <param name="path">路径</param>
