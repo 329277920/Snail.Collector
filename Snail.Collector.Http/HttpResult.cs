@@ -24,7 +24,7 @@ namespace Snail.Collector.Http
             this._response = res;
         }
 
-        public string toString()
+        public string toString(bool autoDispose = true)
         {
             try
             {
@@ -32,8 +32,12 @@ namespace Snail.Collector.Http
                 {
                     return null;
                 }
-                var result =  this._response.Content.ReadAsStringAsync().ConfigureAwait(false).GetAwaiter().GetResult();
-                // LoggerProxy.Info(LogSource, result);
+                var result = this._response.Content.ReadAsStringAsync().Result;
+                if (autoDispose)
+                {
+                    this._response.Dispose();
+                    this._response = null;
+                }                   
                 return result;
             }
             catch (Exception ex)
@@ -43,7 +47,7 @@ namespace Snail.Collector.Http
             return null;
         }
 
-        public bool toFile(string savePath)
+        public bool toFile(string savePath, bool autoDispose = true)
         {
             if (this._response == null)
             {
@@ -56,7 +60,27 @@ namespace Snail.Collector.Http
                     remoteStream.CopyTo(localStream);
                 }
             }
+            if (autoDispose)
+            {
+                this._response.Dispose();
+                this._response = null;
+            }
             return File.Exists(savePath);
+        }
+
+        private void dispose()
+        {
+            try
+            {
+                this._response?.RequestMessage?.Content?.Dispose();
+                this._response?.RequestMessage?.Dispose();
+                this._response?.Content?.Dispose();             
+                this._response?.Dispose();            
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "dispose error.", ex);
+            }
         }
     }
 }

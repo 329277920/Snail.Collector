@@ -65,9 +65,12 @@
     <Compile Include="FrmMain.Designer.cs">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="ITaskSource.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunSetting.cs" />
+    <Compile Include="TaskSource.cs" />
+    <Compile Include="TaskSourceFileItem.cs" />
     <Compile Include="TaskStatistics.cs" />
     <Compile Include="TaskStatisticsItem.cs" />
     <EmbeddedResource Include="Editor.resx">

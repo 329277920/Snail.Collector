@@ -13,9 +13,10 @@ namespace Snail.Collector.Http
     {
         protected string LogSource = "http";
 
-        public HttpModule() : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
+        public HttpModule(int timeOut = 10) : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
-            this.headers = new HttpHeaderCollection();            
+            this.headers = new HttpHeaderCollection();
+            this.Timeout = DateTime.Now.AddSeconds(timeOut) - DateTime.Now;
         }
 
         public virtual HttpResult get(string uri)
@@ -139,7 +140,7 @@ namespace Snail.Collector.Http
                 {
                     reqMsg.Headers.Add(key, this.headers[key]);
                 }
-            }
+            }            
             return reqMsg;
         }
 
