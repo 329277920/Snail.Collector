@@ -162,6 +162,12 @@ namespace Snail.Collector.Core.Storage.DB
             return sqlBuilder.ToString();
         }
 
+        /// <summary>
+        /// 接续运算符（gt(greater than)大于；lt（less than）小于；gte(greater then equal)大于等于；lte(less than equal)小于等于；ne（not equal）不等于）
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
         private static string ParserOperator(string name, JProperty property)
         {           
             var opt = property.Name.Substring(1);
@@ -172,6 +178,16 @@ namespace Snail.Collector.Core.Storage.DB
                     return ParseRefProperty(name, property);
                 case "in":
                     return ParseIn(name, property);
+                case "gt":
+                    return ParseGT(name, property);
+                case "lt":
+                    return ParseLT(name, property);
+                case "gte":
+                    return ParseGTE(name, property);
+                case "lte":
+                    return ParseLTE(name, property);
+                case "ne":
+                    return ParseNE(name, property);
             }
             return null;
         }
@@ -224,6 +240,61 @@ namespace Snail.Collector.Core.Storage.DB
                 return string.Format("({0})", sqlTemp);
             }
             return null;
+        }
+
+        /// <summary>
+        /// 解析大于符号
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static string ParseGT(string condition, JProperty property)
+        {
+            return string.Format("{0}>'{1}'", condition, property.Value);
+        }
+
+        /// <summary>
+        /// 解析小于符号
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static string ParseLT(string condition, JProperty property)
+        {
+            return string.Format("{0}<'{1}'", condition, property.Value);
+        }
+
+        /// <summary>
+        /// 解析大于等于符号
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static string ParseGTE(string condition, JProperty property)
+        {
+            return string.Format("{0}>='{1}'", condition, property.Value);
+        }
+
+        /// <summary>
+        /// 解析小于等于符号
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static string ParseLTE(string condition, JProperty property)
+        {
+            return string.Format("{0}<='{1}'", condition, property.Value);
+        }
+
+        /// <summary>
+        /// 解析不等于符号
+        /// </summary>
+        /// <param name="condition"></param>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        private static string ParseNE(string condition, JProperty property)
+        {
+            return string.Format("{0}!='{1}'", condition, property.Value);
         }
     }
 }

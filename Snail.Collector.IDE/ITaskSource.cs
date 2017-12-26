@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Snail.Collector.IDE
 {
-    public interface ITaskSource
+    public interface ITaskSource: IDisposable
     {
         T Next<T>();
     }

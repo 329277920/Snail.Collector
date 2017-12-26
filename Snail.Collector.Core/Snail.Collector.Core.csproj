@@ -122,6 +122,11 @@
   <ItemGroup>
     <EmbeddedResource Include="SystemModules\StringExtend.js" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SystemModules\Unity.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

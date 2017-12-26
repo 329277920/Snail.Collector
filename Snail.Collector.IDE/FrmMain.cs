@@ -89,6 +89,7 @@ namespace Snail.Collector.IDE
             this.stat.clear();
             this.LabStatus.Text = "正在执行...";
             var scriptFile = this.editor.SelectedItem.BindFile.FullName;
+            var source = new TaskSource();
             await new System.Threading.Tasks.TaskFactory().StartNew(() =>
             {
                 try
@@ -105,6 +106,7 @@ namespace Snail.Collector.IDE
                                     invoker.AddHostObj("console", this);
                                     invoker.AddHostObj("log", this);
                                     invoker.AddHostObj("stat", this.stat);
+                                    invoker.AddHostObj("source", source);
                                     this.stat.addUser();
                                     var runResult = false;
                                     try
@@ -140,6 +142,7 @@ namespace Snail.Collector.IDE
                     SetRunStatus();
                 }
             });
+            source.Dispose();
             this.isRun = false;
         }
 
@@ -250,14 +253,14 @@ namespace Snail.Collector.IDE
                 this.txtStat.BeginInvoke(new MethodInvoker(() =>
                 {
                     var content = new StringBuilder();
-                    this.stat.each(item =>
-                    {
-                        content.AppendFormat("用户:{0},总请求:{1},成功:{2},失败:{3},并发:{4}\r\n",
+                    content.AppendFormat("用户:{0},总请求:{1},成功:{2},失败:{3},并发:{4}\r\n",
                         this.stat.TotalUser,
                         this.stat.TotalReq,
                         this.stat.TotalReqSuccess,
                         this.stat.TotalReqError,
                         this.stat.Concurrent);
+                    this.stat.each(item =>
+                    {                        
                         content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3}\r\n",
                             item.Uri,
                             item.TotalReq,

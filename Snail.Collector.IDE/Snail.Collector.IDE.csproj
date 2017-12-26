@@ -119,6 +119,24 @@
     <Content Include="Default.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Scripts\Demo-Baidu.js" />
+    <Content Include="Scripts\Demo-禅道.js" />
+    <Content Include="Scripts\Demo.js" />
+    <Content Include="Scripts\fdfd.js" />
+    <Content Include="Scripts\Html-Demo-item.js" />
+    <Content Include="Scripts\html-Demo-qq.js" />
+    <Content Include="Scripts\Html-Demo.js" />
+    <Content Include="Scripts\testcate.js" />
+    <Content Include="Scripts\xingneng.js" />
+    <Content Include="Scripts\发送验证码.js" />
+    <Content Include="Scripts\存储测试.js" />
+    <Content Include="Scripts\店铺相关.js" />
+    <Content Include="Scripts\性能测试.js" />
+    <Content Include="Scripts\测试实名认证.js" />
+    <Content Include="Scripts\测试异步.js" />
+    <Content Include="Scripts\测试用户登录.js" />
+    <Content Include="Scripts\购物车.js" />
+    <Content Include="Scripts\资源读取.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

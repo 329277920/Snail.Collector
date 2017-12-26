@@ -10,48 +10,86 @@ namespace Snail.Collector.IDE
     /// <summary>
     /// 任务执行资源管理类
     /// </summary>
-    public class TaskSource
+    public class TaskSource : IDisposable
     {
         /// <summary>
         /// 存储文件资源
         /// </summary>
-        private Dictionary<string, string[]> sourceFromFile;
+        private Dictionary<int, ITaskSource> _source = new Dictionary<int, ITaskSource>();   
 
         /// <summary>
         /// 导入文件到资源中
         /// </summary>
-        /// <param name="filePath"></param>
-        public void importFile(string filePath, string encoding = "utf-8")
+        /// <param name="sourceIdx">指定资源Id</param>
+        /// <param name="filePath">指定文件路径</param>
+        /// <param name="encoding">文件编码</param>
+        public void importFile(int sourceIdx, string filePath, string encoding = "utf-8")
         {
             var file = Snail.IO.PathUnity.GetFullPath(filePath);
             if (file == null)
             {
                 throw new Exception(string.Format("未找到资源文件:'{0}'.", filePath));
             }
-            if (this.sourceFromFile.ContainsKey(filePath))
+            if (this._source.ContainsKey(sourceIdx))
             {
                 return;
             }
             lock (this)
             {
-                if (this.sourceFromFile.ContainsKey(filePath))
+                if (this._source.ContainsKey(sourceIdx))
                 {
                     return;
                 }
-                var encode = Encoding.GetEncoding(encoding);               
+                _source.Add(sourceIdx, new TaskSourceFileItem(file, Encoding.GetEncoding(encoding)));
             }
         }
 
-        private string[] readFile(string filePath, Encoding encode)
+        /// <summary>
+        /// 从指定数据源中读取下一条记录
+        /// </summary>
+        /// <param name="sourceIdx">资源Id号</param>
+        /// <returns></returns>
+        public dynamic next(int sourceIdx)
         {
-            List<string> conts = new List<string>();
-            using (FileStream fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+            if (!this._source.ContainsKey(sourceIdx))
             {
-                using (StreamReader sr = new StreamReader(fs, encode))
+                throw new Exception(string.Format("未找到资源,编号:{0}.", sourceIdx));
+            }
+            var source = this._source[sourceIdx];
+            return source.Next<dynamic>();
+        }
+
+        #region 资源释放
+
+        bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposed)
+                return;
+
+            if (this._source != null)
+            {
+                foreach (var kv in this._source)
                 {
-                    sr.ReadLine();
+                    kv.Value.Dispose();
                 }
             }
+
+            if (disposing)
+            {
+                this._source.Clear();
+            }
+             
+            disposed = true;
         }
+
+        #endregion     
     }
 }

@@ -13,7 +13,7 @@ namespace Snail.Collector.Http
     {
         protected string LogSource = "http";
 
-        public HttpModule(int timeOut = 10) : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
+        public HttpModule(int timeOut = 30) : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
             this.headers = new HttpHeaderCollection();
             this.Timeout = DateTime.Now.AddSeconds(timeOut) - DateTime.Now;

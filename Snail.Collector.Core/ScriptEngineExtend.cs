@@ -29,6 +29,11 @@ namespace Snail.Collector.Core
             v8.AddHostObject("host", new HostModuleExtend());
             v8.AddHostType("Array", typeof(JSArray));                        
             v8.AddHostObject("http", new HttpModule());
+            var unityJs = Unity.ReadResource("Snail.Collector.Core.SystemModules.Unity.js");
+            if (!string.IsNullOrEmpty(unityJs))
+            {
+                v8.Execute(unityJs);
+            }
             var httpProxy = Unity.ReadResource("Snail.Collector.Http.HttpModule.js", Assembly.GetAssembly(typeof(HttpModule)));
             if (!string.IsNullOrEmpty(httpProxy))
             {

@@ -29,7 +29,7 @@ namespace Snail.Collector.Storage
         public virtual int insert(string table, params object[] data)
         {
             IStorageProvider provider = this.getProvider(_cfg);
-            return provider.Insert(table, data);
+            return provider.Insert(table, getEntities(data));
         }
 
         /// <summary>
@@ -42,7 +42,7 @@ namespace Snail.Collector.Storage
         public virtual int update(string table, object filter, params object[] data)
         {
             IStorageProvider provider = this.getProvider(_cfg);
-            return provider.Update(table, filter, data);
+            return provider.Update(table, filter, getEntities(data));
         }
 
         /// <summary>
@@ -55,18 +55,37 @@ namespace Snail.Collector.Storage
         public virtual int delete(string table, object filter, params object[] data)
         {
             IStorageProvider provider = this.getProvider(_cfg);
-            return provider.Delete(table, filter, data);
+            return provider.Delete(table, filter, getEntities(data));
+        }
+
+        private object[] getEntities(params object[] data)
+        {
+            var entities = new List<object>();
+            if (data == null)
+            {
+                return entities.ToArray();                    
+            }
+            foreach (var item in data)
+            {
+                if (item is JSArray)
+                {
+                    entities.AddRange(item as JSArray);
+                    continue;
+                }
+                entities.Add(item);
+            }
+            return entities.ToArray();
         }
 
         /// <summary>
         /// 查询一组记录
         /// </summary>
-        public Func<object, string, object, JSArray> select;
+        public Func<string, object, JSArray> select;
 
         /// <summary>
         /// 查询单条记录
         /// </summary>
-        public Func<object, string, object, object> single;
+        public Func<string, object, object> single;
 
         #region 私有成员
 
@@ -83,15 +102,14 @@ namespace Snail.Collector.Storage
 
         /// <summary>
         /// 查询记录
-        /// </summary>
-        /// <param name="config">存储配置</param>
+        /// </summary>       
         /// <param name="table">数据表名称</param>
         /// <param name="filter">过滤条件</param>
         /// <returns>返回js数组</returns>
-        public JSArray InnerSelect(DbProviderConfig config, string table, object filter)
+        public JSArray InnerSelect(string table, object filter)
         {
             JSArray result = new JSArray();
-            IStorageProvider provider = this.getProvider(config);
+            IStorageProvider provider = this.getProvider(this._cfg);
             var data = provider.Select<dynamic>(table, filter);
             if (data != null)
             {
@@ -105,14 +123,13 @@ namespace Snail.Collector.Storage
 
         /// <summary>
         /// 查询记录单条
-        /// </summary>
-        /// <param name="config">存储配置</param>
+        /// </summary>        
         /// <param name="table">数据表名称</param>
         /// <param name="filter">过滤条件</param>
         /// <returns>返回js数组</returns>
-        public dynamic InnerSelectSingle(DbProviderConfig config, string table, object filter)
+        public dynamic InnerSelectSingle(string table, object filter)
         {
-            JSArray array = this.InnerSelect(config, table, filter);
+            JSArray array = this.InnerSelect(table, filter);
             if (array == null || array.Count <= 0)
             {
                 return null;
