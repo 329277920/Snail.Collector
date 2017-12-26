@@ -11,14 +11,20 @@ namespace Snail.Collector.IDE
     /// </summary>
     public class TaskStatistics
     {
+        private bool cancelToken;
+
         public TaskStatistics()
         {
+            this.cancelToken = true;
             this.clear();
-
-            new TaskFactory().StartNew(() => 
+            new TaskFactory().StartNew(() =>
             {
                 while (true)
                 {
+                    if (this.cancelToken)
+                    {
+                        return;
+                    }
                     if (this.TotalReq <= 0)
                     {
                         System.Threading.Thread.Sleep(1000);
@@ -29,6 +35,17 @@ namespace Snail.Collector.IDE
                     System.Threading.Thread.Sleep(1000);
                 }
             });
+        }
+
+        public void Start()
+        {
+            this.clear();
+            this.cancelToken = true;
+        }
+
+        public void Stop()
+        {
+            this.cancelToken = false;
         }
 
         private int _preTotalReq = 0;
@@ -155,6 +172,7 @@ namespace Snail.Collector.IDE
                 this.TotalReqSuccess = 0;
                 this.TotalUser = 0;
                 this.Concurrent = 0;
+                this._preTotalReq = 0;
             }
         }
     }

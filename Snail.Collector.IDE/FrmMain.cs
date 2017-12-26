@@ -85,8 +85,8 @@ namespace Snail.Collector.IDE
             this.txtResult.Text = "";
             this.txtResult.ForeColor = Color.Black;
             this.isRun = true;
-            this.SetRunSetting();                         
-            this.stat.clear();
+            this.SetRunSetting();                                    
+            this.stat.Start();
             this.LabStatus.Text = "正在执行...";
             var scriptFile = this.editor.SelectedItem.BindFile.FullName;
             var source = new TaskSource();
@@ -271,6 +271,20 @@ namespace Snail.Collector.IDE
                 }));
             }
             catch { }
+        }
+
+        /// <summary>
+        /// 设置结束
+        /// </summary>
+        private void SetStop()
+        {
+            this.isRun = false;
+            this.LabStatus.BeginInvoke(new MethodInvoker(() =>
+            {
+                this.LabStatus.Text = "已结束";
+            }));
+            SetRunStatus();
+            this.stat.Stop();
         }
 
         #endregion
