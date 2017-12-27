@@ -21,17 +21,23 @@ namespace Snail.Collector.IDE
             {
                 while (true)
                 {
-                    if (this.cancelToken)
-                    {
-                        return;
-                    }
-                    if (this.TotalReq <= 0)
+                    if (this.cancelToken || this.TotalReq <= 0)
                     {
                         System.Threading.Thread.Sleep(1000);
                         continue;
                     }
                     this.Concurrent = this.TotalReq - this._preTotalReq;
                     this._preTotalReq = this.TotalReq;
+
+                    // 计算每个接口的每秒处理请求数
+                    lock (this)
+                    {
+                        this.TotalTimeSpan = DateTime.Now - this.StartTime;
+                        this.items.ForEach(item =>
+                        {
+                            item.setConcurrent();
+                        });
+                    }
                     System.Threading.Thread.Sleep(1000);
                 }
             });
@@ -40,12 +46,12 @@ namespace Snail.Collector.IDE
         public void Start()
         {
             this.clear();
-            this.cancelToken = true;
+            this.cancelToken = false;
         }
 
         public void Stop()
         {
-            this.cancelToken = false;
+            this.cancelToken = true;
         }
 
         private int _preTotalReq = 0;
@@ -76,9 +82,24 @@ namespace Snail.Collector.IDE
         public int TotalUser { get; private set; }
 
         /// <summary>
+        /// 总耗时
+        /// </summary>
+        public TimeSpan TotalTimeSpan { get; private set; }
+
+        /// <summary>
         /// 每秒并发数
         /// </summary>
         public int Concurrent { get; private set; }
+
+        /// <summary>
+        /// 开始时间
+        /// </summary>
+        public DateTime StartTime { get; private set; }             
+
+        /// <summary>
+        /// 结束时间
+        /// </summary>
+        public DateTime EndTime { get; set; }
 
         /// <summary>
         /// 注册统计接口地址
@@ -115,7 +136,8 @@ namespace Snail.Collector.IDE
                 item.TotalReq += num;
                 this.TotalReq += num;
                 this.TotalReqError += num;
-            }
+                item.end();
+            }            
         }
 
         /// <summary>
@@ -136,7 +158,44 @@ namespace Snail.Collector.IDE
                 item.TotalReq += num;
                 this.TotalReq += num;
                 this.TotalReqSuccess += num;
+                item.end();
+            }          
+        }
+
+        /// <summary>
+        /// 开始请求接口
+        /// </summary>
+        /// <param name="idx"></param>
+        public void start(int idx)
+        {
+            TaskStatisticsItem item = null;
+            lock (this)
+            {
+                item = this.items.FirstOrDefault((obj) => obj.Index == idx);
+                if (item == null)
+                {
+                    return;
+                }                
             }
+            item.start();
+        }
+
+        /// <summary>
+        /// 结束请求接口
+        /// </summary>
+        /// <param name="idx"></param>
+        public void end(int idx)
+        {
+            TaskStatisticsItem item = null;
+            lock (this)
+            {
+                item = this.items.FirstOrDefault((obj) => obj.Index == idx);
+                if (item == null)
+                {
+                    return;
+                }
+            }
+            item.end();
         }
 
         /// <summary>
@@ -173,7 +232,8 @@ namespace Snail.Collector.IDE
                 this.TotalUser = 0;
                 this.Concurrent = 0;
                 this._preTotalReq = 0;
+                this.StartTime = DateTime.Now;                
             }
-        }
+        }         
     }
 }

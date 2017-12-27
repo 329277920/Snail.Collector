@@ -253,19 +253,24 @@ namespace Snail.Collector.IDE
                 this.txtStat.BeginInvoke(new MethodInvoker(() =>
                 {
                     var content = new StringBuilder();
-                    content.AppendFormat("用户:{0},总请求:{1},成功:{2},失败:{3},并发:{4}\r\n",
+                    var totalTime = this.stat.TotalTimeSpan;
+                    content.AppendFormat("当前客户端:{0},总请求:{1},成功:{2},失败:{3},并发:{4},总耗时:{5}\r\n",
                         this.stat.TotalUser,
                         this.stat.TotalReq,
                         this.stat.TotalReqSuccess,
                         this.stat.TotalReqError,
-                        this.stat.Concurrent);
+                        this.stat.Concurrent,
+                        string.Format("{0}:{1}:{2}", totalTime.Minutes, totalTime.Seconds, totalTime.Milliseconds));
                     this.stat.each(item =>
-                    {                        
-                        content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3}\r\n",
+                    {
+                        content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3},最大:{4},最小:{5},当前并发:{6}\r\n",
                             item.Uri,
                             item.TotalReq,
                             item.TotalReqSuccess,
-                            item.TotalReqError);
+                            item.TotalReqError,
+                            item.MaxTime.Minutes * 60000 + item.MaxTime.Seconds * 1000 + item.MaxTime.Milliseconds,
+                            item.MinTime.Minutes * 60000 + item.MinTime.Seconds * 1000 + item.MinTime.Milliseconds,
+                            item.Concurrent);
                     });
                     this.txtStat.Text = content.ToString();
                 }));

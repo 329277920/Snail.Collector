@@ -42,11 +42,11 @@ namespace Snail.Collector.IDE
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtUser = new System.Windows.Forms.TextBox();
             this.labUser = new System.Windows.Forms.Label();
+            this.editor = new Snail.Collector.IDE.Editor();
+            this.txtStat = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.LabStatus = new System.Windows.Forms.Label();
             this.txtResult = new System.Windows.Forms.RichTextBox();
-            this.txtStat = new System.Windows.Forms.RichTextBox();
-            this.editor = new Snail.Collector.IDE.Editor();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -162,11 +162,33 @@ namespace Snail.Collector.IDE
             // labUser
             // 
             this.labUser.AutoSize = true;
-            this.labUser.Location = new System.Drawing.Point(17, 23);
+            this.labUser.Location = new System.Drawing.Point(17, 20);
             this.labUser.Name = "labUser";
             this.labUser.Size = new System.Drawing.Size(60, 15);
             this.labUser.TabIndex = 14;
-            this.labUser.Text = "用户数:";
+            this.labUser.Text = "客户端:";
+            // 
+            // editor
+            // 
+            this.editor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.editor.Location = new System.Drawing.Point(0, 54);
+            this.editor.Name = "editor";
+            this.editor.Size = new System.Drawing.Size(365, 468);
+            this.editor.TabIndex = 11;
+            // 
+            // txtStat
+            // 
+            this.txtStat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtStat.BackColor = System.Drawing.Color.White;
+            this.txtStat.Location = new System.Drawing.Point(2, 55);
+            this.txtStat.Name = "txtStat";
+            this.txtStat.ReadOnly = true;
+            this.txtStat.Size = new System.Drawing.Size(421, 121);
+            this.txtStat.TabIndex = 10;
+            this.txtStat.Text = "";
             // 
             // groupBox1
             // 
@@ -201,28 +223,6 @@ namespace Snail.Collector.IDE
             this.txtResult.Size = new System.Drawing.Size(421, 340);
             this.txtResult.TabIndex = 8;
             this.txtResult.Text = "";
-            // 
-            // txtStat
-            // 
-            this.txtStat.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtStat.BackColor = System.Drawing.Color.White;
-            this.txtStat.Location = new System.Drawing.Point(2, 55);
-            this.txtStat.Name = "txtStat";
-            this.txtStat.ReadOnly = true;
-            this.txtStat.Size = new System.Drawing.Size(421, 121);
-            this.txtStat.TabIndex = 10;
-            this.txtStat.Text = "";
-            // 
-            // editor
-            // 
-            this.editor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editor.Location = new System.Drawing.Point(0, 54);
-            this.editor.Name = "editor";
-            this.editor.Size = new System.Drawing.Size(365, 468);
-            this.editor.TabIndex = 11;
             // 
             // FrmMain
             // 

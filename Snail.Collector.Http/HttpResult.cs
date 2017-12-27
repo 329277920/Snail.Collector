@@ -37,7 +37,7 @@ namespace Snail.Collector.Http
                 {
                     this._response.Dispose();
                     this._response = null;
-                }                   
+                }
                 return result;
             }
             catch (Exception ex)

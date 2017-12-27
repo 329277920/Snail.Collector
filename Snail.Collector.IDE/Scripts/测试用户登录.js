@@ -15,18 +15,21 @@
     http.headers.add("market","appstore");
     http.headers.add("appversion","ios-25");
     
-    for(var i=0;i<500;i++)
+    for(var i=0;i<1;i++)
     {        
         var mobile = source.next(1).userName;
-        console.writeLine(source.next(1).userName);    
+        // console.writeLine(source.next(1).userName);   
+        
+        stat.start(1);
         var rest = http.postJson(baseUri + "user/v1/app/getcode",{ mobile:mobile,smstype:1 }).toJson();    
         
         if(!rest || rest.code != 1){
-              stat.error(1);
+              stat.error(1);             
               continue;
         }          
-        stat.success(1);
-           
+        stat.success(1);         
+        
+        stat.start(2);
         rest = http.postJson(baseUri + "user/v1/app/login",{mobile: mobile,smscode: "258456"}).toJson();
         if(!rest || rest.code != 1){
               stat.error(2);
