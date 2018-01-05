@@ -7,12 +7,15 @@
     var spus_Sale = new Array();
     spus_Sale.push(4875788,2862407,9324403,2728308,2533460);
 
-    var baseUri = "http://devapi.manjd.com/api/";
-    // var baseUri = "http://192.168.10.82:9020/";
+    // var baseUri = "http://devapi.manjd.com/api/";
+    var baseUri = "http://192.168.10.82:9020/";
+    // var baseUri = "http://devapi.manjd.com/api/";
+    // var baseUri= "http://checkapi.manjd.com/api/";
            
     http.headers.add("nonce","1.0.0");
     http.headers.add("market","appstore");
     http.headers.add("appversion","ios-25");
+    http.headers.add("source","h5");
 
     var rest = http.postJson(baseUri + "user/v1/app/getcode",{ mobile:mobile,smstype:1 }).toJson();    
     console.writeLine("发送验证码:" + rest.code);
@@ -31,8 +34,8 @@
     rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:2,content:"" }).toJson();
     console.writeLine("修改店铺描述:" + rest.code + ",msg:" + rest.message);
 
-    rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
-    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename);   
+     rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"满金" }).toJson();
+    console.writeLine("修改店铺名称:" + rest.code + ",msg:" + rest.message);
 
     rest = http.get(baseUri + "shop/v1/app/stat").toJson();
     console.writeLine("获取店铺统计信息:" + rest.code + ",商品总数:" + rest.data.totalgoods);   
@@ -48,6 +51,9 @@
     
     rest = http.get(baseUri + "shop/v1/app/getSignPics").toJson();
     console.writeLine("获取默认店招图:" + rest.code + ",data:" + rest.data);      
+    
+     rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
+    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic);  
     
     spus.each(function(spuId){
     	rest = http.postJson(baseUri + "shop/v1/app/editGoods",{ spuId:spuId,actionType:1 }).toJson();

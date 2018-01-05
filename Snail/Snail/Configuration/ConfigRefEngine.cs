@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MJB.ThirdService.Common.Configuration
+namespace Snail.Configuration
 {
     /// <summary>
     /// 配置文件刷新引擎

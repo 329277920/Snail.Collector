@@ -163,7 +163,12 @@ namespace Snail.Data
         /// <returns>返回对象实体</returns>
         public static object JsonDeserialize(string json)
         {
-            return JsonConvert.DeserializeObject(json);
+            return JsonConvert.DeserializeObject(json);           
+        }
+
+        public static void JsonPopulateObject(string json, object target)
+        {
+            JsonConvert.PopulateObject(json, target);
         }
 
         /// <summary>

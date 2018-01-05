@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Snail.IO;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using Snail.IO;
 
-namespace MJB.ThirdService.Common.Configuration
+namespace Snail.Configuration
 {
     /// <summary>
     /// 配置文件管理器
@@ -149,6 +147,7 @@ namespace MJB.ThirdService.Common.Configuration
                         try
                         {
                             parser.Fill(fs);
+                            return parser;
                         }
                         catch (Exception ex)
                         {

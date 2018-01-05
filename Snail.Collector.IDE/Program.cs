@@ -20,6 +20,7 @@ namespace Snail.Collector.IDE
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
         {
+            
             var exx = e;
         }
 

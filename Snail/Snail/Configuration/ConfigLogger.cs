@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 
-namespace MJB.ThirdService.Common.Configuration
+namespace Snail.Configuration
 {
     /// <summary>
     /// 配置管理日志写入类

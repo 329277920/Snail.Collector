@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace MJB.ThirdService.Common.Configuration
+﻿ 
+namespace Snail.Configuration
 {
     /// <summary>
     /// 日志ID列表
