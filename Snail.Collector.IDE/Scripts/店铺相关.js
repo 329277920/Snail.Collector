@@ -1,7 +1,7 @@
 ﻿function run() {    
 
     // 测试参数
-    var mobile = "13058037012";
+    var mobile = "13058037021";
     var spus = new Array();
     spus.push(5780808,2862407,2319964,2383467,7952636);
     var spus_Sale = new Array();
@@ -34,7 +34,7 @@
     rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:2,content:"" }).toJson();
     console.writeLine("修改店铺描述:" + rest.code + ",msg:" + rest.message);
 
-     rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"满金" }).toJson();
+    rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"好店铺1" }).toJson();
     console.writeLine("修改店铺名称:" + rest.code + ",msg:" + rest.message);
 
     rest = http.get(baseUri + "shop/v1/app/stat").toJson();
@@ -53,7 +53,7 @@
     console.writeLine("获取默认店招图:" + rest.code + ",data:" + rest.data);      
     
      rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
-    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic);  
+    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic+"描述:" + rest.data.description);  
     
     spus.each(function(spuId){
     	rest = http.postJson(baseUri + "shop/v1/app/editGoods",{ spuId:spuId,actionType:1 }).toJson();
