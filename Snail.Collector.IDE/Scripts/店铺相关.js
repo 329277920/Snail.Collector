@@ -1,14 +1,14 @@
 ﻿function run() {    
 
     // 测试参数
-    var mobile = "13058037021";
+    var mobile = "13058037023";
     var spus = new Array();
     spus.push(5780808,2862407,2319964,2383467,7952636);
     var spus_Sale = new Array();
     spus_Sale.push(4875788,2862407,9324403,2728308,2533460);
 
-    // var baseUri = "http://devapi.manjd.com/api/";
-    var baseUri = "http://192.168.10.82:9020/";
+    var baseUri = "http://devapi.manjd.com/api/";
+    // var baseUri = "http://192.168.10.82:9020/";
     // var baseUri = "http://devapi.manjd.com/api/";
     // var baseUri= "http://checkapi.manjd.com/api/";
            
