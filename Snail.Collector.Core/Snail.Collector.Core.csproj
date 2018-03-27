@@ -102,7 +102,7 @@
       <Project>{865dd8dc-1703-4082-8147-eea0de64e698}</Project>
       <Name>Snail.Collector.Storage</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Snail\Snail\Snail.csproj">
+    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
       <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
       <Name>Snail</Name>
     </ProjectReference>

@@ -1,5 +1,5 @@
 ﻿using Snail.Collector.Common;
-using Snail.Log;
+using SnailCore.Log;
 using System;
 using System.Collections.Generic;
 using System.Linq;

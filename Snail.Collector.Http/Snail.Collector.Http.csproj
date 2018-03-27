@@ -57,7 +57,7 @@
       <Project>{5aa3c17e-03f5-4071-a7cf-fdf47bb00225}</Project>
       <Name>Snail.Collector.Html</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Snail\Snail\Snail.csproj">
+    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
       <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
       <Name>Snail</Name>
     </ProjectReference>

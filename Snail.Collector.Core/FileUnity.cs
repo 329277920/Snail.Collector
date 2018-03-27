@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Snail.IO;
+using SnailCore.IO;
 using System.IO;
 
 namespace Snail.Collector.Core

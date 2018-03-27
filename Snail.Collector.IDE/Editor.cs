@@ -81,7 +81,7 @@ namespace Snail.Collector.IDE
             item.TagPage = tabPage;
             if (filePath?.Length > 0)
             {
-                var fullPath = Snail.IO.PathUnity.GetFullPath(filePath);
+                var fullPath = SnailCore.IO.PathUnity.GetFullPath(filePath);
                 if (string.IsNullOrEmpty(fullPath))
                 {
                     this.OnError(this, new EditorExceptionEventArgs()
@@ -184,12 +184,12 @@ namespace Snail.Collector.IDE
             filePath = filePath ?? "Default.js";
             try
             {
-                var path = Snail.IO.PathUnity.GetFullPath(filePath);
+                var path = SnailCore.IO.PathUnity.GetFullPath(filePath);
                 if (string.IsNullOrEmpty(path))
                 {
                     return null;
                 }
-                return Snail.IO.FileUnity.ReadStringAsync(path, Encoding.UTF8).ConfigureAwait(false).GetAwaiter().GetResult();
+                return SnailCore.IO.FileUnity.ReadStringAsync(path, Encoding.UTF8).ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -204,7 +204,7 @@ namespace Snail.Collector.IDE
 
         private void Save(string filePath, string value)
         {
-            Snail.IO.FileUnity.Save(filePath, value, Encoding.UTF8);
+            SnailCore.IO.FileUnity.Save(filePath, value, Encoding.UTF8);
         }
         #endregion
     }

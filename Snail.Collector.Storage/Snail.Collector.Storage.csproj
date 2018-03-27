@@ -119,9 +119,9 @@
       <Project>{87a30de7-804c-474f-b1e9-fc38b8bcfa08}</Project>
       <Name>Snail.Collector.Common</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Snail\Snail\Snail.csproj">
+    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
       <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
-      <Name>Snail</Name>
+      <Name>SnailCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

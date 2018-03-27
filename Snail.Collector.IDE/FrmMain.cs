@@ -16,7 +16,7 @@ namespace Snail.Collector.IDE
     {       
         private RunSetting runSetting;
 
-        private Snail.Sync.Parallel tasks;
+        private SnailCore.Sync.Parallel tasks;
 
         private TaskStatistics stat;
 
@@ -94,7 +94,7 @@ namespace Snail.Collector.IDE
             {
                 try
                 {
-                    using (tasks = new Snail.Sync.Parallel(this.runSetting.UserCount))
+                    using (tasks = new SnailCore.Sync.Parallel(this.runSetting.UserCount))
                     {
                         tasks.ForEach<int>(new int[this.runSetting.UserCount], (item) =>
                         {
@@ -174,12 +174,12 @@ namespace Snail.Collector.IDE
         {
             try
             {
-                var path = Snail.IO.PathUnity.GetFullPath("Default.js");
+                var path = SnailCore.IO.PathUnity.GetFullPath("Default.js");
                 if (string.IsNullOrEmpty(path))
                 {
                     return null;
                 }
-                return Snail.IO.FileUnity.ReadStringAsync(path, Encoding.UTF8).ConfigureAwait(false).GetAwaiter().GetResult();
+                return SnailCore.IO.FileUnity.ReadStringAsync(path, Encoding.UTF8).ConfigureAwait(false).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {

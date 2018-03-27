@@ -42,7 +42,7 @@ namespace Snail.Collector.IDE
                     var value = this.sr.ReadLine();                     
                     if (!string.IsNullOrEmpty(value))
                     {
-                        return Snail.Data.Serializer.JsonDeserialize<T>(value);
+                        return SnailCore.Data.Serializer.JsonDeserialize<T>(value);
                     }
                     if (this.fs.Position == this.fs.Length)
                     {

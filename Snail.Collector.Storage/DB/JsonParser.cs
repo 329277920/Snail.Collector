@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Snail.Data;
+using SnailCore.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

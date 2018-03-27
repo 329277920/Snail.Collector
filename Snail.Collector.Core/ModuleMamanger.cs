@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using Snail.IO;
+using SnailCore.IO;
 using System.IO;
-using Snail.Data;
+using SnailCore.Data;
 using Snail.Collector.Core.Configuration;
 using Snail.Collector.Common;
 

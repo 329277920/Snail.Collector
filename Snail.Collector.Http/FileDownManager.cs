@@ -1,5 +1,5 @@
 ﻿
-using Snail.Sync;
+using SnailCore.Sync;
 using System;
 using System.Collections.Generic;
 using System.Linq;

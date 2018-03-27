@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Snail.IO;
+using SnailCore.IO;
 using System.Reflection;
 using Microsoft.ClearScript;
 using Snail.Collector.Core.SystemModules;

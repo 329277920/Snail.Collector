@@ -25,7 +25,7 @@ namespace Snail.Collector.IDE
         /// <param name="encoding">文件编码</param>
         public void importFile(int sourceIdx, string filePath, string encoding = "utf-8")
         {
-            var file = Snail.IO.PathUnity.GetFullPath(filePath);
+            var file = SnailCore.IO.PathUnity.GetFullPath(filePath);
             if (file == null)
             {
                 throw new Exception(string.Format("未找到资源文件:'{0}'.", filePath));

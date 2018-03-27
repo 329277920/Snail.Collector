@@ -1,5 +1,5 @@
-﻿using Snail.Data;
-using Snail.IO;
+﻿using SnailCore.Data;
+using SnailCore.IO;
 using System;
 using System.Text;
 

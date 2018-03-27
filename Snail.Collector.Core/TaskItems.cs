@@ -2,7 +2,7 @@
 using Snail.Collector.Core.Configuration;
 using Snail.Collector.Storage;
 using Snail.Collector.Storage.DB;
-using Snail.Data;
+using SnailCore.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +20,7 @@ namespace Snail.Collector.Core
 
         public static TaskItems Instance = new Lazy<TaskItems>(() =>
         {
-            var file = Snail.IO.PathUnity.GetFullPath(ConfigManager.Current.DatabaseFilePath);
+            var file = SnailCore.IO.PathUnity.GetFullPath(ConfigManager.Current.DatabaseFilePath);
             if (string.IsNullOrEmpty(file))
             {
                 throw new Exception("failed to find the file with path '" + ConfigManager.Current.DatabaseFilePath + "'.");

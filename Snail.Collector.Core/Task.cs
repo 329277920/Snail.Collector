@@ -3,7 +3,7 @@ using Snail.Collector.Common;
 using Snail.Collector.Core.Configuration;
 using Snail.Collector.Core.SystemModules;
 using Snail.Collector.Http;
-using Snail.Data;
+using SnailCore.Data;
 using System;
 using System.Collections.Generic;
 using System.Threading;

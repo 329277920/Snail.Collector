@@ -102,7 +102,7 @@ namespace Snail.Collector.Http
             switch (contentType)
             {
                 case HttpContentTypes.Json:
-                    strPostData = Snail.Data.Serializer.JsonSerialize(data);
+                    strPostData = SnailCore.Data.Serializer.JsonSerialize(data);
                     break;
                 case HttpContentTypes.FormData:
                     strPostData = data.ToString();

@@ -47,7 +47,7 @@ namespace Snail.Collector.Core
         /// <returns>返回任务对象</returns>
         public static Task InitTask(string cfgFile)
         {
-            var fullPath = Snail.IO.PathUnity.GetFullPath(cfgFile);
+            var fullPath = SnailCore.IO.PathUnity.GetFullPath(cfgFile);
             if (string.IsNullOrEmpty(fullPath))
             {
                 throw new Exception("could not find the file with path:" + cfgFile);
@@ -110,7 +110,7 @@ namespace Snail.Collector.Core
         /// <param name="cfgFolder">配置文件目录</param>
         public static void InitTasks(string cfgFolder)
         {
-            cfgFolder = Snail.IO.PathUnity.GetFullPath(cfgFolder);
+            cfgFolder = SnailCore.IO.PathUnity.GetFullPath(cfgFolder);
             if (string.IsNullOrEmpty(cfgFolder))
             {
                 throw new Exception("cannot found the folder with path : '" + cfgFolder + "'");
