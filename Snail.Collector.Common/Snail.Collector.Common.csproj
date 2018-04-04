@@ -53,11 +53,5 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
-      <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
-      <Name>Snail</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

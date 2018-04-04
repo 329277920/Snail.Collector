@@ -115,13 +115,13 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SnailCore\SnailCore\SnailCore.csproj">
+      <Project>{8080459a-d686-4055-a864-76cd18a699cd}</Project>
+      <Name>SnailCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snail.Collector.Common\Snail.Collector.Common.csproj">
       <Project>{87a30de7-804c-474f-b1e9-fc38b8bcfa08}</Project>
       <Name>Snail.Collector.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
-      <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
-      <Name>SnailCore</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,7 +1,7 @@
 ﻿function run() {    
 
     // 测试参数
-    var mobile = "13058037023";
+    var mobile = "18102330016";
     var spus = new Array();
     spus.push(5780808,2862407,2319964,2383467,7952636);
     var spus_Sale = new Array();
@@ -15,27 +15,42 @@
     http.headers.add("nonce","1.0.0");
     http.headers.add("market","appstore");
     http.headers.add("appversion","ios-25");
-    http.headers.add("source","h5");
+    http.headers.add("source","h5");    
 
     var rest = http.postJson(baseUri + "user/v1/app/getcode",{ mobile:mobile,smstype:1 }).toJson();    
     console.writeLine("发送验证码:" + rest.code);
 
     // return 1;
 
-    rest = http.postJson(baseUri + "user/v1/app/login",{mobile: mobile,smscode: "258456"}).toJson();
+    rest = http.postJson(baseUri + "user/v1/app/login",
+           {mobile: mobile,smscode: "258456",businesstype:"1"}).toJson();
     console.writeLine("用户登录:" + rest.code + ",token:" + rest.data.token);
     http.headers.add("token",rest.data.token);
     
-    // return 1;
+    rest = http.get(baseUri + "shop/v1/app/checkStoreName").toString();
+    console.writeLine("校验店铺名称是否修改:" + rest);  
+    
+    rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
+    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic+"描述:" + rest.data.description +"是否修改店铺名称:" + rest.data.modifiedstorename);  
+    
+    rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"18102330016的店铺" }).toJson();
+    console.writeLine("修改店铺名称:" + rest.code + ",msg:" + rest.message);
+    
+    return 1;
        
-    rest = http.postJson(baseUri + "shop/v1/app/create").toJson();
-    console.writeLine("创建店铺:" + rest.code + ",msg:" + rest.message);
+    //rest = http.postJson(baseUri + "shop/v1/app/create").toJson();
+    //console.writeLine("创建店铺:" + rest.code + ",msg:" + rest.message);
 
     rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:2,content:"" }).toJson();
-    console.writeLine("修改店铺描述:" + rest.code + ",msg:" + rest.message);
-
-    rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"好店铺1" }).toJson();
-    console.writeLine("修改店铺名称:" + rest.code + ",msg:" + rest.message);
+    console.writeLine("修改店铺描述:" + rest.code + ",msg:" + rest.message);  
+    
+    rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
+    console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic+"描述:" + rest.data.description +"是否修改店铺名称:" + rest.data.modifiedstorename);  
+    
+    rest = http.get(baseUri + "shop/v1/app/checkStoreName").toString();
+    console.writeLine("校验店铺名称是否修改:" + rest);  
+    
+    return 1;
 
     rest = http.get(baseUri + "shop/v1/app/stat").toJson();
     console.writeLine("获取店铺统计信息:" + rest.code + ",商品总数:" + rest.data.totalgoods);   
@@ -52,7 +67,7 @@
     rest = http.get(baseUri + "shop/v1/app/getSignPics").toJson();
     console.writeLine("获取默认店招图:" + rest.code + ",data:" + rest.data);      
     
-     rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
+    rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
     console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic+"描述:" + rest.data.description);  
     
     spus.each(function(spuId){

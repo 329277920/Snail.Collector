@@ -49,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SnailCore\SnailCore\SnailCore.csproj">
+      <Project>{8080459a-d686-4055-a864-76cd18a699cd}</Project>
+      <Name>SnailCore</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Snail.Collector.Common\Snail.Collector.Common.csproj">
       <Project>{87A30DE7-804C-474F-B1E9-FC38B8BCFA08}</Project>
       <Name>Snail.Collector.Common</Name>
@@ -56,10 +60,6 @@
     <ProjectReference Include="..\Snail.Collector.Html\Snail.Collector.Html.csproj">
       <Project>{5aa3c17e-03f5-4071-a7cf-fdf47bb00225}</Project>
       <Name>Snail.Collector.Html</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Snail\Snail\SnailCore.csproj">
-      <Project>{d774cf97-bff1-416e-99f4-307c4c49b1cd}</Project>
-      <Name>Snail</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
