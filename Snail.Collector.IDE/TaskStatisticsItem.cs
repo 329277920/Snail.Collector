@@ -64,7 +64,15 @@ namespace Snail.Collector.IDE
         {
             get; private set;
         }
-       
+
+        /// <summary>
+        /// 平均每秒并发处理请求数
+        /// </summary>
+        public int AvgConcurrent
+        {
+            get; private set;
+        }
+
         public TimeSpan MinTime { get; private set; }
 
         public TimeSpan MaxTime { get; private set; }
@@ -157,9 +165,10 @@ namespace Snail.Collector.IDE
         {
             lock (this)
             {
-                this.Concurrent = this.TotalReq - this._preTotalReq;
+                this.Concurrent = this.TotalReq - this._preTotalReq;              
                 this._preTotalReq = this.TotalReq;
                 this.AllConcurrent.Add(this.Concurrent);
+                this.AvgConcurrent = this.AllConcurrent.Sum() / this.AllConcurrent.Count;
             }
         }
 

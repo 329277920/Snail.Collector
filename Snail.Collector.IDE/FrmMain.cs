@@ -263,14 +263,15 @@ namespace Snail.Collector.IDE
                         string.Format("{0}:{1}:{2}", totalTime.Minutes, totalTime.Seconds, totalTime.Milliseconds));
                     this.stat.each(item =>
                     {
-                        content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3},最大:{4},最小:{5},当前并发:{6}\r\n",
+                        content.AppendFormat("{0},总请求:{1},成功:{2},失败:{3},最大:{4},最小:{5},当前并发:{6},平均:{7}\r\n",
                             item.Uri,
                             item.TotalReq,
                             item.TotalReqSuccess,
                             item.TotalReqError,
                             item.MaxTime.Minutes * 60000 + item.MaxTime.Seconds * 1000 + item.MaxTime.Milliseconds,
                             item.MinTime.Minutes * 60000 + item.MinTime.Seconds * 1000 + item.MinTime.Milliseconds,
-                            item.Concurrent);
+                            item.Concurrent,
+                            item.AvgConcurrent);
                     });
                     this.txtStat.Text = content.ToString();
                 }));

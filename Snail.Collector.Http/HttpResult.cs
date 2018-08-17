@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,8 +23,11 @@ namespace Snail.Collector.Http
         public HttpResult(HttpResponseMessage res)
         {
             this._response = res;
-        }
+        }      
 
+        public HttpResponseHeaders headers { get { return this._response.Headers; } }
+
+       
         public string toString(bool autoDispose = true)
         {
             try

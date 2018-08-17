@@ -13,7 +13,7 @@ namespace Snail.Collector.Http
     {
         protected string LogSource = "http";
 
-        public HttpModule(int timeOut = 30) : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
+        public HttpModule(int timeOut = 100) : base(new HttpClientHandler() { UseCookies = false, UseDefaultCredentials = false, AutomaticDecompression = System.Net.DecompressionMethods.GZip })
         {
             this.headers = new HttpHeaderCollection();
             this.Timeout = DateTime.Now.AddSeconds(timeOut) - DateTime.Now;
@@ -34,12 +34,34 @@ namespace Snail.Collector.Http
             return null;
         }
 
-        public virtual HttpResult postJson(string uri, object data = null)
+        public virtual HttpResult get(string uri, object data)
         {
-            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json)).Result;
+            try
+            {
+                var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json, HttpMethod.Get)).ConfigureAwait(false).GetAwaiter().GetResult();
 
-            return new HttpResult(res);
+                return new HttpResult(res);
+            }
+            catch (Exception ex)
+            {
+                LoggerProxy.Error(LogSource, "error", ex);
+            }
+            return null;
         }
+
+        //public virtual HttpResult postJson(string uri, object data = null)
+        //{
+        //    var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json, HttpMethod.Post)).Result;
+
+        //    return new HttpResult(res);
+        //}
+
+        //public virtual HttpResult putJson(string uri, object data = null)
+        //{
+        //    var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.Json, HttpMethod.Put)).Result;
+
+        //    return new HttpResult(res);
+        //}
 
         public virtual HttpResult postFile(string uri, string file, string name = "file", string fileName = null)
         {
@@ -58,10 +80,10 @@ namespace Snail.Collector.Http
             }
         }
 
-        public virtual HttpResult post(string uri, object data = null)
+        public virtual HttpResult post(string uri, object data = null,string contentType = null)
         {
-            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, HttpContentTypes.FormData)).Result;
-
+            contentType = contentType ?? HttpContentTypes.FormData;
+            var res = this.SendAsync(this.NewHttpReqForPost(uri, data, contentType, HttpMethod.Post)).Result;
             return new HttpResult(res);
         }
 
@@ -73,6 +95,10 @@ namespace Snail.Collector.Http
         //}
 
         public Func<string, string, object> postForm;
+
+        public Func<string, string, object> postJson;
+
+        public Func<string, string, object> putJson;
 
         /// <summary>
         /// 获取默认提交的请求头
@@ -95,17 +121,18 @@ namespace Snail.Collector.Http
             return this.NewHttpRequest(uri, HttpMethod.Get);         
         }
 
-        private HttpRequestMessage NewHttpReqForPost(string uri, object data, string contentType)
+        private HttpRequestMessage NewHttpReqForPost(string uri, object data, string contentType, HttpMethod method)
         {
-            var req = this.NewHttpRequest(uri, HttpMethod.Post);
+            var req = this.NewHttpRequest(uri, method == null ? HttpMethod.Post : method);
             var strPostData = "";
             switch (contentType)
             {
                 case HttpContentTypes.Json:
-                    strPostData = SnailCore.Data.Serializer.JsonSerialize(data);
+                    // strPostData = SnailCore.Data.Serializer.JsonSerialize(data);
+                    strPostData = data?.ToString();
                     break;
                 case HttpContentTypes.FormData:
-                    strPostData = data.ToString();
+                    strPostData = data?.ToString();
                     break;                
 
             }

@@ -1,14 +1,14 @@
 ﻿function run() {    
 
     // 测试参数
-    var mobile = "18102330016";
+    var mobile = "18165965914";
     var spus = new Array();
     spus.push(5780808,2862407,2319964,2383467,7952636);
     var spus_Sale = new Array();
     spus_Sale.push(4875788,2862407,9324403,2728308,2533460);
 
-    var baseUri = "http://devapi.manjd.com/api/";
-    // var baseUri = "http://192.168.10.82:9020/";
+    // var baseUri = "http://devapi.manjd.com/api/";
+    var baseUri = "http://192.168.10.82:9020/";
     // var baseUri = "http://devapi.manjd.com/api/";
     // var baseUri= "http://checkapi.manjd.com/api/";
            
@@ -29,11 +29,11 @@
     
     rest = http.get(baseUri + "shop/v1/app/checkStoreName").toString();
     console.writeLine("校验店铺名称是否修改:" + rest);  
-    
+     
     rest = http.get(baseUri + "shop/v1/app/getShop").toJson();
     console.writeLine("获取店铺基础信息:" + rest.code + ",storeName:" + rest.data.storename+ ",logopic:" + rest.data.logopic+"描述:" + rest.data.description +"是否修改店铺名称:" + rest.data.modifiedstorename);  
     
-    rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"18102330016的店铺" }).toJson();
+    rest = http.postJson(baseUri + "shop/v1/app/edit", { modType:1,content:"18165965914的店铺" }).toJson();
     console.writeLine("修改店铺名称:" + rest.code + ",msg:" + rest.message);
     
     return 1;
