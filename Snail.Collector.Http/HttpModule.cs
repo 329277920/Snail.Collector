@@ -104,7 +104,7 @@ namespace Snail.Collector.Http
         /// 获取默认提交的请求头
         /// </summary>
         public HttpHeaderCollection headers { get; }
-        
+
         public virtual bool getFiles(params dynamic[] files)
         {
             var downList = (from file in files ?? new dynamic[0]

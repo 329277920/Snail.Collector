@@ -1,6 +1,8 @@
 ﻿using Microsoft.ClearScript;
 using Microsoft.ClearScript.V8;
-using Snail.Collector.Tester.Modules;
+using Snail.Collector.Modules;
+using Snail.Collector.Modules.Http;
+using Snail.Collector.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +16,7 @@ namespace Snail.Collector.Tester
     {
         static void Main(string[] args)
         {
-            string script = "";
+            var script = "";
             string func = "___func";
             using (FileStream fs = new FileStream("test.js", FileMode.Open, FileAccess.Read, FileShare.Read))
             {
@@ -23,11 +25,25 @@ namespace Snail.Collector.Tester
                     script = sr.ReadToEnd();
                 }
             }
+            script = FormatScript(script, func);
             var scriptEngine = CreateScriptEngine();
-            scriptEngine.Execute($"function {func}()\r\n{{\r\n{script}\r\n}}");
+            scriptEngine.Execute(script);
             Console.WriteLine(scriptEngine.Invoke(func));
             Console.WriteLine("完成.");
             Console.ReadKey();
+        }
+
+        static string FormatScript(string script,string func)
+        {
+            StringBuilder buffer = new StringBuilder();
+            buffer.Append($"function {func}(){{ \r\n");
+            buffer.Append("try \r\n { \r\n");
+            buffer.Append($"{script} \r\n }} \r\n");
+            buffer.Append("catch (err) { \r\n");
+            buffer.Append("debug.writeLine(err.message); \r\n ");
+            buffer.Append("log.error(err.message); \r\n } \r\n");
+            buffer.Append("}");
+            return buffer.ToString();
         }
 
         static V8ScriptEngine CreateScriptEngine()
@@ -36,6 +52,11 @@ namespace Snail.Collector.Tester
 
             scriptEngine.AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
             scriptEngine.AddHostObject("debug", new DebugModule());
+            scriptEngine.AddHostObject("log", new LoggerModule());
+            scriptEngine.AddHostObject("http", new HttpModule());
+            scriptEngine.AddHostType("Array", typeof(JSArray));
+            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.Tester.JsExtends.stringExtend.js"));
+            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.Tester.JsExtends.unity.js"));
 
             return scriptEngine;
         }

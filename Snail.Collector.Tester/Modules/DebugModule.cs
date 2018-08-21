@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.Tester.Modules
+
+namespace Snail.Collector.Modules
 {
     public class DebugModule
     {
         public void writeLine(object value)
         {
-            Console.WriteLine(value?.ToString());
+            Console.WriteLine($"{DateTime.Now} - {value?.ToString()}");         
         }
     }
 }
