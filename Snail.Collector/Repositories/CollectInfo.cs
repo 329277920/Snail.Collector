@@ -19,16 +19,11 @@ namespace Snail.Collector.Repositories
         /// <summary>
         /// 采集名称
         /// </summary>
-        public string Name { get; set; }
-
+        public string Name { get; set; }    
+        
         /// <summary>
-        /// 资源保存路径
+        /// 脚本文件路径
         /// </summary>
-        public string SourceSavePath { get; set; }
-
-        /// <summary>
-        /// 编码方式
-        /// </summary>
-        public Encoding Encode { get; set; }
+        public string ScriptFilePath { get; set; }
     }
 }

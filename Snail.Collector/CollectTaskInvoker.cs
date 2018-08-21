@@ -14,8 +14,6 @@ namespace Snail.Collector
         /// <summary>
         /// 获取或设置采集页面地址
         /// </summary>
-        public Uri Uri { get; set; }
-
-        
+        public Uri Uri { get; set; }        
     }
 }

@@ -9,45 +9,34 @@ namespace Snail.Collector
 {
     public class ProgramArgs
     {
-        private int _collectId;
-        public int CollectId { get { return _collectId; } }
+        /// <summary>
+        /// 当前执行的任务
+        /// </summary>
+        public string Command { get; set; }
 
-        public string CollectName { get; set; }
+        public Dictionary<string, string> Options { get; set; }
 
-        public string StartUri { get; set; }
-
-        public string StartScriptFile { get; set; }
-
-        public ProgramArgs(params string[] args)
+        public (bool result, string error) Init(params string[] args)
         {
-            if (args == null)
+            if (args == null || args.Length <= 0)
             {
-                return;
+                return (false, null);
             }
-            for (var i = 0; i < args.Length; i++)
+            var idx = 0;           
+            switch (args[idx++])
             {
-                switch (args[i])
-                {
-                    case "-id":
-                        if (!int.TryParse(args[++i], out this._collectId))
-                        {
-                            throw new Exception("id需要一个整数");
-                        }
-                        break;
-                    case "-name":
-                        this.CollectName = args[++i];
-                        break;
-                    case "-file":
-                        if (!File.Exists(args[++i]))
-                        {
-                            throw new Exception($"找不到脚本文件'{args[i]}'");
-                        }
-                        break;
-                    case "-url":
-                        this.StartUri = args[++i];
-                        break;
-                }
-            }           
-        }
+                case "run":
+                    for (var i = idx; i < args.Length; i++)
+                    {
+
+                    }
+                    break;
+                case "add":
+                    break;
+                default:
+                    return (false, null);
+                    break;
+            }
+        }       
     }
 }
