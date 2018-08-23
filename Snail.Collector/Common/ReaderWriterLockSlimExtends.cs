@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Snail.Collector
+namespace Snail.Collector.Common
 {
     public static class ReaderWriterLockSlimExtends
     {

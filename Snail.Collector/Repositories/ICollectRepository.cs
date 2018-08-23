@@ -8,7 +8,7 @@ namespace Snail.Collector.Repositories
 {
     public interface ICollectRepository
     {
-        void Insert(CollectInfo collectInfo);
+        int Insert(CollectInfo collectInfo);
 
         CollectInfo SelectSingle(int id);
     }

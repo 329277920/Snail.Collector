@@ -51,9 +51,7 @@ namespace Snail.Collector
             {
                 this._logger.Error($"未找到任务id为:{collectId}的采集任务，此次采集结束。");
                 this.SetStopStatus();
-            }
-
-           
+            }           
         }
 
         private void SetStopStatus()

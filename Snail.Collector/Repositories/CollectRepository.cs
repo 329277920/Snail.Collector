@@ -8,9 +8,10 @@ namespace Snail.Collector.Repositories
 {
     public class CollectRepository : ICollectRepository
     {
-        public void Insert(CollectInfo collectInfo)
+        public int Insert(CollectInfo collectInfo)
         {
-            throw new NotImplementedException();
+            var sql = $"INSERT INTO Collects VALUES('{collectInfo.Id}','{collectInfo.Name}','{collectInfo.ScriptFilePath}')";
+            return SqliteProxy.Execute(sql);
         }
 
         public CollectInfo SelectSingle(int id)
