@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.StartArgs
+namespace Snail.Collector.Commands
 {
-    public class AddArgs
+    public class AddCommandArgs
     {
         private int _collectId;
         public int CollectId

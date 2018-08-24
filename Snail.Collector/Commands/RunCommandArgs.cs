@@ -4,15 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.StartArgs
+namespace Snail.Collector.Commands
 {
-    public class RunArgs
+    public class RunCommandArgs
     {
         private int _collectId;
-        public int CollectId {
+        public int CollectId
+        {
             get { return this._collectId; }
         }
-
+     
         public bool Success { get; private set; }
 
         public string Error { get; private set; }
@@ -35,8 +36,8 @@ namespace Snail.Collector.StartArgs
                 var value = args[i];
                 switch (tag)
                 {
-                    case "-id":                      
-                        if (!int.TryParse(args[i], out this._collectId))
+                    case "-id":
+                        if (!int.TryParse(value, out this._collectId))
                         {
                             this.Success = false;
                             this.Error = "采集编号必须是数字";
@@ -47,7 +48,7 @@ namespace Snail.Collector.StartArgs
                         this.Success = false;
                         return;
                 }
-            }           
+            }
         }
     }
 }
