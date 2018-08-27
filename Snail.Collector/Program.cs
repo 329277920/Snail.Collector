@@ -13,18 +13,14 @@ namespace Snail.Collector
         /// <param name="args"></param>
         static void Main(string[] args)
         {
-            args = new string[] { "add", "-f" };
-
-            IList<ICommand> commands = new List<ICommand>();
-            commands.Add(new AddCommand());
-            commands.Add(new RunCommand());
-
+            args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "1", "-name", "demo" };
+          
             if (args == null || args.Length == 0)
             {
                 InputPromptMessage();
                 return;
             }
-            var command = commands.FirstOrDefault(item => item.CommandName.Equals(args[0]));
+            var command = TypeContainer.Resolve<ICommand>($"task_{args[0]}");
             if (command == null)
             {
                 InputPromptMessage();
@@ -34,14 +30,16 @@ namespace Snail.Collector
             {
                 command.Execute(args.Skip(1).ToArray());
             }
-            catch (ParameterFailedException pfEx)
+            catch (GeneralException glEx)
             {
-                Console.WriteLine(pfEx.Message);
+                Console.WriteLine(glEx.Message);
             }       
             catch(Exception ex)
             {
                 Console.WriteLine(ex.ToString());
-            }           
+            }
+
+            Console.ReadKey();
         }
 
         static void InputPromptMessage()

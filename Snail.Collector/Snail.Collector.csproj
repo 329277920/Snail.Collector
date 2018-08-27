@@ -101,7 +101,7 @@
     <Compile Include="CollectTaskFactory.cs" />
     <Compile Include="Commands\AddCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\ParameterFailedException.cs" />
+    <Compile Include="Commands\GeneralException.cs" />
     <Compile Include="Commands\RunCommand.cs" />
     <Compile Include="Commands\RunCommandArgs.cs" />
     <Compile Include="Log\ILogger.cs" />
@@ -133,6 +133,9 @@
   <ItemGroup>
     <Content Include="Exports\CallbackManager.h" />
     <Content Include="Exports\VersionSymbols.h" />
+    <Content Include="Script\demo-index.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Repositories;
+﻿using Snail.Collector.Commands;
+using Snail.Collector.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,11 +22,18 @@ namespace Snail.Collector
             _container = new UnityContainer();
             _container.RegisterSingleton<ICollectRepository, CollectRepository>();
             _container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
+            _container.RegisterSingleton<ICommand, AddCommand>("task_add");
+            _container.RegisterSingleton<ICommand, RunCommand>("task_run");
         }       
 
         public static T Resolve<T>()
         {
             return _container.Resolve<T>();
+        }
+
+        public static T Resolve<T>(string name)
+        {
+            return _container.Resolve<T>(name);
         }
     }
 }

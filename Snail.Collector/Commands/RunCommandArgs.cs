@@ -20,6 +20,7 @@ namespace Snail.Collector.Commands
 
         public void Parse(params string[] args)
         {
+            this.Success = true;
             if (args.Length <= 0)
             {
                 this.Success = false;

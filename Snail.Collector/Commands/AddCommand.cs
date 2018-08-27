@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Repositories;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,12 @@ namespace Snail.Collector.Commands
     /// </summary>
     public class AddCommand : ICommand
     {
+        private ICollectRepository _collectRepository;
+        public AddCommand(ICollectRepository collectRepository)
+        {
+            this._collectRepository = collectRepository;
+        }
+
         public string CommandName => "add";
 
         public string PromptMessage
@@ -33,8 +40,19 @@ namespace Snail.Collector.Commands
             parameters.Parse(args);
             if (!parameters.Success)
             {
-                throw new ParameterFailedException(parameters.Error ?? this.PromptMessage);
+                throw new GeneralException(parameters.Error ?? this.PromptMessage);
             }
+            var oldInfo = this._collectRepository.SelectSingle(parameters.CollectId);
+            if (oldInfo != null)
+            {
+                throw new GeneralException($"id为:{oldInfo.Id}的任务已经存在。");
+            }
+            this._collectRepository.Insert(new CollectInfo()
+            {
+                Id = parameters.CollectId,
+                Name = parameters.CollectName,
+                ScriptFilePath = parameters.ScriptFilePath
+            });
         }
     }
 }

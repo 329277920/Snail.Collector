@@ -25,6 +25,7 @@ namespace Snail.Collector.Commands
 
         public void Parse(params string[] args)
         {
+            this.Success = true;
             if (args.Length <= 0)
             {
                 this.Success = false;
@@ -51,16 +52,16 @@ namespace Snail.Collector.Commands
                         break;
                     case "-name":
                         this.CollectName = value;
-                        if (!string.IsNullOrEmpty(this.CollectName))
+                        if (string.IsNullOrEmpty(this.CollectName))
                         {
                             this.Success = false;
-                            this.Error = "应输入一个采集名称";
+                            this.Error = "应提供一个采集名称";
                             return;
                         }
                         break;
                     case "-file":
                         this.ScriptFilePath = value;
-                        if (!string.IsNullOrEmpty(this.ScriptFilePath))
+                        if (string.IsNullOrEmpty(this.ScriptFilePath))
                         {
                             this.Success = false;
                             this.Error = "应提供一个采集开始脚本文件";

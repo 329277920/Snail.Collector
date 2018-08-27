@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Snail.Collector.Commands
 {
-    public class ParameterFailedException : Exception
+    public class GeneralException : Exception
     {
-        public ParameterFailedException(string message) : base(message) { }
+        public GeneralException(string message) : base(message) { }
     }
 }
