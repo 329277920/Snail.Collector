@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.Repositories
+namespace Snail.Collector.Model
 {
     /// <summary>
     /// 采集实体

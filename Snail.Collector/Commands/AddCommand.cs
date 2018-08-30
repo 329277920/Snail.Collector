@@ -1,8 +1,10 @@
-﻿using Snail.Collector.Repositories;
+﻿using Snail.Collector.Model;
+using Snail.Collector.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Snail.Collector.Commands

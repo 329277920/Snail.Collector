@@ -26,7 +26,7 @@ namespace Snail.Collector.Core.SystemModules
             {
                 return null;
             }
-            return TaskInvokerContext.Current.Engine.Script.JSON.parse(strJson);            
+            return TaskInvokerContext.Current.Engine.Script.JSON.parse(strJson);
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using Snail.Collector.Repositories;
+﻿using Snail.Collector.Common;
+using Snail.Collector.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Snail.Collector.Commands
@@ -31,7 +33,7 @@ namespace Snail.Collector.Commands
         }
 
         public void Execute(params string[] args)
-        {
+        {           
             var parameters = new RunCommandArgs();
             parameters.Parse(args);
             if (!parameters.Success)
@@ -42,6 +44,19 @@ namespace Snail.Collector.Commands
             if (collect == null)
             {
                 throw new GeneralException($"未找到id为:{parameters.CollectId}的任务。");
+            }
+            CancellationTokenSource cts = new CancellationTokenSource();
+            var task = Task.Factory.StartNew(() =>
+            {
+                TypeContainer.Resolve<CollectTaskRuntime>().Start(cts.Token, collect);
+                Console.WriteLine("已结束。");
+            });
+            Console.WriteLine("正在执行...");
+            Console.ReadKey();          
+            cts.Cancel();
+            while (!task.IsCompleted)
+            {
+                Thread.Sleep(1000);
             }
         }
     }

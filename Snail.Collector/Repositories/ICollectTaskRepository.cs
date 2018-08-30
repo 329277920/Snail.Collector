@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Snail.Collector.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace Snail.Collector.Repositories
         /// <summary>
         /// 获取一条未采集的任务
         /// </summary>
-        /// <param name="status"></param>
+        /// <param name="status">（0:未开始,1:正在采集,2:采集结束,3:采集失败）</param>
         /// <returns></returns>
         CollectTaskInfo SelectSingle(int status);        
     }

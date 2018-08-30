@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector.Repositories
+namespace Snail.Collector.Model
 {
     /// <summary>
     /// 采集任务实体
@@ -25,6 +25,11 @@ namespace Snail.Collector.Repositories
         /// 采集页面地址
         /// </summary>
         public string Uri { get; set; }
+
+        /// <summary>
+        /// 脚本文件路径
+        /// </summary>
+        public string ScriptFilePath { get; set; }
 
         /// <summary>
         /// 任务状态（0:未开始,1:正在采集,2:采集结束,3:采集失败）

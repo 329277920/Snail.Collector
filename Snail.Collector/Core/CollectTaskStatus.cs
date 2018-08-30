@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snail.Collector
+namespace Snail.Collector.Core
 {
     /// <summary>
     /// 采集任务执行状态

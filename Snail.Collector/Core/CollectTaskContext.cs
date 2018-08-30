@@ -2,7 +2,7 @@
 using System.Threading;
 
 
-namespace Snail.Collector
+namespace Snail.Collector.Core
 {
     /// <summary>
     /// 封装某一次执行任务上下文信息
@@ -10,12 +10,7 @@ namespace Snail.Collector
     public class CollectTaskContext
     {
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
-
-        /// <summary>
-        /// 获取或设置本次执行任务的工作目录
-        /// </summary>
-        public string WorkDirectory { get; set; }
-
+      
         /// <summary>
         /// 获取或设置任务执行状态
         /// </summary>

@@ -1,13 +1,9 @@
 ﻿using Snail.Collector.Commands;
+using Snail.Collector.Log;
 using Snail.Collector.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Unity;
 
-namespace Snail.Collector
+namespace Snail.Collector.Common
 {
     /// <summary>
     /// 类型容器
@@ -22,8 +18,10 @@ namespace Snail.Collector
             _container = new UnityContainer();
             _container.RegisterSingleton<ICollectRepository, CollectRepository>();
             _container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
+            _container.RegisterInstance<ILogger>(new Log4NetLogger());
             _container.RegisterSingleton<ICommand, AddCommand>("task_add");
             _container.RegisterSingleton<ICommand, RunCommand>("task_run");
+            _container.RegisterSingleton<CollectTaskRuntime, CollectTaskRuntime>();
         }       
 
         public static T Resolve<T>()

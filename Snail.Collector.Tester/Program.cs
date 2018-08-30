@@ -55,8 +55,8 @@ namespace Snail.Collector.Tester
             scriptEngine.AddHostObject("log", new LoggerModule());
             scriptEngine.AddHostObject("http", new HttpModule());
             scriptEngine.AddHostType("Array", typeof(JSArray));
-            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.Tester.JsExtends.stringExtend.js"));
-            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.Tester.JsExtends.unity.js"));
+            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.stringExtend.js"));
+            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.unity.js"));
 
             return scriptEngine;
         }
