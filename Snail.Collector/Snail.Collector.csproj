@@ -111,7 +111,9 @@
     <Compile Include="Common\Sync\Parallel.cs" />
     <Compile Include="Common\Sync\ProcessSync.cs" />
     <Compile Include="Common\Sync\ThreadPool.cs" />
-    <Compile Include="Core\CollectTaskContext.cs" />
+    <Compile Include="Core\CallContextManager.cs" />
+    <Compile Include="Core\CollectTaskAccessProxy.cs" />
+    <Compile Include="Core\CollectTaskInvokeCompleteArgs.cs" />
     <Compile Include="Core\CollectTaskRuntime.cs" />
     <Compile Include="Commands\AddCommand.cs" />
     <Compile Include="Commands\ICommand.cs" />
@@ -122,7 +124,7 @@
     <Compile Include="Log\Log4NetLogger.cs" />
     <Compile Include="Model\CollectTaskInfo.cs" />
     <Compile Include="Core\CollectTaskInvoker.cs" />
-    <Compile Include="Core\CollectTaskStatus.cs" />
+    <Compile Include="Model\CollectTaskStatus.cs" />
     <Compile Include="Modules\DebugModule.cs" />
     <Compile Include="Modules\Html\Element.cs" />
     <Compile Include="Modules\Html\ElementCollection.cs" />
@@ -161,6 +163,15 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Script\宇宙探索\100-detail.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Script\宇宙探索\100-list.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Script\宇宙探索\100.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <EmbeddedResource Include="JsExtends\stringExtend.js" />
     <EmbeddedResource Include="JsExtends\unity.js" />
     <Content Include="Licenses\clearscript-license.txt" />

@@ -11,6 +11,9 @@ namespace Snail.Collector.Model
     /// </summary>
     public class CollectTaskInfo
     {       
+
+        public int Id { get; set; }
+
         /// <summary>
         /// 采集Id,唯一标识用户发起的每一次采集任务
         /// </summary>
@@ -32,9 +35,9 @@ namespace Snail.Collector.Model
         public string ScriptFilePath { get; set; }
 
         /// <summary>
-        /// 任务状态（0:未开始,1:正在采集,2:采集结束,3:采集失败）
+        /// 任务状态（0:未开始,1:正在采集,2:采集完成,3:采集失败）
         /// </summary>
-        public int Status { get; set; }
+        public CollectTaskStatus Status { get; set; }
 
         /// <summary>
         /// 采集重试次数

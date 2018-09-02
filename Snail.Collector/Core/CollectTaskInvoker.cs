@@ -32,6 +32,7 @@ namespace Snail.Collector.Core
             AddHostObject("debug", new DebugModule());
             AddHostObject("log", new LoggerModule());
             AddHostObject("http", new HttpModule());
+            this.ScriptEngine.AddHostObject("task", TypeContainer.Resolve<CollectTaskAccessProxy>());
             this.ScriptEngine.AddHostType("Array", typeof(JSArray));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.stringExtend.js"));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.unity.js"));
@@ -39,11 +40,9 @@ namespace Snail.Collector.Core
 
         public object Invoke(CollectInfo collectInfo, CollectTaskInfo taskInfo)
         {
-            this.ScriptEngine.AddHostObject("task", collectInfo);
-            if (taskInfo != null)
-            {
-                this.ScriptEngine.AddHostObject("taskItem", taskInfo);
-            }            
+            CallContextManager.SetCollectInfo(collectInfo);
+            CallContextManager.SetCollectTaskInfo(taskInfo);
+           
             var scriptPath = taskInfo != null ? taskInfo.ScriptFilePath : collectInfo.ScriptFilePath;
             if (this._scriptPath == null || this._scriptPath != scriptPath)
             {
@@ -79,12 +78,12 @@ namespace Snail.Collector.Core
             string func = "___func___";
             StringBuilder buffer = new StringBuilder();
             buffer.Append($"function {func}(){{ \r\n");
-            buffer.Append("try \r\n { \r\n");
+            // buffer.Append("try \r\n { \r\n");
             buffer.Append($"{script} \r\n }} \r\n");
-            buffer.Append("catch (err) { \r\n");
-            buffer.Append("debug.writeLine(err.message); \r\n ");
-            buffer.Append("log.error(err.message); \r\n } \r\n");
-            buffer.Append("}");
+            //buffer.Append("catch (err) { \r\n");
+            //buffer.Append("debug.writeLine(err.message); \r\n ");
+            //buffer.Append("log.error(err.message); \r\n } \r\n");
+            //buffer.Append("}");
             return buffer.ToString();
         }
 
