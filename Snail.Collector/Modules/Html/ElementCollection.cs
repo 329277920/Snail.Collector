@@ -18,7 +18,7 @@ namespace Snail.Collector.Modules.Html
             foreach (var ele in initEles)
             {
                 Add(ele);
-            }
+            }            
         }
 
         #region 导出属性
@@ -72,14 +72,15 @@ namespace Snail.Collector.Modules.Html
         /// 选择子元素
         /// </summary>
         /// <returns></returns>
-        public ElementCollection children()
+        public ElementCollection children
         {
-            if (this.Count <= 0)
+            get
             {
-                return new Html.ElementCollection();
+                return this.Count <= 0 ? new Html.ElementCollection()
+                                                : this[0].children;
             }
-            return this[0].children();          
         }
+            
 
         public ElementCollection getElementsByTagName(string name, bool isFindAll = true)
         {
@@ -164,7 +165,14 @@ namespace Snail.Collector.Modules.Html
         {
             foreach (var item in this)
             {
-                callBack(item);
+                var result = callBack(item);
+                if (result is System.Boolean)
+                {
+                    if (result == false)
+                    {
+                        break;
+                    }
+                }                 
             }
         }
         

@@ -19,7 +19,7 @@ namespace Snail.Collector.Modules.Html
         /// <param name="exit"></param>
         private static void Each(Element parentNode, Func<Element, bool> callBack, ref bool exit)
         {           
-            var children = parentNode.children();
+            var children = parentNode.children;
             if (children?.length > 0)
             {              
                 for (var i = 0; i < children.length; i++)

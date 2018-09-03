@@ -15,10 +15,10 @@ namespace Snail.Collector
         static void Main(string[] args)
         {
             // args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
-            // args = new string[] { "run", "-id", "100" };
+            args = new string[] { "run", "-id", "100" };
 
-            args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "10", "-name", "广点通-后台数据" };
-            args = new string[] { "run", "-id", "10", "-repeat", "10", "-delay", "01:00:00" };
+            //args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "10", "-name", "广点通-后台数据" };
+            //args = new string[] { "run", "-id", "10", "-repeat", "10", "-delay", "01:00:00" };
 
             if (args == null || args.Length == 0)
             {

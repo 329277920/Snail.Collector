@@ -115,7 +115,7 @@ namespace Snail.Collector
                 {                   
                     CollectTaskInvoker invoker = null;
                     var refTask = objTask as CollectTaskInfo;
-                    var invokeArgs = new CollectTaskInvokeCompleteArgs();
+                    var invokeArgs = new CollectTaskInvokeCompleteArgs() { Task = refTask };
                     try
                     {
                         invoker = this._lock.SafeReadValue(() =>

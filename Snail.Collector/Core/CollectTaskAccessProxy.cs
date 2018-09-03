@@ -1,4 +1,5 @@
-﻿using Snail.Collector.Common;
+﻿using Newtonsoft.Json;
+using Snail.Collector.Common;
 using Snail.Collector.Model;
 using Snail.Collector.Repositories;
 using System;
@@ -15,9 +16,13 @@ namespace Snail.Collector.Core
         private ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         private ICollectTaskRepository _taskRepository;
-        public CollectTaskAccessProxy(ICollectTaskRepository taskRepository)
+        private ICollectContentRepository _contentRepository;
+        public CollectTaskAccessProxy(
+            ICollectTaskRepository taskRepository,
+            ICollectContentRepository contentRepository)
         {
             this._taskRepository = taskRepository;
+            this._contentRepository = contentRepository;
         }
 
         /// <summary>
@@ -62,6 +67,29 @@ namespace Snail.Collector.Core
                 newTask.Uri = new Uri(new Uri(parentTask.Uri), newTask.Uri).ToString();
             }
             this._taskRepository.Insert(newTask);
+        }
+
+        /// <summary>
+        /// 添加采集数据
+        /// </summary>
+        /// <param name="strContent"></param>
+        public void content(string strContent)
+        {           
+            if (string.IsNullOrEmpty(strContent))
+            {
+                return;
+            }
+            var task = CallContextManager.GetCollectTaskInfo();
+            if (task == null)
+            {
+                throw new Exception("未能从当前线程上下文中获取对象 CollectTaskInfo");
+            }
+            this._contentRepository.Insert(new CollectContentInfo()
+            {
+                CollectId = task.CollectId,
+                CollectTaskId = task.Id,
+                Content = strContent
+            });
         }
 
         /// <summary>

@@ -26,10 +26,14 @@ namespace Snail.Collector.Commands
         }
 
         private ICollectRepository _collectRepository;
+        private ILogger _logger;
 
-        public RunCommand(ICollectRepository collectRepository)
+        public RunCommand(
+            ICollectRepository collectRepository,
+            ILogger logger)
         {
             this._collectRepository = collectRepository;
+            this._logger = logger;
         }
 
         public void Execute(params string[] args)
@@ -58,6 +62,13 @@ namespace Snail.Collector.Commands
                     {
                         using (var taskRuntime = TypeContainer.Resolve<CollectTaskRuntime>())
                         {
+                            taskRuntime.OnCollectTaskInvokeComplete += (sender, e) =>
+                            {                                
+                                if (!e.Success)
+                                {
+                                    this._logger.Error($"执行失败({e.Task.CollectId}-{e.Task.Id}),地址:{e.Task.Uri}", e.Error);
+                                }
+                            };
                             taskRuntime.Start(cts.Token, collect);
                         }
                         Console.WriteLine($"{DateTime.Now} - 已完成一次。");
@@ -65,7 +76,7 @@ namespace Snail.Collector.Commands
                     catch (Exception ex)
                     {
                         Console.WriteLine($"{DateTime.Now} - 启动异常。");
-                        TypeContainer.Resolve<ILogger>().Error($"任务:{parameters.CollectId},启动异常。", ex);                        
+                        this._logger.Error($"任务:{parameters.CollectId},启动异常。", ex);                        
                     }
                     finally
                     {
@@ -85,6 +96,11 @@ namespace Snail.Collector.Commands
             {
                 Thread.Sleep(1000);
             }
+        }
+
+        private void TaskRuntime_OnCollectTaskInvokeComplete(object sender, Core.CollectTaskInvokeCompleteArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

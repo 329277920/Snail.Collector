@@ -49,6 +49,13 @@ namespace Snail.Collector.Modules.Html
             get { return _innerNode?.OriginalName; }
         }
 
+        /// <summary>
+        /// 选择子元素
+        /// </summary>
+        /// <returns></returns>
+        public ElementCollection children => new ElementCollection(from item in _innerNode.ChildNodes
+                                                                   select new Element(item));
+
 
         #endregion
 
@@ -98,17 +105,7 @@ namespace Snail.Collector.Modules.Html
                 _innerNode.SetAttributeValue(attrName, value);
                 return value;
             }
-        }
-
-        /// <summary>
-        /// 选择子元素
-        /// </summary>
-        /// <returns></returns>
-        public ElementCollection children()
-        {
-            return new ElementCollection(from item in _innerNode.ChildNodes
-                                         select new Element(item));
-        }
+        }       
 
         /// <summary>
         /// 移除某个属性
@@ -147,7 +144,7 @@ namespace Snail.Collector.Modules.Html
         
         private void innerRemoveTag(Element target, params string[] tags)
         {
-            ElementCollection children = target.children();
+            ElementCollection children = target.children;
             for (var i = 0; i < children.length; i++)
             {
                 var tag = children[i].tagName?.ToLower();
@@ -201,7 +198,7 @@ namespace Snail.Collector.Modules.Html
             {
                 nodeContainer = new List<Element>();
             }
-            var children = parentNode.children();
+            var children = parentNode.children;
             if (children.Count > 0)
             {
                 foreach (var childNode in children)

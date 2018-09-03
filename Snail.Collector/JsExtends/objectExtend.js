@@ -1,4 +1,5 @@
-﻿// 将对象保存为本地文件，目前只支持图片
+﻿
+// 将对象保存为本地文件，目前只支持图片
 // directory : 保存的主目录
 Object.prototype.save = function (directory) {
     var imgs = new Array();

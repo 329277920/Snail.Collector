@@ -18,6 +18,7 @@ namespace Snail.Collector.Common
             _container = new UnityContainer();
             _container.RegisterSingleton<ICollectRepository, CollectRepository>();
             _container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
+            _container.RegisterSingleton<ICollectContentRepository, CollectContentRepository>();            
             _container.RegisterSingleton<ILogger, Log4NetLogger>();
             _container.RegisterSingleton<ICommand, AddCommand>("task_add");
             _container.RegisterSingleton<ICommand, RunCommand>("task_run");
