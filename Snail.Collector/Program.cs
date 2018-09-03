@@ -13,9 +13,9 @@ namespace Snail.Collector
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
-        {
-            // args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "1", "-name", "demo" };
-            args = new string[] { "run", "-id", "1" };
+        {          
+            // args = new string[] { "add", "-file", "Script/宇宙探索/100.js", "-id", "100", "-name", "看奇网-宇宙探索" };
+            args = new string[] { "run", "-id", "100" };
 
             if (args == null || args.Length == 0)
             {

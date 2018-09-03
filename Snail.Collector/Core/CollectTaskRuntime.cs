@@ -24,14 +24,16 @@ namespace Snail.Collector
         private CollectInfo _collect;
         private int _workCount = 0;
 
-        public event EventHandler OnStart;
-
-        public event EventHandler OnStop;
+        /// <summary>
+        /// 当某个任务执行完成后触发
+        /// </summary>
+        public event EventHandler<CollectTaskInvokeCompleteArgs> OnCollectTaskInvokeComplete;
 
         /// <summary>
-        /// 获取采集任务上下文
+        /// 获取当前正在执行的任务数
         /// </summary>
-        protected CollectTaskContext Context { get; private set; }
+        public int TaskCount => this._lock.SafeReadValue(() => this._workCount);
+
 
         public CollectTaskRuntime(
             ICollectRepository collectDal, 
@@ -43,8 +45,7 @@ namespace Snail.Collector
             this._logger = logger;
             this._sh = new Semaphore(20, 20);
             this._invokers = new Queue<CollectTaskInvoker>();
-            this._lock = new ReaderWriterLockSlim();
-            this.Context = new CollectTaskContext() { TaskStatus = CollectTaskStatus.None };        
+            this._lock = new ReaderWriterLockSlim();          
         }
 
         /// <summary>
@@ -56,15 +57,21 @@ namespace Snail.Collector
         {
             this._collect = collectInfo;
 
+            // 重置任务状态
+            this._collectTaskDal.Update(collectInfo.Id, CollectTaskStatus.Running, CollectTaskStatus.None);
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
+
             // 执行初始化脚本，不做异常捕获，发生异常直接退出
             using (var initInvoker = new CollectTaskInvoker())
             {
                 initInvoker.Invoke(collectInfo, null);
-            }
-            return;
+            }           
             if (cancellationToken.IsCancellationRequested)
             {
-                this.SetStopStatus();
+                return;
             }
 
             // 循环执行
@@ -75,27 +82,32 @@ namespace Snail.Collector
                 {
                     if (this._lock.SafeReadValue(() => this._workCount) > 0)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         continue;
                     }
-                    break;
+                    return;
                 }
 
                 // 请求执行
-                this._sh.WaitOne();            
-                var taskInfo = this._collectTaskDal.SelectSingle(0);
+                this._sh.WaitOne();
+                var taskInfo = this._collectTaskDal.SelectSingle(collectInfo.Id, CollectTaskStatus.None);
+                if (taskInfo == null)
+                {
+                    taskInfo = this._collectTaskDal.SelectSingle(collectInfo.Id, CollectTaskStatus.Error);
+                }
                 // 获取不到，等待其他任务结束
                 if (taskInfo == null)
                 {
                     if (this._lock.SafeReadValue(() => this._workCount) > 0)
                     {
-                        Thread.Sleep(1000);
+                        Thread.Sleep(500);
                         this._sh.Release();
                         continue;
                     }
-                    break;
+                    return;
                 }
-                taskInfo.Status = 1;
+                taskInfo.Status = CollectTaskStatus.Running;
+                taskInfo.RetryCount++;
                 this._collectTaskDal.Update(taskInfo);
                 this._lock.SafeSetValue(count => this._workCount += count, 1);
 
@@ -104,6 +116,7 @@ namespace Snail.Collector
                 {                   
                     CollectTaskInvoker invoker = null;
                     var refTask = objTask as CollectTaskInfo;
+                    var invokeArgs = new CollectTaskInvokeCompleteArgs();
                     try
                     {
                         invoker = this._lock.SafeReadValue(() =>
@@ -115,14 +128,21 @@ namespace Snail.Collector
                             return new CollectTaskInvoker();
                         });
                         invoker.Invoke(this._collect, refTask);
-                        refTask.Status = 2;
+                        refTask.Status =  CollectTaskStatus.Complete;
                         this._collectTaskDal.Update(refTask);
+                        invokeArgs.Success = true;
                     }
-                    catch
+                    catch(Exception ex)
                     {
-                        refTask.Status = 3;
+                        refTask.Status =  CollectTaskStatus.Error;
+                        // todo: 超过重试次数
+                        if (refTask.RetryCount >= 3)
+                        {
+                            refTask.Status = CollectTaskStatus.Faild;
+                        }
                         this._collectTaskDal.Update(refTask);
-                        throw;
+                        invokeArgs.Success = false;
+                        invokeArgs.Error = ex;
                     }
                     finally
                     {
@@ -132,22 +152,11 @@ namespace Snail.Collector
                             this._lock.SafeSetValue(t => this._invokers.Enqueue(t), invoker);
                         }
                         this._lock.SafeSetValue(count => this._workCount += count, -1);
+                        this.OnCollectTaskInvokeComplete?.Invoke(this, invokeArgs);
                         this._sh.Release();
                     }
                 }, taskInfo);
             }
-        }      
-        
-        private void SetStopStatus()
-        {
-            this.Context.TaskStatus = CollectTaskStatus.Stop;
-            this.OnStop?.Invoke(this, null);
-        }
-
-        private void ToRunningStatus()
-        {
-            this.Context.TaskStatus = CollectTaskStatus.Running;
-            this.OnStart?.Invoke(this, null);
-        }
+        }                     
     }
 }

@@ -16,19 +16,29 @@ namespace Snail.Collector.Repositories
         /// 插入一条采集任务
         /// </summary>
         /// <param name="taskInfo"></param>
-        void Insert(CollectTaskInfo taskInfo);
+        int Insert(CollectTaskInfo taskInfo);
 
         /// <summary>
         /// 更新采集任务
         /// </summary>
         /// <param name="taskInfo"></param>
-        void Update(CollectTaskInfo taskInfo);
+        int Update(CollectTaskInfo taskInfo);
+
+        /// <summary>
+        /// 将某状态的任务全部修改为新的状态
+        /// </summary>
+        /// <param name="collectId"></param>
+        /// <param name="oldStatus"></param>
+        /// <param name="newStatus"></param>
+        /// <returns></returns>
+        int Update(int collectId,CollectTaskStatus oldStatus, CollectTaskStatus newStatus);
 
         /// <summary>
         /// 获取一条未采集的任务
         /// </summary>
-        /// <param name="status">（0:未开始,1:正在采集,2:采集结束,3:采集失败）</param>
+        /// <param name="collectId">采集任务id</param>
+        /// <param name="status">采集任务状态</param>
         /// <returns></returns>
-        CollectTaskInfo SelectSingle(int status);        
+        CollectTaskInfo SelectSingle(int collectId, CollectTaskStatus status);        
     }
 }

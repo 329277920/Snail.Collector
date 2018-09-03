@@ -1,4 +1,5 @@
 ﻿using Snail.Collector.Commands;
+using Snail.Collector.Core;
 using Snail.Collector.Log;
 using Snail.Collector.Repositories;
 using Unity;
@@ -18,9 +19,10 @@ namespace Snail.Collector.Common
             _container = new UnityContainer();
             _container.RegisterSingleton<ICollectRepository, CollectRepository>();
             _container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
-            _container.RegisterInstance<ILogger>(new Log4NetLogger());
+            _container.RegisterSingleton<ILogger, Log4NetLogger>();
             _container.RegisterSingleton<ICommand, AddCommand>("task_add");
             _container.RegisterSingleton<ICommand, RunCommand>("task_run");
+            _container.RegisterType<CollectTaskAccessProxy>();             
             _container.RegisterSingleton<CollectTaskRuntime, CollectTaskRuntime>();
         }       
 
