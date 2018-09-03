@@ -20,6 +20,8 @@ namespace Snail.Collector.Modules.Http
         private HttpRequestMessage _reqMsg;
 
         private string _savePath;
+
+        private static object _lock;
      
         /// <summary>
         /// 使用指定的Http客户端初始化文件下载器
@@ -44,6 +46,7 @@ namespace Snail.Collector.Modules.Http
             {
                 return true;
             }
+            this.InitDirectory(new FileInfo(this._savePath).Directory.FullName);             
             using (var localStream = GetLocalStream())
             {
                 this._reqMsg.Headers.Range = new RangeHeaderValue(localStream.Length, null);
@@ -78,6 +81,20 @@ namespace Snail.Collector.Modules.Http
                 return;
             }
             File.Move(string.Format("{0}_bak", this._savePath), this._savePath);
+        }
+
+        private void InitDirectory(string directory)
+        {
+            if (!Directory.Exists(directory))
+            {
+                lock (_lock)
+                {
+                    if (!Directory.Exists(directory))
+                    {
+                        Directory.CreateDirectory(directory);
+                    }
+                }
+            }           
         }
     }
 }

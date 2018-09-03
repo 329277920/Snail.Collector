@@ -166,8 +166,8 @@ namespace Snail.Collector.Modules.Html
             {
                 callBack(item);
             }
-        }        
-
+        }
+        
         #endregion
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Snail.Collector.Commands;
 using Snail.Collector.Core;
-using Snail.Collector.Log;
 using Snail.Collector.Repositories;
 using Unity;
 
@@ -23,7 +22,7 @@ namespace Snail.Collector.Common
             _container.RegisterSingleton<ICommand, AddCommand>("task_add");
             _container.RegisterSingleton<ICommand, RunCommand>("task_run");
             _container.RegisterType<CollectTaskAccessProxy>();             
-            _container.RegisterSingleton<CollectTaskRuntime, CollectTaskRuntime>();
+            _container.RegisterType<CollectTaskRuntime>();
         }       
 
         public static T Resolve<T>()

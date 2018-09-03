@@ -36,6 +36,7 @@ namespace Snail.Collector.Core
             this.ScriptEngine.AddHostType("Array", typeof(JSArray));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.stringExtend.js"));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.unity.js"));
+            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.objectExtend.js"));
         }
 
         public object Invoke(CollectInfo collectInfo, CollectTaskInfo taskInfo)

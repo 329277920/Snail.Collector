@@ -142,9 +142,9 @@ namespace Snail.Collector.Modules.Html
                 return this;
             }
             innerRemoveTag(this, (from item in tags select item.ToLower()).ToArray());
-            return this;
+            return this;            
         }
-
+        
         private void innerRemoveTag(Element target, params string[] tags)
         {
             ElementCollection children = target.children();

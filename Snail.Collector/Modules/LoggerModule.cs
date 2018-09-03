@@ -1,9 +1,5 @@
-﻿using log4net;
-using log4net.Config;
-using Snail.Collector.Common;
-using Snail.Collector.Log;
+﻿using Snail.Collector.Common;
 using System;
-using System.IO;
 
 namespace Snail.Collector.Modules
 {

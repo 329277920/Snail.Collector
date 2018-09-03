@@ -1,5 +1,4 @@
 ﻿using Snail.Collector.Core;
-using Snail.Collector.Log;
 using Snail.Collector.Model;
 using Snail.Collector.Repositories;
 using System;
@@ -13,7 +12,7 @@ namespace Snail.Collector
     /// <summary>
     /// 采集任务工厂
     /// </summary>
-    public class CollectTaskRuntime
+    public class CollectTaskRuntime : IDisposable
     {
         private ICollectRepository _collectDal;
         private ICollectTaskRepository _collectTaskDal;
@@ -157,6 +156,39 @@ namespace Snail.Collector
                     }
                 }, taskInfo);
             }
-        }                     
+        }
+
+        #region 资源释放
+
+        private bool _disposed = false;
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;         
+            if (disposing)
+            {
+                if (this._invokers != null)
+                {
+                    while (this._invokers.Count > 0)
+                    {
+                        this._invokers.Dequeue().Dispose();
+                    }
+                }
+                if (this._sh != null)
+                {
+                    this._sh.Dispose();
+                }
+                if (this._lock != null)
+                {
+                    this._lock.Dispose();
+                }                
+            }
+        }
+        #endregion
     }
 }

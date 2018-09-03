@@ -48,8 +48,35 @@ namespace Snail.Collector.Commands
             CancellationTokenSource cts = new CancellationTokenSource();
             var task = Task.Factory.StartNew(() =>
             {
-                TypeContainer.Resolve<CollectTaskRuntime>().Start(cts.Token, collect);
-                Console.WriteLine("已结束。");
+                for (var idx = 1; idx <= parameters.Repeat; idx++)
+                {
+                    if (cts.Token.IsCancellationRequested)
+                    {
+                        break;
+                    }
+                    try
+                    {
+                        using (var taskRuntime = TypeContainer.Resolve<CollectTaskRuntime>())
+                        {
+                            taskRuntime.Start(cts.Token, collect);
+                        }
+                        Console.WriteLine($"{DateTime.Now} - 已完成一次。");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"{DateTime.Now} - 启动异常。");
+                        TypeContainer.Resolve<ILogger>().Error($"任务:{parameters.CollectId},启动异常。", ex);                        
+                    }
+                    finally
+                    {
+                        if (idx < parameters.Repeat)
+                        {
+                            Console.WriteLine($"{DateTime.Now} - 将在{parameters.Delay.TotalSeconds} 秒后重新执行。");
+                            Thread.Sleep((int)parameters.Delay.TotalMilliseconds);
+                        }
+                    }
+                }
+                Console.WriteLine($"{DateTime.Now} - 已结束。");
             });
             Console.WriteLine("正在执行...");
             Console.ReadKey();          
