@@ -26,14 +26,15 @@ namespace Snail.Collector.Core
         /// </summary>
         private string _scriptPath;
 
-        public CollectTaskInvoker()
+        public CollectTaskInvoker(CollectTaskState state)
         {
-            this.ScriptEngine = new V8ScriptEngine();
+            this.ScriptEngine = new V8ScriptEngine();            
             AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
             AddHostObject("debug", TypeContainer.Resolve<DebugModule>());
             AddHostObject("log", TypeContainer.Resolve<LoggerModule>());
             AddHostObject("http", TypeContainer.Resolve<HttpModule>());
             AddHostObject("html", TypeContainer.Resolve<HtmlModule>());
+            this.ScriptEngine.AddHostObject("state", state);
             this.ScriptEngine.AddHostObject("task", TypeContainer.Resolve<CollectTaskAccessProxy>());
             this.ScriptEngine.AddHostType("Array", typeof(JSArray));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.DateExtend.js"));

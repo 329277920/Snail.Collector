@@ -21,8 +21,7 @@ namespace Snail.Collector
         private Queue<CollectTaskInvoker> _invokers;
         private Semaphore _sh;
         private ReaderWriterLockSlim _lock;
-        private CollectInfo _collect;
-        private int _workCount = 0;
+        private CollectInfo _collect;         
         private IConfiguration _config;
         private int _retry = 0;
 
@@ -32,9 +31,9 @@ namespace Snail.Collector
         public event EventHandler<CollectTaskInvokeCompleteArgs> OnCollectTaskInvokeComplete;
 
         /// <summary>
-        /// 获取当前正在执行的任务数
+        /// 获取统计信息
         /// </summary>
-        public int TaskCount => this._lock.SafeReadValue(() => this._workCount);
+        public CollectTaskState State { get; private set; }
 
 
         public CollectTaskRuntime(
@@ -51,6 +50,7 @@ namespace Snail.Collector
             this._invokers = new Queue<CollectTaskInvoker>();
             this._lock = new ReaderWriterLockSlim();            
             this._retry = int.Parse(this._config["task:errorRepeat"]);
+            this.State = new CollectTaskState();
         }
 
         /// <summary>
@@ -70,10 +70,10 @@ namespace Snail.Collector
             }
 
             // 执行初始化脚本，不做异常捕获，发生异常直接退出
-            using (var initInvoker = new CollectTaskInvoker())
+            using (var initInvoker = new CollectTaskInvoker(this.State))
             {
                 initInvoker.Invoke(collectInfo, null);
-            }           
+            }
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
@@ -85,7 +85,7 @@ namespace Snail.Collector
                 // 取消执行，等待其他任务结束
                 if (cancellationToken.IsCancellationRequested)
                 {
-                    if (this._lock.SafeReadValue(() => this._workCount) > 0)
+                    if (this.State.RunningTaskCount > 0)
                     {
                         Thread.Sleep(500);
                         continue;
@@ -103,7 +103,7 @@ namespace Snail.Collector
                 // 获取不到，等待其他任务结束
                 if (taskInfo == null)
                 {
-                    if (this._lock.SafeReadValue(() => this._workCount) > 0)
+                    if (this.State.RunningTaskCount > 0)
                     {
                         Thread.Sleep(500);
                         this._sh.Release();
@@ -114,11 +114,12 @@ namespace Snail.Collector
                 taskInfo.Status = CollectTaskStatus.Running;
                 taskInfo.RetryCount++;
                 this._collectTaskDal.Update(taskInfo);
-                this._lock.SafeSetValue(count => this._workCount += count, 1);
+                this.State.RunningTaskCount = 1;                 
 
                 // 发起新线程，执行任务
                 Task.Factory.StartNew((objTask) =>
-                {                   
+                {
+                    
                     CollectTaskInvoker invoker = null;
                     var refTask = objTask as CollectTaskInfo;
                     var invokeArgs = new CollectTaskInvokeCompleteArgs() { Task = refTask };
@@ -130,7 +131,7 @@ namespace Snail.Collector
                             {
                                 return this._invokers.Dequeue();
                             }
-                            return new CollectTaskInvoker();
+                            return new CollectTaskInvoker(this.State); 
                         });
                         invoker.Invoke(this._collect, refTask);
                         refTask.Status =  CollectTaskStatus.Complete;
@@ -155,8 +156,16 @@ namespace Snail.Collector
                         {
                             this._lock.SafeSetValue(t => this._invokers.Enqueue(t), invoker);
                         }
-                        this._lock.SafeSetValue(count => this._workCount += count, -1);
-                        this.OnCollectTaskInvokeComplete?.Invoke(this, invokeArgs);
+                        if (invokeArgs.Success)
+                        {
+                            this.State.CompleteTaskCount = 1;
+                        }
+                        else
+                        {
+                            this.State.ErrorTaskCount = 1;
+                        }
+                        this.OnCollectTaskInvokeComplete?.Invoke(this, invokeArgs);                        
+                        this.State.RunningTaskCount = -1;
                         this._sh.Release();
                     }
                 }, taskInfo);

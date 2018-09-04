@@ -20,7 +20,7 @@ namespace Snail.Collector.Core
         /// <summary>
         /// 任务执行失败信息
         /// </summary>
-        public Exception Error { get; set; }
+        public Exception Error { get; set; }        
 
         /// <summary>
         /// 当前任务实体

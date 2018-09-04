@@ -21,6 +21,7 @@
                 if (count == -1) {
                     return false;
                 }
+                state.NewFileCount = count;
                 return true;
             case "content":
                 var content = this.toString();
@@ -31,19 +32,24 @@
                 if (count == -1) {
                     return false;
                 }
+                state.NewContentCount = count;
                 return true;
             case "task":
                 if (!this.uri) {
-                    task.error("保存任务失败,为指定uri");
+                    task.error("保存任务失败,未指定uri");
                 }
                 if (!this.script) {
-                    task.error("保存任务失败,为指定script");
+                    task.error("保存任务失败,未指定script");
                 }
                 var count = task.add(this);
                 if (count == -1) {
                     return false;
                 }
+                state.NewTaskCount = count;
                 return true;
+            default:
+                task.error("不支持的存储类型:" + settings.type);
+                return false;
         }
     };
 

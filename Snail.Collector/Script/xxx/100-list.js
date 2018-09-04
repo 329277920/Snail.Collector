@@ -6,7 +6,8 @@ document.find("div.list").find("li").each(function (li) {
         ({ uri: uri, script: "Script/xxx/100-detail.js" }).save({
             type: "task"
         });
-    }       
+    }
+    return false;
 });
 document.find("div.pagebar").find("a").each(function (a) {
     var uri = a.attr("href");

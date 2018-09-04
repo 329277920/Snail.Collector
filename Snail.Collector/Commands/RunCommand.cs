@@ -49,6 +49,7 @@ namespace Snail.Collector.Commands
             {
                 throw new GeneralException($"未找到id为:{parameters.CollectId}的任务。");
             }
+            Console.WriteLine($"准备执行任务:{collect.Name}");
             CancellationTokenSource cts = new CancellationTokenSource();
             var task = Task.Factory.StartNew(() =>
             {
@@ -63,10 +64,28 @@ namespace Snail.Collector.Commands
                         using (var taskRuntime = TypeContainer.Resolve<CollectTaskRuntime>())
                         {
                             taskRuntime.OnCollectTaskInvokeComplete += (sender, e) =>
-                            {                                
+                            {
                                 if (!e.Success)
                                 {
-                                    this._logger.Error($"执行失败({e.Task.CollectId}-{e.Task.Id}),地址:{e.Task.Uri}", e.Error);
+                                    var message = $"执行失败({e.Task.CollectId}-{e.Task.Id}),地址:{e.Task.Uri}";
+                                    if (e.Error != null && e.Error is Core.CollectTaskInvokeException)
+                                    {
+                                        message += ("\r\n" + e.Error.Message);
+                                        this._logger.Error(message);
+                                        return;
+                                    }
+                                    this._logger.Error(message, e.Error);
+                                }
+                                else
+                                {
+                                    var refTaskRuntime = sender as CollectTaskRuntime;
+                                    Console.SetCursorPosition(0, 0);
+                                    Console.WriteLine($"正在执行任务数:{refTaskRuntime.State.RunningTaskCount}");
+                                    Console.WriteLine($"正常完成任务数:{refTaskRuntime.State.CompleteTaskCount}");
+                                    Console.WriteLine($"执行异常任务数:{refTaskRuntime.State.ErrorTaskCount}");
+                                    Console.WriteLine($"新增任务数:{refTaskRuntime.State.NewTaskCount}");
+                                    Console.WriteLine($"新增文件数:{refTaskRuntime.State.NewFileCount}");
+                                    Console.WriteLine($"新增内容数:{refTaskRuntime.State.NewContentCount}");
                                 }
                             };
                             taskRuntime.Start(cts.Token, collect);
@@ -88,8 +107,7 @@ namespace Snail.Collector.Commands
                     }
                 }
                 Console.WriteLine($"{DateTime.Now} - 已结束。");
-            });
-            Console.WriteLine("正在执行...");
+            });            
             Console.ReadKey();          
             cts.Cancel();
             while (!task.IsCompleted)

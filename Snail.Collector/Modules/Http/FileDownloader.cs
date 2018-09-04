@@ -21,7 +21,7 @@ namespace Snail.Collector.Modules.Http
 
         private string _savePath;
 
-        private static object _lock;
+        private static object _lock = new object();
 
         public Uri Uri { get; private set; }
      

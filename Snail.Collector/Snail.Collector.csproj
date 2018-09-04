@@ -163,6 +163,7 @@
     <Compile Include="Commands\RunCommandArgs.cs" />
     <Compile Include="Common\ILogger.cs" />
     <Compile Include="Common\Log4NetLogger.cs" />
+    <Compile Include="Core\CollectTaskState.cs" />
     <Compile Include="Model\CollectContentInfo.cs" />
     <Compile Include="Model\CollectTaskInfo.cs" />
     <Compile Include="Core\CollectTaskInvoker.cs" />
