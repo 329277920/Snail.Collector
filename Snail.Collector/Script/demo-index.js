@@ -1,4 +1,11 @@
-﻿
+﻿var uri = "https://www.sohu.com/a/196599202_355140";
+var doc = http.get(uri).toHtml();
+doc.find("img").save({ type: "file", directory: "F:\\images\\demo", baseUri: uri });
+
+// debug.writeLine(typeof (doc.find("div")));
+
+return;
+
 var date = new Date().format("yyyy-MM-dd");
 
 http.headers.add("Cookie", "pgv_pvi=5816400896; RK=9uHiDLCKSF; pac_uid=1_1099191193; tvfe_boss_uuid=094c5c3f89f59faa; mobileUV=1_15f2dc75e82_6251f; ptcz=d3f5798fec2071307577a78109c6fcd173b452ac54f39fa41c248b8d7225e44f; pgv_pvid=4203130496; o_cookie=1099191193; __root_domain_v=.e.qq.com; _qddaz=QD.2xpugo.tvggwj.jkbu0961; gr_user_id=4176c947-6491-47e7-accc-d3fa25321ed8; pgv_gdtid=__tracestring__; pgv_si=s1234652160; pgv_info=ssid=s8379880700; gdt_refer=e.qq.com; gdt_full_refer=https%3A%2F%2Fe.qq.com%2F; gdt_original_refer=e.qq.com; gdt_original_full_refer=https%3A%2F%2Fe.qq.com%2F; site_type=new; portalversion=new; gr_session_id_8751e4ce852fb210=5f874ca3-eb04-4bd7-9c05-984435877f0f; hottagtype=header; _qddamta_2852155024=3-0; _qpsvr_localtk=0.4768180881591968; ptisp=ctc; ptui_loginuin=2332325165; uin=o2332325165; skey=@2I90fNtZF; pt2gguin=o2332325165; _qdda=3-1.2mxv1g; _qddab=3-emm0i4.jllww5ve; dm_cookie=version=new&log_type=internal_click&ssid=s8379880700&pvid=4203130496&qq=2332325165&loadtime=2674&url=https%3A%2F%2Fe.qq.com%2Fads%2F&gdt_refer=e.qq.com&gdt_full_refer=https%3A%2F%2Fe.qq.com%2F&gdt_original_refer=e.qq.com&gdt_original_full_refer=https%3A%2F%2Fe.qq.com%2F&gdt_from=&uid=25552&hottag=atlas_https&hottagtype=header; hottag=atlas_https; atlas_platform=atlas");

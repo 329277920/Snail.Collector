@@ -1,10 +1,4 @@
-﻿// 任意对象转Json字符串
-Object.prototype.toString = function () {
-    return JSON.stringify(this);
-}
-
-
-// 截取地址中的文件名
+﻿// 截取地址中的文件名
 String.prototype.subFileName = function () {
     if (!this) {
         return this;

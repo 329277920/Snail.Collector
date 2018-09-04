@@ -99,13 +99,16 @@ namespace Snail.Collector.Core
 
         /// <summary>
         /// 获取绝对地址
-        /// </summary>
-        /// <param name="relatively"></param>
+        /// </summary>      
         /// <param name="relativeUri"></param>
+        /// <param name="baseUri"></param>
         /// <returns></returns>
-        public string absoluteUri(string relativeUri)
+        public string absoluteUri(string relativeUri, string baseUri = "")
         {
-            var baseUri = this.uri;
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                baseUri = this.uri;
+            }         
             if (string.IsNullOrEmpty(baseUri))
             {
                 return relativeUri;

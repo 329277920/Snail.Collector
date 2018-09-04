@@ -7,6 +7,7 @@ using Snail.Collector.Modules.Http;
 using Snail.Collector.Common;
 using Microsoft.ClearScript.V8;
 using Microsoft.ClearScript;
+using Snail.Collector.Modules.Html;
 
 namespace Snail.Collector.Core
 {
@@ -32,11 +33,13 @@ namespace Snail.Collector.Core
             AddHostObject("debug", TypeContainer.Resolve<DebugModule>());
             AddHostObject("log", TypeContainer.Resolve<LoggerModule>());
             AddHostObject("http", TypeContainer.Resolve<HttpModule>());
+            AddHostObject("html", TypeContainer.Resolve<HtmlModule>());
             this.ScriptEngine.AddHostObject("task", TypeContainer.Resolve<CollectTaskAccessProxy>());
             this.ScriptEngine.AddHostType("Array", typeof(JSArray));
-            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.stringExtend.js"));
-            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.unity.js"));
-            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.objectExtend.js"));
+            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.DateExtend.js"));
+            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.ObjectPersistence.js"));
+            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.StringExtend.js"));
+            this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.Unity.js"));
         }
 
         public object Invoke(CollectInfo collectInfo, CollectTaskInfo taskInfo)

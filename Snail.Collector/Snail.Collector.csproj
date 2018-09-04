@@ -210,8 +210,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="JsExtends\objectExtend.js" />
-    <Content Include="Modules\Html\HtmlModule.js" />
+    <EmbeddedResource Include="JsExtends\DateExtend.js" />
+    <EmbeddedResource Include="JsExtends\ObjectPersistence.js" />
+    <EmbeddedResource Include="Modules\Html\HtmlModule.js" />
     <Content Include="Script\xxx\100-detail.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -221,8 +222,8 @@
     <Content Include="Script\xxx\100.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="JsExtends\stringExtend.js" />
-    <EmbeddedResource Include="JsExtends\unity.js" />
+    <EmbeddedResource Include="JsExtends\StringExtend.js" />
+    <EmbeddedResource Include="JsExtends\Unity.js" />
     <Content Include="Licenses\clearscript-license.txt" />
     <Content Include="Licenses\v8-license.txt" />
     <Content Include="Script\demo-index.js">

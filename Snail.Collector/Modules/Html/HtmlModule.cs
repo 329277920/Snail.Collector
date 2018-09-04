@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Microsoft.ClearScript.V8;
+using Snail.Collector.Common;
 
 namespace Snail.Collector.Modules.Html
 {
     /// <summary>
     /// Html解析模块
     /// </summary>
-    public class HtmlModule
+    public class HtmlModule : IInitModule
     {
         /// <summary>
         /// 加载网页并返回节点操作对象Element
@@ -37,6 +39,11 @@ namespace Snail.Collector.Modules.Html
         public string removeTags(string html)
         {
             return LazyRegTags.Value.Replace(removeScript(html), string.Empty);
+        }
+
+        public void Init(V8ScriptEngine scriptEngine)
+        {       
+            scriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.Modules.Html.HtmlModule.js"));
         }
 
         #region 存储正则表达式

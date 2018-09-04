@@ -10,7 +10,7 @@ namespace Snail.Collector.Html
     /// <summary>
     /// Html解析模块
     /// </summary>
-    public class HtmlModule
+    public class HtmlModule 
     {
         /// <summary>
         /// 加载网页并返回节点操作对象Element
