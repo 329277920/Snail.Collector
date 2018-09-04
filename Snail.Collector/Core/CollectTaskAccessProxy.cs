@@ -47,7 +47,7 @@ namespace Snail.Collector.Core
         /// 创建新任务
         /// </summary>
         /// <param name="task">{ uri:xx,script:xx }</param>
-        public void add(dynamic task)
+        public int add(dynamic task)
         {
             var collect = CallContextManager.GetCollectInfo();
             if (collect == null)
@@ -66,25 +66,25 @@ namespace Snail.Collector.Core
                 newTask.ParentId = parentTask.Id;
                 newTask.Uri = new Uri(new Uri(parentTask.Uri), newTask.Uri).ToString();
             }
-            this._taskRepository.Insert(newTask);
+            return this._taskRepository.Insert(newTask);
         }
 
         /// <summary>
         /// 添加采集数据
         /// </summary>
         /// <param name="strContent"></param>
-        public void content(string strContent)
-        {           
+        public int content(string strContent)
+        {
             if (string.IsNullOrEmpty(strContent))
             {
-                return;
+                return -1;
             }
             var task = CallContextManager.GetCollectTaskInfo();
             if (task == null)
             {
                 throw new Exception("未能从当前线程上下文中获取对象 CollectTaskInfo");
             }
-            this._contentRepository.Insert(new CollectContentInfo()
+            return this._contentRepository.Insert(new CollectContentInfo()
             {
                 CollectId = task.CollectId,
                 CollectTaskId = task.Id,

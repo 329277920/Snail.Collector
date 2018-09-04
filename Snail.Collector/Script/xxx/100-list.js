@@ -3,12 +3,16 @@
 document.find("div.list").find("li").each(function (li) {
     var uri = li.find("div.imgr").find("a").attr("href");
     if (uri) {
-        task.add({ uri: uri, script: "Script/xxx/100-detail.js" });
+        ({ uri: uri, script: "Script/xxx/100-detail.js" }).save({
+            type: "task"
+        });
     }       
 });
 document.find("div.pagebar").find("a").each(function (a) {
     var uri = a.attr("href");
     if (uri) {
-        task.add({ uri: uri, script: "Script/xxx/100-list.js" });
+        ({ uri: uri, script: "Script/xxx/100-list.js" }).save({
+            type: "task"
+        });
     }
 });

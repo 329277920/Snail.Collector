@@ -12,14 +12,38 @@
         switch (settings.type) {
             case "file":
                 if (!settings.directory) {
-                    task.error("未指定存储路径");
+                    task.error("保存文件失败,未指定存储路径");
                 }
                 if (!settings.baseUri) {
                     settings.baseUri = "";
                 }
-                return fileDowner.downFiles(settings.directory, this, settings.baseUri);
+                var count = fileDowner.downFiles(settings.directory, this, settings.baseUri);
+                if (count == -1) {
+                    return false;
+                }
+                return true;
             case "content":
-                return task.content(this.toString());
+                var content = this.toString();
+                if (!content) {
+                    task.error("保存内容失败,内容为空");
+                }
+                var count = task.content(this.toString());
+                if (count == -1) {
+                    return false;
+                }
+                return true;
+            case "task":
+                if (!this.uri) {
+                    task.error("保存任务失败,为指定uri");
+                }
+                if (!this.script) {
+                    task.error("保存任务失败,为指定script");
+                }
+                var count = task.add(this);
+                if (count == -1) {
+                    return false;
+                }
+                return true;
         }
     };
 
@@ -59,8 +83,5 @@
             }
             return null;
         }
-    };
-
-    // 内容存储器
-
+    }; 
 })();

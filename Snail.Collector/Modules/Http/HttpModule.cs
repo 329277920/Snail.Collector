@@ -43,11 +43,11 @@ namespace Snail.Collector.Modules.Http
             return new HttpResult(this._scriptEngine, _client.SendAsync(request).Result);
         }
 
-        public virtual bool getFiles(params dynamic[] files)
+        public virtual int getFiles(params dynamic[] files)
         {
             if (files == null || files.Length <= 0)
             {
-                return true;
+                return 0;
             }
             List<dynamic> destArray = new List<dynamic>();
             foreach (var item in files)
@@ -68,7 +68,11 @@ namespace Snail.Collector.Modules.Http
                                 Method = HttpMethod.Get
                             },
                             file.savePath)).ToArray();
-            return this._fileDowner.DownFiles(downList);
+            if (this._fileDowner.DownFiles(downList))
+            {
+                return downList.Length;
+            }
+            return -1;
         }
 
         public void Init(V8ScriptEngine scriptEngine)
