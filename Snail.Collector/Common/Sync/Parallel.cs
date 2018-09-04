@@ -18,16 +18,7 @@ namespace Snail.Collector.Common.Sync
             get;
             private set;
         }
-
-        /// <summary>
-        /// 获取最小并行度
-        /// </summary>
-        public int MinParallelDegree
-        {
-            get;
-            private set;
-        }
-
+       
         private int _runCount = 0;
         /// <summary>
         /// 获取当前执行任务的线程数
@@ -40,18 +31,25 @@ namespace Snail.Collector.Common.Sync
             }            
         }
 
+        private Semaphore _pool;
+
+        private Semaphore _poolWork;
+
+        private Queue<WorkInfo> _works;
+
+        private Queue<Thread> _thds;
+
         /// <summary>
         /// 初始化SnailCore.Sync.Parallel
         /// </summary>
-        /// <param name="maxParallelDegree">设置最大并行度，该值应考虑在任务中是否有IO操作</param>
-        /// <param name="minParallelDegree">设置最小并行度</param>
-        public Parallel(int maxParallelDegree, int minParallelDegree = 0)// todo: 未实现
+        /// <param name="maxParallelDegree">设置最大并行度，该值应考虑在任务中是否有IO操作</param>        
+        public Parallel(int maxParallelDegree)// todo: 未实现
         {
-            this.MaxParallelDegree = maxParallelDegree;
-            this.MinParallelDegree = minParallelDegree;
+            this.MaxParallelDegree = maxParallelDegree;           
             this._pool = new Semaphore(this.MaxParallelDegree, this.MaxParallelDegree);
             this._poolWork = new Semaphore(0, this.MaxParallelDegree);
-            this._thds = new Queue<Thread>();            
+            this._thds = new Queue<Thread>();
+            this._works = new Queue<WorkInfo>();
         }
 
         /// <summary>
@@ -61,19 +59,28 @@ namespace Snail.Collector.Common.Sync
         /// <param name="source">可枚举的数据源</param>
         /// <param name="body">将为每个迭代调用一次的委托</param>
         public void ForEach<TSource>(IEnumerable<TSource> source, Action<TSource> body)
-        {
-            this._works = new Queue<WorkInfo>();
+        {          
             var workCount = source.Count();
             SemaphoreSlim waitSG = new SemaphoreSlim(0, workCount);
             foreach (var item in source)
             {
                 // 等待允许创建新线程，或空闲线程的信号 
                 this._pool.WaitOne();
-                if (this._thds.Count < this.MaxParallelDegree)
+                var newThread = false;
+                lock (this)
+                {
+                    if (this._thds.Count < this.MaxParallelDegree)
+                    {
+                        newThread = true;
+                    }
+                }
+                if (newThread)
                 {
                     var thd = this.CreateNewThread();
-
-                    this._thds.Enqueue(thd);
+                    lock (this)
+                    {
+                        this._thds.Enqueue(thd);
+                    }
                 }
                 lock (this)
                 {
@@ -86,8 +93,7 @@ namespace Snail.Collector.Common.Sync
             {
                 waitSG.Wait();
             }
-            waitSG.Dispose();
-            // this.WaitCompleted();
+            waitSG.Dispose();        
         }
 
         /// <summary>
@@ -97,14 +103,11 @@ namespace Snail.Collector.Common.Sync
         {
             var thd = new Thread(new ThreadStart(() =>
             {
-
                 while (true)
                 {
-                    var isAdd = false;
                     // 等待来自任务入队列的消息
                     this._poolWork.WaitOne();
                     Interlocked.Add(ref this._runCount, 1);
-                    isAdd = true;
                     WorkInfo work = null;
                     lock (this)
                     {
@@ -116,45 +119,19 @@ namespace Snail.Collector.Common.Sync
                     }
                     finally
                     {
-                        // 通知主线程任务结束，进入空闲状态
-                        this._pool.Release();
-
                         // 通知任务结束
                         work?.Waiter.Release();
-                        if (isAdd)
-                        {
-                            Interlocked.Add(ref this._runCount, -1);
-                        }
+                        Interlocked.Add(ref this._runCount, -1);
+                        // 通知主线程任务结束，进入空闲状态
+                        this._pool.Release();
                     }
                 }
             }));
-
             thd.IsBackground = true;
             thd.Start();
-
             return thd;
         }
-
-        /// <summary>
-        /// 等待所有任务执行结束
-        /// </summary>
-        private void WaitCompleted()
-        {
-            for (var i = 0; i < this.MaxParallelDegree; i++)
-            {
-                this._pool.WaitOne();
-            }
-            this._pool.Release(this.MaxParallelDegree);
-        }
-
-        private Semaphore _pool;
-
-        private Semaphore _poolWork;
-
-        private Queue<WorkInfo> _works;
-
-        private Queue<Thread> _thds;
-
+              
         private class WorkInfo
         {
             public Delegate Method { get; set; }

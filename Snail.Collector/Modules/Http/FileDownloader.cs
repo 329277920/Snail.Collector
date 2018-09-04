@@ -13,7 +13,7 @@ namespace Snail.Collector.Modules.Http
     /// <summary>
     /// 文件下载器，用于封装进线程池中
     /// </summary>
-    internal class FileDownloader
+    public class FileDownloader
     {
         private HttpClient _http;
 
@@ -22,6 +22,8 @@ namespace Snail.Collector.Modules.Http
         private string _savePath;
 
         private static object _lock;
+
+        public Uri Uri { get; private set; }
      
         /// <summary>
         /// 使用指定的Http客户端初始化文件下载器
@@ -34,6 +36,7 @@ namespace Snail.Collector.Modules.Http
             this._http = http;
             this._reqMsg = reqMsg;
             this._savePath = savePath;
+            this.Uri = reqMsg.RequestUri;
             reqMsg.Headers.Range = new RangeHeaderValue();
         }
 

@@ -40,7 +40,7 @@ namespace Snail.Collector.Core
         /// <param name="message">异常消息</param>
         public void error(string message)
         {
-            throw new Exception(message);
+            throw new CollectTaskInvokeException(message);
         }
 
         /// <summary>
@@ -96,5 +96,21 @@ namespace Snail.Collector.Core
         /// 获取当前任务地址
         /// </summary>
         public string uri => CallContextManager.GetCollectTaskInfo()?.Uri;
+
+        /// <summary>
+        /// 获取绝对地址
+        /// </summary>
+        /// <param name="relatively"></param>
+        /// <param name="relativeUri"></param>
+        /// <returns></returns>
+        public string absoluteUri(string relativeUri)
+        {
+            var baseUri = this.uri;
+            if (string.IsNullOrEmpty(baseUri))
+            {
+                return relativeUri;
+            }
+            return new Uri(new Uri(baseUri), relativeUri).ToString();
+        }
     }
 }

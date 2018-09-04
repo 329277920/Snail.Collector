@@ -21,12 +21,18 @@ Object.prototype.save = function (directory) {
 function convertToLocalFile(directory, element) {
     if (element.attr) {
         var uri = element.attr("src");
-        if (uri && (uri.indexOf("http://") >= 0 || uri.indexOf("https://") >= 0)) {
-            var fileName = uri.subFileName();
-            element.attr("src", fileName);
-            var filePath = (directory + "/" + fileName);
-            return { uri: uri, savePath: filePath };
-        }                  
+        if (uri) {
+            // base64方式
+            if (uri.indexOf("data:image") >= 0) {
+
+            }
+            else {
+                var fileName = uri.subFileName();
+                element.attr("src", fileName);
+                var filePath = (directory + "/" + fileName);
+                return { uri: task.absoluteUri(uri), savePath: filePath };
+            }
+        }
     }
     return null;
 }

@@ -1,5 +1,9 @@
-﻿using Snail.Collector.Commands;
+﻿using Microsoft.Extensions.Configuration;
+using Snail.Collector.Commands;
 using Snail.Collector.Core;
+using Snail.Collector.Modules;
+using Snail.Collector.Modules.Html;
+using Snail.Collector.Modules.Http;
 using Snail.Collector.Repositories;
 using Unity;
 
@@ -10,30 +14,20 @@ namespace Snail.Collector.Common
     /// </summary>
     public sealed class TypeContainer
     {
-        private static UnityContainer _container;
+        internal static UnityContainer Container;
         static TypeContainer()
         {
-            SqliteProxy.Init("data/db.sqlite");
-
-            _container = new UnityContainer();
-            _container.RegisterSingleton<ICollectRepository, CollectRepository>();
-            _container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
-            _container.RegisterSingleton<ICollectContentRepository, CollectContentRepository>();            
-            _container.RegisterSingleton<ILogger, Log4NetLogger>();
-            _container.RegisterSingleton<ICommand, AddCommand>("task_add");
-            _container.RegisterSingleton<ICommand, RunCommand>("task_run");
-            _container.RegisterType<CollectTaskAccessProxy>();             
-            _container.RegisterType<CollectTaskRuntime>();
+            Container = new UnityContainer();
         }       
 
         public static T Resolve<T>()
         {
-            return _container.Resolve<T>();
+            return Container.Resolve<T>();
         }
 
         public static T Resolve<T>(string name)
         {
-            return _container.Resolve<T>(name);
+            return Container.Resolve<T>(name);
         }
     }
 }

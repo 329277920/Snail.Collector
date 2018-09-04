@@ -1,0 +1,16 @@
+﻿{
+  "task": {
+    // 并行任务数
+    "parallelTasks": 20,
+    // 失败重试次数
+    "errorRepeat": 3
+  },
+  "http": {
+    // 并行下载文件数
+    "parallelDownloads": 30
+  },
+  "db": {
+    // 默认db存放路径
+    "path": "data\\db.sqlite"
+  }
+}

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Snail.Collector.Common;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace Snail.Collector
 {
@@ -22,6 +23,8 @@ namespace Snail.Collector
         private ReaderWriterLockSlim _lock;
         private CollectInfo _collect;
         private int _workCount = 0;
+        private IConfiguration _config;
+        private int _retry = 0;
 
         /// <summary>
         /// 当某个任务执行完成后触发
@@ -37,14 +40,17 @@ namespace Snail.Collector
         public CollectTaskRuntime(
             ICollectRepository collectDal, 
             ICollectTaskRepository collectTaskDal,
-            ILogger logger)
+            ILogger logger,
+            IConfiguration config)
         {
+            this._config = config;
             this._collectDal = collectDal;
             this._collectTaskDal = collectTaskDal;
             this._logger = logger;
-            this._sh = new Semaphore(20, 20);
+            this._sh = new Semaphore(int.Parse(this._config["task:parallelTasks"]), int.Parse(this._config["task:parallelTasks"]));
             this._invokers = new Queue<CollectTaskInvoker>();
-            this._lock = new ReaderWriterLockSlim();          
+            this._lock = new ReaderWriterLockSlim();            
+            this._retry = int.Parse(this._config["task:errorRepeat"]);
         }
 
         /// <summary>
@@ -133,9 +139,8 @@ namespace Snail.Collector
                     }
                     catch(Exception ex)
                     {
-                        refTask.Status =  CollectTaskStatus.Error;
-                        // todo: 超过重试次数
-                        if (refTask.RetryCount >= 3)
+                        refTask.Status =  CollectTaskStatus.Error;                       
+                        if (refTask.RetryCount >= this._retry)
                         {
                             refTask.Status = CollectTaskStatus.Faild;
                         }

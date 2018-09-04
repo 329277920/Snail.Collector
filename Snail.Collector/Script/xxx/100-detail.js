@@ -1,7 +1,15 @@
 ﻿var doc = http.get(task.uri).toHtml().find("div.post");
 doc.find("div.rights").remove();
 doc.find("div#share").remove();
-doc.find("img").save("I:\\images\\demo");
+if (!doc.find("img").save("F:\\images\\demo")) {
+    task.error("未下载到图片");
+}
 var title = doc.find("div.title").find("h1").innerText;
+if (!title) {
+    task.error("未获取到标题");
+}
 var content = doc.find("div.article_content").innerHTML;
+if (!content) {
+    task.error("未获取到内容");
+}
 task.content({ title: title, content: content }.toString());

@@ -29,9 +29,9 @@ namespace Snail.Collector.Core
         {
             this.ScriptEngine = new V8ScriptEngine();
             AddHostObject("lib", new HostTypeCollection("mscorlib", "System.Core"));
-            AddHostObject("debug", new DebugModule());
-            AddHostObject("log", new LoggerModule());
-            AddHostObject("http", new HttpModule());
+            AddHostObject("debug", TypeContainer.Resolve<DebugModule>());
+            AddHostObject("log", TypeContainer.Resolve<LoggerModule>());
+            AddHostObject("http", TypeContainer.Resolve<HttpModule>());
             this.ScriptEngine.AddHostObject("task", TypeContainer.Resolve<CollectTaskAccessProxy>());
             this.ScriptEngine.AddHostType("Array", typeof(JSArray));
             this.ScriptEngine.Execute(ResourceManager.ReadResource("Snail.Collector.JsExtends.stringExtend.js"));

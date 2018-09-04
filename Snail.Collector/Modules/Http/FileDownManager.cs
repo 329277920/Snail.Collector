@@ -1,56 +1,55 @@
-﻿using Snail.Collector.Common.Sync;
+﻿using Microsoft.Extensions.Configuration;
+using Snail.Collector.Common;
+using Snail.Collector.Common.Sync;
+using System;
 
 namespace Snail.Collector.Modules.Http
 {
     /// <summary>
     /// 文件下载管理器，控制下载并发
     /// </summary>
-    internal sealed class FileDownManager
+    public class FileDownManager : IFileDownManager
     {
-        private static Parallel Parallel;
-
-        private static object LckObj = new object();
-
-        private const int DefMax = 20;
+        private Parallel _parallel;
+     
+        private ILogger _logger;
 
         /// <summary>
-        /// 初始化下载器工厂
+        /// 初始化文件下载器
         /// </summary>
-        /// <param name="max"></param>
-        public static void Init(int max)
+        /// <param name="logger"></param>
+        /// <param name="config"></param>
+        public FileDownManager(ILogger logger, IConfiguration config)
         {
-            if (Parallel != null)
-            {
-                return;
-            }
-            lock (LckObj)
-            {
-                if (Parallel != null)
-                {
-                    return;
-                }
-                Parallel = new Parallel(max);
-            }           
+            this._parallel = new Parallel(int.Parse(config["http:parallelDownloads"]));
+            this._logger = logger;
         }
-
+         
         /// <summary>
         /// 并行下载文件
         /// </summary>
         /// <param name="loaders"></param>
-        public static bool DownFiles(params FileDownloader[] loaders)
+        public bool DownFiles(params FileDownloader[] loaders)
         {
             if (loaders == null || loaders.Length <= 0)
             {
                 return true;
-            }
-            Init(DefMax);
+            }           
             var rest = true;
-            Parallel.ForEach(loaders, loader => 
+            this._parallel.ForEach(loaders, loader => 
             {
-                if (!loader.Down())
+                try
+                {
+                    if (!loader.Down())
+                    {
+                        rest = false;
+                    }
+                }
+                catch (Exception ex)
                 {
                     rest = false;
-                }
+                    this._logger.Error($"下载文件失败,'{loader.Uri}'", ex);
+                }                
             });
             return rest;
         }

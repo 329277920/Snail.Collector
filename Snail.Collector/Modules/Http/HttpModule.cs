@@ -12,28 +12,20 @@ namespace Snail.Collector.Modules.Http
     /// Http模块
     /// </summary>
     public class HttpModule : IInitModule
-    {
-        private static object _lock = new object();
-        private static HttpClient _client;
+    {        
+        private HttpClient _client;
         private V8ScriptEngine _scriptEngine;
+        private IFileDownManager _fileDowner;
 
-        public HttpModule()
+        public HttpModule(IFileDownManager fileDowner)
         {
-            if (_client == null)
+            this._fileDowner = fileDowner;
+            this._client = new HttpClient(new HttpClientHandler()
             {
-                lock (_lock)
-                {
-                    if (_client == null)
-                    {
-                        _client = new HttpClient(new HttpClientHandler()
-                        {
-                            UseCookies = false,
-                            UseDefaultCredentials = false,
-                            AutomaticDecompression = System.Net.DecompressionMethods.GZip
-                        });
-                    }
-                }
-            }
+                UseCookies = false,
+                UseDefaultCredentials = false,
+                AutomaticDecompression = System.Net.DecompressionMethods.GZip
+            });
         }
          
         public HttpRequestHeaders headers
@@ -76,7 +68,7 @@ namespace Snail.Collector.Modules.Http
                                 Method = HttpMethod.Get
                             },
                             file.savePath)).ToArray();
-            return FileDownManager.DownFiles(downList);
+            return this._fileDowner.DownFiles(downList);
         }
 
         public void Init(V8ScriptEngine scriptEngine)

@@ -1,8 +1,16 @@
-﻿using Snail.Collector.Commands;
+﻿using Microsoft.Extensions.Configuration;
+using Snail.Collector.Commands;
 using Snail.Collector.Common;
+using Snail.Collector.Common.Sync;
+using Snail.Collector.Core;
+using Snail.Collector.Modules;
+using Snail.Collector.Modules.Html;
+using Snail.Collector.Modules.Http;
+using Snail.Collector.Repositories;
 using System;
 using System.Linq;
 using System.Threading;
+using Unity;
 
 namespace Snail.Collector
 {
@@ -13,7 +21,9 @@ namespace Snail.Collector
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
-        {
+        {            
+            ApplicationStart();
+
             // args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
             args = new string[] { "run", "-id", "100" };
 
@@ -44,6 +54,37 @@ namespace Snail.Collector
             {
                 Console.WriteLine(ex.ToString());
             }
+        }
+
+        static void ApplicationStart()
+        {
+            // 加载配置
+            var configurationBuidler = new ConfigurationBuilder().AddJsonFile("appconfig.json");
+#if DEBUG
+            configurationBuidler.AddJsonFile("appconfig.debug.json", true);
+#endif                                   
+            var configRoot = configurationBuidler.Build();
+
+            SqliteProxy.Init(configRoot["db:path"]);
+
+            TypeContainer.Container.RegisterInstance<IConfiguration>(configRoot);
+
+            TypeContainer.Container.RegisterSingleton<ICollectRepository, CollectRepository>();
+            TypeContainer.Container.RegisterSingleton<ICollectTaskRepository, CollectTaskRepository>();
+            TypeContainer.Container.RegisterSingleton<ICollectContentRepository, CollectContentRepository>();
+            TypeContainer.Container.RegisterSingleton<ILogger, Log4NetLogger>();
+            TypeContainer.Container.RegisterSingleton<ICommand, AddCommand>("task_add");
+            TypeContainer.Container.RegisterSingleton<ICommand, RunCommand>("task_run");
+
+            // 注册模块
+            TypeContainer.Container.RegisterSingleton<IFileDownManager, FileDownManager>();
+            TypeContainer.Container.RegisterSingleton<HttpModule>();
+            TypeContainer.Container.RegisterSingleton<HtmlModule>();
+            TypeContainer.Container.RegisterSingleton<DebugModule>();
+            TypeContainer.Container.RegisterSingleton<LoggerModule>();
+
+            TypeContainer.Container.RegisterType<CollectTaskAccessProxy>();
+            TypeContainer.Container.RegisterType<CollectTaskRuntime>();
         }
 
         static void InputPromptMessage()
