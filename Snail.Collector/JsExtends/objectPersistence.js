@@ -80,7 +80,7 @@
 
                     }
                     else {
-                        var fileName = uri.subFileName();
+                        var fileName = task.newFileName(uri);
                         element.attr("src", fileName);
                         var filePath = (directory + "/" + fileName);
                         return { uri: task.absoluteUri(uri, baseUri), savePath: filePath };

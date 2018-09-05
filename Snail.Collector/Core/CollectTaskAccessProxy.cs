@@ -40,7 +40,7 @@ namespace Snail.Collector.Core
         /// <param name="message">异常消息</param>
         public void error(string message)
         {
-            throw new CollectTaskInvokeException(message);
+            throw new CollectTaskInvokeException("UserError:" + message);
         }
 
         /// <summary>
@@ -90,6 +90,31 @@ namespace Snail.Collector.Core
                 CollectTaskId = task.Id,
                 Content = strContent
             });
+        }
+
+        /// <summary>
+        /// 获取一个新的文件名，格式({collectId_collectTaskId_fileName})
+        /// </summary>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        public string newFileName(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+            {
+                return "";
+            }
+            var idx = uri.LastIndexOf("/");
+            if (idx >= 0)
+            {
+                uri = uri.Substring(idx + 1);
+            }
+            var collect = CallContextManager.GetCollectInfo();
+            if (collect == null)
+            {
+                throw new Exception("未能从当前线程上下文中获取对象 ollectInfo");
+            }
+            var task = CallContextManager.GetCollectTaskInfo();
+            return $"{collect.Id}_{(task == null ? 0 : task.Id)}_{uri}";
         }
 
         /// <summary>

@@ -118,8 +118,7 @@ namespace Snail.Collector
 
                 // 发起新线程，执行任务
                 Task.Factory.StartNew((objTask) =>
-                {
-                    
+                {                    
                     CollectTaskInvoker invoker = null;
                     var refTask = objTask as CollectTaskInfo;
                     var invokeArgs = new CollectTaskInvokeCompleteArgs() { Task = refTask };

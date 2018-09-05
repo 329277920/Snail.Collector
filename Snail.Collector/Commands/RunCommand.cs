@@ -68,7 +68,7 @@ namespace Snail.Collector.Commands
                                 if (!e.Success)
                                 {
                                     var message = $"执行失败({e.Task.CollectId}-{e.Task.Id}),地址:{e.Task.Uri}";
-                                    if (e.Error != null && e.Error is Core.CollectTaskInvokeException)
+                                    if (e.Error != null && e.Error.Message != null && e.Error.Message.StartsWith("Error: UserError:"))
                                     {
                                         message += ("\r\n" + e.Error.Message);
                                         this._logger.Error(message);
