@@ -21,10 +21,10 @@ namespace Snail.Collector
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
-        {            
+        {             
             ApplicationStart();
 
-            // args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
+            args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
             args = new string[] { "run", "-id", "100" };
 
             // args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "10", "-name", "广点通-后台数据" };

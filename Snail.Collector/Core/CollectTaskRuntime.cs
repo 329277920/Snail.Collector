@@ -113,12 +113,12 @@ namespace Snail.Collector
                 }
                 taskInfo.Status = CollectTaskStatus.Running;
                 taskInfo.RetryCount++;
-                this._collectTaskDal.Update(taskInfo);
-                this.State.RunningTaskCount = 1;                 
+                this._collectTaskDal.Update(taskInfo);                                 
 
                 // 发起新线程，执行任务
                 Task.Factory.StartNew((objTask) =>
-                {                    
+                {
+                    this.State.RunningTaskCount = 1;
                     CollectTaskInvoker invoker = null;
                     var refTask = objTask as CollectTaskInfo;
                     var invokeArgs = new CollectTaskInvokeCompleteArgs() { Task = refTask };

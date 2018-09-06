@@ -1,13 +1,13 @@
 ﻿{
   "task": {
     // 并行任务数
-    "parallelTasks": 20,
+    "parallelTasks": 50,
     // 失败重试次数
     "errorRepeat": 3
   },
   "http": {
     // 并行下载文件数
-    "parallelDownloads": 30
+    "parallelDownloads": 50
   },
   "db": {
     // 默认db存放路径

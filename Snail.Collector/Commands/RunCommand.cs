@@ -63,6 +63,7 @@ namespace Snail.Collector.Commands
                     {
                         using (var taskRuntime = TypeContainer.Resolve<CollectTaskRuntime>())
                         {
+                            int consolePosition = Console.CursorTop;
                             taskRuntime.OnCollectTaskInvokeComplete += (sender, e) =>
                             {
                                 if (!e.Success)
@@ -79,13 +80,16 @@ namespace Snail.Collector.Commands
                                 else
                                 {
                                     var refTaskRuntime = sender as CollectTaskRuntime;
-                                    Console.SetCursorPosition(0, 0);
-                                    Console.WriteLine($"正在执行任务数:{refTaskRuntime.State.RunningTaskCount}");
-                                    Console.WriteLine($"正常完成任务数:{refTaskRuntime.State.CompleteTaskCount}");
-                                    Console.WriteLine($"执行异常任务数:{refTaskRuntime.State.ErrorTaskCount}");
-                                    Console.WriteLine($"新增任务数:{refTaskRuntime.State.NewTaskCount}");
-                                    Console.WriteLine($"新增文件数:{refTaskRuntime.State.NewFileCount}");
-                                    Console.WriteLine($"新增内容数:{refTaskRuntime.State.NewContentCount}");
+                                    lock (taskRuntime)
+                                    {
+                                        Console.SetCursorPosition(0, consolePosition);                                        
+                                        Console.WriteLine($"正在执行任务数:{refTaskRuntime.State.RunningTaskCount.ToString().PadLeft(10, ' ')}");
+                                        Console.WriteLine($"正常完成任务数:{refTaskRuntime.State.CompleteTaskCount.ToString().PadLeft(10, ' ')}");
+                                        Console.WriteLine($"执行异常任务数:{refTaskRuntime.State.ErrorTaskCount.ToString().PadLeft(10, ' ')}");
+                                        Console.WriteLine($"新增任务数:{refTaskRuntime.State.NewTaskCount.ToString().PadLeft(10, ' ')}");
+                                        Console.WriteLine($"新增文件数:{refTaskRuntime.State.NewFileCount.ToString().PadLeft(10, ' ')}");
+                                        Console.WriteLine($"新增内容数:{refTaskRuntime.State.NewContentCount.ToString().PadLeft(10, ' ')}");
+                                    }                                   
                                 }
                             };
                             taskRuntime.Start(cts.Token, collect);
