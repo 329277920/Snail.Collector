@@ -11,6 +11,7 @@
   },
   "db": {
     // 默认db存放路径
-    "path": "data\\db.sqlite"
+    // D:\Projects\Snail.Collector\Snail.Collector\bin\Debug\Data
+    "path": "D:\\Projects\\Snail.Collector\\Snail.Collector\\bin\\Debug\\Data\\db.sqlite"
   }
 }

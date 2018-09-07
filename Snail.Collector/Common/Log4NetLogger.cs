@@ -21,7 +21,7 @@ namespace Snail.Collector.Common
         /// <param name="config">log4net配置文件路径</param>
         public Log4NetLogger()
         {
-            var config = "log4net.config";            
+            var config = $"{System.AppDomain.CurrentDomain.BaseDirectory}log4net.config";          
             if (!File.Exists(config))
             {
                 throw new Exception(string.Format("not find config file : {0}", config));

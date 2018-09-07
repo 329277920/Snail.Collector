@@ -146,6 +146,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\TestCommand.cs" />
+    <Compile Include="Commands\TestCommandArgs.cs" />
     <Compile Include="Common\ResourceManager.cs" />
     <Compile Include="Common\Sync\ParalleForeachItem.cs" />
     <Compile Include="Common\Sync\Parallel.cs" />
@@ -218,6 +220,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Script\xxx\100-list.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Script\xxx\100-test.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Script\xxx\100.js">

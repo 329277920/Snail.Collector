@@ -21,11 +21,11 @@ namespace Snail.Collector
         /// </summary>
         /// <param name="args"></param>
         static void Main(string[] args)
-        {             
+        {                        
             ApplicationStart();
 
-            args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
-            args = new string[] { "run", "-id", "100" };
+            //args = new string[] { "add", "-file", "Script/xxx/100.js", "-id", "100", "-name", "xxx" };
+            //args = new string[] { "run", "-id", "100" };
 
             // args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "10", "-name", "广点通-后台数据" };
             // args = new string[] { "run", "-id", "10", "-repeat", "10", "-delay", "01:00:00" };
@@ -75,6 +75,7 @@ namespace Snail.Collector
             TypeContainer.Container.RegisterSingleton<ILogger, Log4NetLogger>();
             TypeContainer.Container.RegisterSingleton<ICommand, AddCommand>("task_add");
             TypeContainer.Container.RegisterSingleton<ICommand, RunCommand>("task_run");
+            TypeContainer.Container.RegisterSingleton<ICommand, TestCommand>("task_test");
 
             // 注册模块
             TypeContainer.Container.RegisterSingleton<IFileDownManager, FileDownManager>();
