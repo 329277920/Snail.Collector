@@ -117,6 +117,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -170,6 +171,7 @@
     <Compile Include="Model\CollectTaskInfo.cs" />
     <Compile Include="Core\CollectTaskInvoker.cs" />
     <Compile Include="Model\CollectTaskStatus.cs" />
+    <Compile Include="Modules\Browser\BrowserModule.cs" />
     <Compile Include="Modules\DebugModule.cs" />
     <Compile Include="Modules\Html\Element.cs" />
     <Compile Include="Modules\Html\ElementCollection.cs" />
@@ -216,6 +218,8 @@
     <EmbeddedResource Include="JsExtends\DateExtend.js" />
     <EmbeddedResource Include="JsExtends\ObjectPersistence.js" />
     <EmbeddedResource Include="Modules\Html\HtmlModule.js" />
+    <Content Include="Script\duanzi\200-test.js" />
+    <Content Include="Script\manhua\300-test.js" />
     <Content Include="Script\xxx\100-detail.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -117,11 +117,23 @@ namespace Snail.Collector.Core
             return $"{collect.Id}_{(task == null ? 0 : task.Id)}_{uri}";
         }
 
+        private string _uri;
         /// <summary>
-        /// 获取当前任务地址
+        /// 获取或设置当前任务地址
         /// </summary>
-        public string uri => CallContextManager.GetCollectTaskInfo()?.Uri;
-
+        public string uri {
+            get {
+                if (this._uri == null)
+                {
+                    return CallContextManager.GetCollectTaskInfo()?.Uri;
+                }
+                return this._uri;
+            }
+            set {
+                this._uri = value;
+            }
+        }
+                      
         /// <summary>
         /// 获取绝对地址
         /// </summary>      

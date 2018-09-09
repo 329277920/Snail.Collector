@@ -87,6 +87,35 @@ namespace Snail.Collector.Modules.Html
         }
 
         /// <summary>
+        /// 选择不包含某个特性的所有标签
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public ElementCollection not(string selector)
+        {
+            if (string.IsNullOrEmpty(selector))
+            {
+                return new ElementCollection();
+            }
+            // 不包含某个属性
+            if (selector.StartsWith("[") && selector.EndsWith("]"))
+            {
+                var attrName = selector.Substring(1).Substring(0, selector.Length - 2);
+                return this.Select(this, (item) => {                    
+                    foreach (var attr in item._innerNode.Attributes)
+                    {
+                        if (attr.Name.Equals(attrName))
+                        {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
+            return new ElementCollection();
+        }
+
+        /// <summary>
         /// 移除当前节点
         /// </summary>
         public void remove()

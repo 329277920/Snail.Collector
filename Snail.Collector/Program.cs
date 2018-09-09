@@ -30,6 +30,8 @@ namespace Snail.Collector
             // args = new string[] { "add", "-file", "Script/demo-index.js", "-id", "10", "-name", "广点通-后台数据" };
             // args = new string[] { "run", "-id", "10", "-repeat", "10", "-delay", "01:00:00" };
 
+            args = new string[] { "test","-file", @"D:\Projects\Snail.Collector\Snail.Collector\Script\manhua\300-test.js" };
+
             if (args == null || args.Length == 0)
             {
                 InputPromptMessage();

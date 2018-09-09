@@ -21,7 +21,7 @@
                 if (count == -1) {
                     return false;
                 }
-                state.NewFileCount = count;
+                state.NewFileCount = count;               
                 return true;
             case "content":
                 var content = this.toString();
@@ -56,19 +56,21 @@
     // 文件下载器
     fileDowner = {
         downFiles: function (directory, element, baseUri) {
-            var imgs = new Array();            
-            var img = fileDowner._convertToLocalFile(directory, element, baseUri);
-            if (img) {
-                imgs.push(img);
-            }
+            var imgs = new Array();
             if (element.each) {
                 element.each(function (ele) {
-                    img = fileDowner._convertToLocalFile(directory, ele, baseUri);
+                    var img = fileDowner._convertToLocalFile(directory, ele, baseUri);
                     if (img) {
                         imgs.push(img);
                     }
                 });
             }
+            else {
+                var img = fileDowner._convertToLocalFile(directory, element, baseUri);
+                if (img) {
+                    imgs.push(img);                   
+                }
+            }                        
             return http.getFiles(imgs);
         },
         _convertToLocalFile: function (directory, element, baseUri) {

@@ -115,6 +115,22 @@ namespace Snail.Collector.Modules.Html
             return eles;
         }
 
+        /// <summary>
+        /// 选择不包含某个特性的所有标签
+        /// </summary>
+        /// <param name="selector"></param>
+        /// <returns></returns>
+        public ElementCollection not(string selector)
+        {
+            var eles = new ElementCollection();
+            ForEach(item =>
+            {
+                var children = item.not(selector);
+                eles.AddRange(children);
+            });
+            return eles;
+        }
+
         public string attr(string attrName, string value = null)
         {
             if (this.Count <= 0)
